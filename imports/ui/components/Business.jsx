@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class BusinessContainer extends React.Component {
+export default class Business extends React.Component {
 
   render() {
     return (

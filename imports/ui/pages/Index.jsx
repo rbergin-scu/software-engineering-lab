@@ -6,18 +6,36 @@ import Business from '/imports/ui/components/Business';
 
 class Index extends React.Component {
 
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    return this.props.list.map((biz) => (
+    return (
       <div className={'container py-5'}>
-        <Business name={biz.name} desc={biz.desc} />
+        {this.renderBusinesses()}
       </div>
-    ));
+    )
+  }
+
+  renderBusinesses() {
+    return this.props.businesses.map((biz) => {
+      return (
+        <Business
+          business={biz}
+          name={biz.name}
+          desc={biz.desc}
+        />
+      );
+    });
   }
 
 }
 
 export default withTracker(() => {
+  Meteor.subscribe('businesses');
+
   return {
-    list: Businesses.find({}).fetch(),
+    businesses: Businesses.find({}).fetch(),
   };
 })(Index);
