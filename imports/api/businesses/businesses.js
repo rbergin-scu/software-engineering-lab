@@ -19,5 +19,3 @@ if (Meteor.isServer) {
     return Businesses.find({});
   });
 }
-
-export default Businesses;

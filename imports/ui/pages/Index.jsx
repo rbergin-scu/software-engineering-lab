@@ -22,7 +22,6 @@ class Index extends React.Component {
     return this.props.businesses.map((biz) => {
       return (
         <Business
-          business={biz}
           name={biz.name}
           desc={biz.desc}
         />
