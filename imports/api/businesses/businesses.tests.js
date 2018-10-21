@@ -46,7 +46,7 @@ describe('Businesses', () => {
   it('should render', () => {
     const item = shallow(<Business name={biz.name} desc={biz.desc} />);
 
-    assert(item.contains(<h1>{biz.name}</h1>), 'the business name');
+    assert(item.contains(<h2>{biz.name}</h2>), 'the business name');
     assert(item.contains(<p>{biz.desc}</p>), 'the description');
   });
 
