@@ -42,7 +42,7 @@ Businesses.schema = new SimpleSchema({
   /* type/category of business (food, entertainment, etc) */
   type: { type: String },
 
-  verified: { type: Boolean , default: false },
+  verified: { type: Boolean, defaultValue: false },
   
 }, { tracker: Tracker });
 
