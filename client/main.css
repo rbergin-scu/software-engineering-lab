@@ -4,3 +4,8 @@ body {
   padding: 0;
   width: 100%;
 }
+
+.index-businesses .card img {
+  max-height: 30vh;
+  width: auto;
+}
