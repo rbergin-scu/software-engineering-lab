@@ -46,8 +46,6 @@ Businesses.schema = new SimpleSchema({
   
 }, { tracker: Tracker });
 
-
-
 // publish Business data to client
 if (Meteor.isServer) {
   Meteor.publish('businesses', () => {
@@ -57,13 +55,17 @@ if (Meteor.isServer) {
 
 // define CRUD methods
 Meteor.methods({
-  'businesses.insert'({ name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified}) {
+  'businesses.insert'({
+    name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
+  }) {
     // validate input
-    Businesses.schema.validate({ name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified });
+    Businesses.schema.validate({
+      name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
+    });
     
     // check for duplicate (by name)
-    if (Businesses.findOne({ name: name , phoneNumber: phoneNumber})) {
-      throw new Meteor.Error('businesses-already-exists', "A business by that name already exists.");
+    if (Businesses.findOne({ name: name, phoneNumber: phoneNumber, })) {
+      throw new Meteor.Error('businesses-already-exists', 'A business by that name already exists.');
     } else {
       // submit to database
       Businesses.insert({
@@ -78,7 +80,7 @@ Meteor.methods({
         phoneNumber: phoneNumber,
         website: website,
         type: type,
-        verified: verified
+        verified: verified,
       });
     }
   },

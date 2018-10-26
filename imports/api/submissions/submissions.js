@@ -12,13 +12,13 @@ Submissions.schema = new SimpleSchema({
   name: { type: String },
 
   /* email of submitter */
-  email: { type: String , optional: true},
+  email: { type: String , optional: true },
 
   /* phone number of submitter */
-  phoneNumber: { type: String , optional: true},
+  phoneNumber: { type: String , optional: true },
 
   /* graduation year */
-  gradYear: { type: String , optional: true},
+  gradYear: { type: String , optional: true },
 
   /* reference to business in table */
   businessID: { type: business},
@@ -33,9 +33,11 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'submissions.insert'({ name, email, phoneNumber, gradYear, businessID}) {
+  'submissions.insert'({
+    name, email, phoneNumber, gradYear, businessID,
+  }) {
     // validate input
-    Submissions.schema.validate({ name, email, phoneNumber, gradYear, businessID });
+    Submissions.schema.validate({ name, email, phoneNumber, gradYear, businessID, });
 
 
   },
