@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
+import Businesses from "../businesses/businesses";
 
 // create submissions table
 const Submissions = new Mongo.Collection('submissions');
@@ -37,9 +38,30 @@ Meteor.methods({
     name, email, phoneNumber, gradYear, businessID,
   }) {
     // validate input
-    Submissions.schema.validate({ name, email, phoneNumber, gradYear, businessID, });
+    Submissions.schema.validate({
+        name, email, phoneNumber, gradYear, businessID,
+    });
 
-
+      // check for duplicate (by name)
+      if (Businesses.findOne({ name: name, phoneNumber: phoneNumber, })) {
+          throw new Meteor.Error('businesses-already-exists', 'A business by that name already exists.');
+      } else {
+          // submit to database
+          Businesses.insert({
+              name: name,
+              desc: desc,
+              photo: photo,
+              country: country,
+              streetAddress: streetAddress,
+              state: state,
+              city: city,
+              zip: zip,
+              phoneNumber: phoneNumber,
+              website: website,
+              type: type,
+              verified: verified,
+          });
+      }
   },
 
   'submissions.remove'( submissionId ) {
