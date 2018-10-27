@@ -21,7 +21,7 @@ Submissions.schema = new SimpleSchema({
   gradYear: { type: String , optional: true },
 
   /* reference to business in table */
-  businessID: { type: business},
+  businessID: { type: Object },
 
 }, { tracker: Tracker });
 
