@@ -56,9 +56,9 @@ Meteor.methods({
       }
   },
 
-  'submissions.remove'( submissionID ) {
+  'submissions.remove'({ submissionID }) {
       Submissions.remove({
-          _id: submissionID,
+          _id: submissionID
       });
   },
 });
