@@ -18,10 +18,10 @@ Submissions.schema = new SimpleSchema({
   phoneNumber: { type: String , optional: true },
 
   /* graduation year */
-  gradYear: { type: String , optional: true },
+  gradYear: { type: Number , optional: true },
 
   /* reference to business in table */
-  businessID: { type: business},
+  businessID: { type: Number },
 
 }, { tracker: Tracker });
 
@@ -58,8 +58,7 @@ Meteor.methods({
 
   'submissions.remove'( submissionID ) {
       Submissions.remove({
-          submissionID: submissionID,
-          callback: true,
+          _id: submissionID,
       });
   },
 });
