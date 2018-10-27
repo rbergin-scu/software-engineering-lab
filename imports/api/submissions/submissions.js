@@ -18,7 +18,7 @@ Submissions.schema = new SimpleSchema({
   phoneNumber: { type: String , optional: true },
 
   /* graduation year */
-  gradYear: { type: String , optional: true },
+  gradYear: { type: Number , optional: true },
 
   /* reference to business in table */
   businessID: { type: Object },
@@ -37,14 +37,47 @@ Meteor.methods({
     name, email, phoneNumber, gradYear, businessID,
   }) {
     // validate input
-    Submissions.schema.validate({ name, email, phoneNumber, gradYear, businessID, });
+    Submissions.schema.validate({
+        name, email, phoneNumber, gradYear, businessID,
+    });
 
-
+      // check for duplicate (by name); Shouldn't come up: any duplicated should be caught be Businesses schema
+      if (Submissions.findOne({ name: name, businessID: businessID, })) {
+          throw new Meteor.Error('submission-already-exists', 'A submission by that name already exists.');
+      } else {
+          // submit to database
+          Submissions.insert({
+              name: name,
+              email: email,
+              phoneNumber: phoneNumber,
+              gradYear: gradYear,
+              businessID: businessID,
+          });
+      }
   },
 
-  'submissions.remove'( submissionId ) {
-
+  'submissions.remove'({ submissionID }) {
+      Submissions.remove({
+          _id: submissionID
+      });
   },
+
+    'submissions.update'({
+    name, email, phoneNumber, gradYear, businessID, submissionID
+    }) {
+        // validate update
+        Submissions.schema.validate({
+            name, email, phoneNumber, gradYear, businessID,
+        });
+        // submit to database
+        Submissions.update({_id: submissionID }, {
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber,
+            gradYear: gradYear,
+            businessID: businessID,
+        });
+    },
 });
 
 export default Submissions;

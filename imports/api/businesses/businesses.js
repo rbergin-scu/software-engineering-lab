@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
+import Submissions from "../submissions/submissions";
 
 // create business table
 const Businesses = new Mongo.Collection('businesses');
@@ -84,10 +85,36 @@ Meteor.methods({
       });
     }
   },
-  
-  'businesses.remove'( businessId ) {
-  
-  },
+
+    'businesses.remove'({ submissionID }) {
+        Businesses.remove({
+            _id: submissionID
+        });
+    },
+
+    'businesses.update'({
+    name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified, businessID
+    }) {
+        // validate update
+        Businesses.schema.validate({
+            name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
+        });
+        // submit to database
+        Businesses.update({_id: businessID }, {
+            name: name,
+            desc: desc,
+            photo: photo,
+            country: country,
+            streetAddress: streetAddress,
+            state: state,
+            city: city,
+            zip: zip,
+            phoneNumber: phoneNumber,
+            website: website,
+            type: type,
+            verified: verified,
+        });
+    },
 });
 
 export default Businesses;
