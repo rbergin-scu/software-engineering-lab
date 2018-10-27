@@ -61,6 +61,23 @@ Meteor.methods({
           _id: submissionID
       });
   },
+
+    'submissions.update'({
+    name, email, phoneNumber, gradYear, businessID, submissionID
+    }) {
+        // validate update
+        Submissions.schema.validate({
+            name, email, phoneNumber, gradYear, businessID,
+        });
+        // submit to database
+        Submissions.update({_id: submissionID }, {
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber,
+            gradYear: gradYear,
+            businessID: businessID,
+        });
+    },
 });
 
 export default Submissions;
