@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
@@ -45,7 +46,7 @@ export default class NewBusinessModal extends React.Component {
     // TODO validate input
     // TODO if logged in as admin, enable direct insert
     
-    const biz = Businesses.insert({
+    Meteor.call('businesses.insert', {
       name: name,
       desc: desc,
       photo: photo,
@@ -57,9 +58,9 @@ export default class NewBusinessModal extends React.Component {
       phoneNumber: phone,
       website: website,
       type: this.state.selectType,
-      verified: true,
+      verified: true, // TODO set default to false
     });
-    console.log(biz._id);
+
     /*Submissions.insert({
       name: yourName,
       email: yourEmail,
@@ -68,7 +69,6 @@ export default class NewBusinessModal extends React.Component {
       businessID: biz._id,
     });*/
     
-    console.log('Submission successful');
     this.toggle();
   }
   

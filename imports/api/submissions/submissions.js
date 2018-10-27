@@ -38,8 +38,6 @@ Meteor.methods({
   }) {
     // validate input
     Submissions.schema.validate({ name, email, phoneNumber, gradYear, businessID, });
-
-
   },
 
   'submissions.remove'( submissionId ) {

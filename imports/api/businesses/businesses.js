@@ -63,12 +63,13 @@ Meteor.methods({
       name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
     });
     
-    // check for duplicate (by name)
+    // check for duplicate (by name and phone match)
     if (Businesses.findOne({ name: name, phoneNumber: phoneNumber, })) {
       throw new Meteor.Error('businesses-already-exists', 'A business by that name already exists.');
     } else {
       // submit to database
-      Businesses.insert({
+      console.log('inserted');
+      return Businesses.insert({
         name: name,
         desc: desc,
         photo: photo,
