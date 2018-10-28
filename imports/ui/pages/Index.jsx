@@ -9,7 +9,7 @@ import NewBusinessModal from '/imports/ui/components/NewBusinessModal';
 import Submissions from '/imports/api/submissions/submissions';
 
 class Index extends React.Component {
-
+  
   constructor( props ) {
     super(props);
     
@@ -19,37 +19,35 @@ class Index extends React.Component {
   }
   
   insertBusiness() {
-    Meteor.call('businesses.insert', {
-    
-    }, (err, res) => {
+    Meteor.call('businesses.insert', {}, ( err, res ) => {
       if (err) {
-        this.setState({ error: err.message });
+        this.setState({error: err.message});
       }
     });
   }
-
+  
   render() {
     return (
       <div>
         <div className="bg-light py-3">
-          { this.renderSubmit() }
+          {this.renderSubmit()}
         </div>
         <Error
-          msg={ this.state.error }
+          msg={this.state.error}
         />
         <div className="container py-5">
           <section className="index-businesses">
             <div className="card-deck">
-              { this.renderBusinesses() }
+              {this.renderBusinesses()}
             </div>
           </section>
         </div>
       </div>
-    )
+    );
   }
   
   renderBusinesses() {
-    return this.props.businesses.map((biz, i) => {
+    return this.props.businesses.map(( biz, i ) => {
       return (
         <Business
           key={i}
@@ -65,7 +63,7 @@ class Index extends React.Component {
       <div className="container">
         <div className="row d-flex align-items-center">
           <div className="col">
-            <NewBusinessModal />
+            <NewBusinessModal/>
           </div>
           <div className="col text-right">
             <p className="mb-0">Hello, <u>admin</u></p>
@@ -74,15 +72,15 @@ class Index extends React.Component {
       </div>
     );
   }
-
+  
 }
 
 export default withTracker(() => {
   Meteor.subscribe('businesses');
   Meteor.subscribe('submissions');
-
+  
   return {
-    businesses: Businesses.find({ verified: true, }).fetch(),
-    submissions: Submissions.find({ }).fetch(),
+    businesses: Businesses.find({verified: true,}).fetch(),
+    submissions: Submissions.find({}).fetch(),
   };
 })(Index);
