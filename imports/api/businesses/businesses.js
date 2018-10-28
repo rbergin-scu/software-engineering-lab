@@ -7,19 +7,32 @@ import { Tracker } from 'meteor/tracker';
 const Businesses = new Mongo.Collection('businesses');
 
 // establish schema defining each business entry
-Businesses.schema = new SimpleSchema({
+SimpleSchema.defineValidationErrorTransform(error => {
+  const customError = new Meteor.Error(error.message);
+  
+  customError.details = 'businesses-validate';
+  customError.error = '<ul class="mb-0">';
+  for (let i = 0; i < error.details.length; i++) {
+    customError.error += `<li>${error.details[i].message}</li>`;
+  }
+  customError.error += '</ul>';
+  
+  return customError;
+});
+
+const schema = new SimpleSchema({
   /* title of business */
   name: {
     type: String,
-    min: 1,
     max: 70,
+    required: true,
   },
   
   /* brief description */
   desc: {
     type: String,
-    min: 1,
     max: 140,
+    required: true,
   },
   
   /* header photo */
@@ -28,40 +41,35 @@ Businesses.schema = new SimpleSchema({
   },
   
   /* type/category of business (food, entertainment, etc) */
-  type: {
+  category: {
     type: String,
     min: 4,
-  },
-  
-  /* whether this business has been verified by admin (is public) */
-  verified: {
-    type: Boolean,
-    defaultValue: false,
+    required: true,
   },
   
   /* country (location) */
   country: {
     type: String,
-    min: 4,
+    required: true,
   },
   
-  /* address of business */
+  /* address (location) */
   streetAddress: {
     type: String,
-    min: 1,
+    required: true,
   },
   
   /* state (location) */
   state: {
     type: String,
     optional: true,
-    min: 2,
+    required: true,
   },
   
   /* city (location) */
   city: {
     type: String,
-    min: 1,
+    required: true,
   },
   
   /* zip (location) */
@@ -84,7 +92,15 @@ Businesses.schema = new SimpleSchema({
     optional: true,
     regEx: SimpleSchema.RegEx.Url,
   },
+  
+  /* whether this business has been verified by admin (is public) */
+  verified: {
+    type: Boolean,
+    defaultValue: false,
+  },
 }, { tracker: Tracker });
+const schemaContext = schema.newContext();
+Businesses.schema = schema;
 
 // publish Business data to client
 if (Meteor.isServer) {
@@ -96,33 +112,37 @@ if (Meteor.isServer) {
 // define CRUD methods
 Meteor.methods({
   'businesses.insert'({
-    name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
+    name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
   }) {
+    const item = {
+      name: name,
+      desc: desc,
+      photo: photo,
+      category: category,
+      country: country,
+      streetAddress: streetAddress,
+      state: state,
+      city: city,
+      zip: zip,
+      phoneNumber: phoneNumber,
+      website: website,
+      verified: verified,
+    };
+    
     // validate input
-    Businesses.schema.validate({
-      name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
-    });
+    Businesses.schema.validate(item);
     
     // check for duplicate (by name and phone match)
-    if (Businesses.findOne({ name: name, phoneNumber: phoneNumber, })) {
-      throw new Meteor.Error('businesses-already-exists', 'A business by that name already exists.');
+    /*if (Businesses.findOne({ name: name, phoneNumber: phoneNumber, })) {
+      throw new Meteor.Error('businesses-found', 'A business by that name already exists.');
     } else {
       // submit to database
-      return Businesses.insert({
-        name: name,
-        desc: desc,
-        photo: photo,
-        country: country,
-        streetAddress: streetAddress,
-        state: state,
-        city: city,
-        zip: zip,
-        phoneNumber: phoneNumber,
-        website: website,
-        type: type,
-        verified: verified,
+      Businesses.insert(item, (err) => {
+        if (err) {
+          throw new Meteor.Error('businesses-insert', err);
+        }
       });
-    }
+    }*/
   },
   
   'businesses.remove'({
@@ -134,11 +154,11 @@ Meteor.methods({
   },
   
   'businesses.update'({
-    id, name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
+    id, name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
   }) {
     // validate update
     Businesses.schema.validate({
-      name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
+      name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
     });
     
     // submit to database
@@ -147,6 +167,7 @@ Meteor.methods({
       name: name,
       desc: desc,
       photo: photo,
+      category: category,
       country: country,
       streetAddress: streetAddress,
       state: state,
@@ -154,7 +175,6 @@ Meteor.methods({
       zip: zip,
       phoneNumber: phoneNumber,
       website: website,
-      type: type,
       verified: verified,
     });
   },

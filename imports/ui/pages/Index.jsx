@@ -18,27 +18,23 @@ class Index extends React.Component {
     };
   }
   
-  insertBusiness() {
-    Meteor.call('businesses.insert', {}, ( err, res ) => {
-      if (err) {
-        this.setState({error: err.message});
-      }
-    });
-  }
-  
   render() {
     return (
       <div>
         <div className="bg-light py-3">
-          {this.renderSubmit()}
+          { this.renderSubmit() }
         </div>
-        <Error
-          msg={this.state.error}
-        />
+        <div className="error bg-warning">
+          <div className="container">
+            <Error
+              msg={ this.state.error }
+            />
+          </div>
+        </div>
         <div className="container py-5">
           <section className="index-businesses">
             <div className="card-deck">
-              {this.renderBusinesses()}
+              { this.renderBusinesses() }
             </div>
           </section>
         </div>
