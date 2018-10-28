@@ -11,37 +11,37 @@ const Businesses = new Mongo.Collection('businesses');
 Businesses.schema = new SimpleSchema({
   
   /* title of business */
-  name: { type: String },
+  name: { type: String, min: 1 },
 
   /* brief description */
-  desc: { type: String },
+  desc: { type: String, min: 1 },
 
   /* header photo */
   photo: { type: String },
 
   /* country (location) */
-  country: { type: String },
+  country: { type: String, min: 4 },
 
   /* address of business */
-  streetAddress: { type: String },
+  streetAddress: { type: String, min: 1 },
 
   /* state (location) */
-  state: { type: String, optional: true },
+  state: { type: String, optional: true, min: 2 },
 
   /* city (location) */
-  city: { type: String },
+  city: { type: String, min: 1 },
 
   /* zip (location) */
-  zip: { type: String, optional: true },
+  zip: { type: String, optional: true, regEx: SimpleSchema.RegEx.ZipCode },
 
   /* phone number of business */
-  phoneNumber: { type: String, optional: true},
+  phoneNumber: { type: String, optional: true },
 
   /* url of website for business */
-  website: { type: String, optional: true},
+  website: { type: String, optional: true, regEx: SimpleSchema.RegEx.Url },
 
   /* type/category of business (food, entertainment, etc) */
-  type: { type: String },
+  type: { type: String, min: 4 },
 
   verified: { type: Boolean, defaultValue: false },
   

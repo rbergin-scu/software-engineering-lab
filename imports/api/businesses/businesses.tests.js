@@ -62,6 +62,36 @@ describe('Businesses', () => {
     expect( business.desc ).to.have.lengthOf.at.most(140);
   });
 
+    it('should have a country of at most 60 characters', () => {
+        expect( business.country ).to.not.be.empty;
+        expect( business.country ).to.have.lengthOf.at.most(60);
+    });
+
+    it('should have a streetAddress of at most 60 characters', () => {
+        expect( business.streetAddress ).to.not.be.empty;
+        expect( business.streetAddress ).to.have.lengthOf.at.most(60);
+    });
+
+    it('should have a state of at most 30 characters', () => {
+        expect( business.state ).to.not.be.empty;
+        expect( business.state ).to.have.lengthOf.at.most(30);
+    });
+
+    it('should have a phone number of at most 30 characters', () => {
+        expect( business.phoneNumber ).to.not.be.empty;
+        expect( business.phoneNumber ).to.have.lengthOf.at.most(30);
+    });
+
+    it('should have a webite url of at most 100 characters', () => {
+        expect( business.website ).to.not.be.empty;
+        expect( business.website ).to.have.lengthOf.at.most(100);
+    });
+
+    it('should have a type of at most 30 characters', () => {
+        expect( business.type ).to.not.be.empty;
+        expect( business.type ).to.have.lengthOf.at.most(30);
+    });
+
   it('should render', () => {
     const item = Enzyme.shallow(<Business name={business.name} desc={business.desc} />);
 

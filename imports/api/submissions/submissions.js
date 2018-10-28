@@ -9,16 +9,16 @@ const Submissions = new Mongo.Collection('submissions');
 Submissions.schema = new SimpleSchema({
 
   /* name of submitter */
-  name: { type: String },
+  name: { type: String, min: 1 },
 
   /* email of submitter */
-  email: { type: String , optional: true },
+  email: { type: String , optional: true, regEx: SimpleSchema.RegEx.Email },
 
   /* phone number of submitter */
   phoneNumber: { type: String , optional: true },
 
   /* graduation year */
-  gradYear: { type: Number , optional: true },
+  gradYear: { type: Number , optional: true, min: 1900},
 
   /* reference to business in table */
   businessID: { type: Object },

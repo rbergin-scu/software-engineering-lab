@@ -55,6 +55,12 @@ describe('Submissions', () => {
         expect( submission.email ).to.have.lengthOf.at.most(60);
     });
 
+    it('should have a phone number of at most 30 characters', () => {
+        expect( submission.phoneNumber ).to.not.be.empty;
+        expect( submission.phoneNumber ).to.have.lengthOf.at.most(30);
+    });
+
+
     //no Submissions front end yet
     /*it('should render', () => {
       const item = Enzyme.shallow(<Submission name={submission.name} />);
