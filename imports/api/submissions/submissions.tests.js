@@ -7,10 +7,11 @@ import React from 'react';
 import { Factory } from 'meteor/dburles:factory';
 
 import Submissions from './submissions';
+
 //import Submissions from '/imports/ui/components/Submissions';
 
 // configure React test adapter
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({adapter: new Adapter()});
 /*
 Meteor.methods({
   // clear stub data
@@ -32,29 +33,29 @@ Factory.define('submission', Submissions, {
 let expect = chai.expect;
 
 describe('Submissions', () => {
-
+  
   let submission;
   let submission2;
   let id;
   let id2;
-
+  
   before(() => {
     submission = Factory.create('submission');
     submission2 = Factory.create('submission');
     id = submission._id;
     id2 = submission2._id;
   });
-
+  
   it('should have a name of at most 60 characters', () => {
-    expect( submission.name ).to.not.be.empty;
-    expect( submission.name ).to.have.lengthOf.at.most(60);
+    expect(submission.name).to.not.be.empty;
+    expect(submission.name).to.have.lengthOf.at.most(60);
   });
-
+  
   it('should have an email of at most 60 characters', () => {
-    expect( submission.email ).to.not.be.empty;
-    expect( submission.email ).to.have.lengthOf.at.most(60);
+    expect(submission.email).to.not.be.empty;
+    expect(submission.email).to.have.lengthOf.at.most(60);
   });
-
+  
   //no Submissions front end yet
   /*it('should render', () => {
     const item = Enzyme.shallow(<Submission name={submission.name} />);
@@ -62,7 +63,7 @@ describe('Submissions', () => {
     expect( item.find(Card) ).to.have.lengthOf(1);
     expect( item.find(CardTitle).dive().text() ).to.equal(submission.name);
   });*/
-
+  
   it('should be added to the collection', () => {
     Meteor.call('submissions.insert', {
       name: faker.name.firstName(),
@@ -72,14 +73,14 @@ describe('Submissions', () => {
       businessID: faker.random.number(),
     });
   });
-
+  
   it('should be added to the collection without the optional fields', () => {
     Meteor.call('submissions.insert', {
       name: faker.name.firstName(),
       businessID: faker.random.number(),
     });
   });
-
+  
   it('should be added to the collection with only some of the optional fields', () => {
     Meteor.call('submissions.insert', {
       name: faker.name.firstName(),
@@ -88,21 +89,22 @@ describe('Submissions', () => {
       businessID: faker.random.number(),
     });
   });
-
+  
   it('should be removed from the collection', () => {
-      Meteor.call('submissions.remove', {
-        submissionID: id,
-      });
+    Meteor.call('submissions.remove', {
+      submissionID: id,
+    });
   });
-
+  
   it('should update the collection', () => {
-     Meteor.call('submissions.update', {
-         name: "Nani",
-         email: submission2.email,
-         phoneNumber: submission2.phoneNumber,
-         gradYear: submission2.gradYear,
-         businessID: submission2.businessID,
-         submissionID: id2,
-     });
+    Meteor.call('submissions.update', {
+      name: 'Nani',
+      email: submission2.email,
+      phoneNumber: submission2.phoneNumber,
+      gradYear: submission2.gradYear,
+      businessID: submission2.businessID,
+      submissionID: id2,
+    });
   });
+  
 });
