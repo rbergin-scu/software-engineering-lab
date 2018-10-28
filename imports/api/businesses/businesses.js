@@ -68,7 +68,6 @@ Meteor.methods({
       throw new Meteor.Error('businesses-already-exists', 'A business by that name already exists.');
     } else {
       // submit to database
-      console.log('inserted');
       return Businesses.insert({
         name: name,
         desc: desc,
