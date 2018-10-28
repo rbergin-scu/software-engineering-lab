@@ -11,10 +11,10 @@ const Businesses = new Mongo.Collection('businesses');
 Businesses.schema = new SimpleSchema({
   
   /* title of business */
-  name: { type: String, min: 1 },
+  name: { type: String, min: 1, max: 70 },
 
   /* brief description */
-  desc: { type: String, min: 1 },
+  desc: { type: String, min: 1, max: 140 },
 
   /* header photo */
   photo: { type: String },
@@ -35,7 +35,7 @@ Businesses.schema = new SimpleSchema({
   zip: { type: String, optional: true, regEx: SimpleSchema.RegEx.ZipCode },
 
   /* phone number of business */
-  phoneNumber: { type: String, optional: true },
+  phoneNumber: { type: String, optional: true, regEx: SimpleSchema.RegEx.Phone },
 
   /* url of website for business */
   website: { type: String, optional: true, regEx: SimpleSchema.RegEx.Url },

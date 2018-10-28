@@ -15,7 +15,7 @@ Submissions.schema = new SimpleSchema({
   email: { type: String , optional: true, regEx: SimpleSchema.RegEx.Email },
 
   /* phone number of submitter */
-  phoneNumber: { type: String , optional: true },
+  phoneNumber: { type: String , optional: true, regEx: SimpleSchema.RegEx.Phone },
 
   /* graduation year */
   gradYear: { type: Number , optional: true, min: 1900},
