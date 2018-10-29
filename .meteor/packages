@@ -24,3 +24,6 @@ xolvio:cleaner
 hwillson:stub-collections
 dburles:factory
 jquery
+accounts-ui
+accounts-password
+alanning:roles
