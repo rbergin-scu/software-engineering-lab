@@ -4,7 +4,7 @@ import {
   Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
 } from 'reactstrap';
 
-import Error from '/imports/ui/components/Error';
+import Error from './Error';
 
 export default class NewBusinessModal extends React.Component {
   
@@ -15,25 +15,26 @@ export default class NewBusinessModal extends React.Component {
       error: '',
       modal: false,
       submission: {
-        yourName: '',
-        yourEmail: '',
-        yourPhone: '',
-        gradYear: '',
-        name: '',
-        desc: '',
-        photo: '',
-        category: '',
-        country: '',
-        streetAddress: '',
-        state: '',
-        city: '',
-        zip: '',
-        phoneNumber: '',
-        website: '',
+        yourName: null,
+        yourEmail: null,
+        yourPhone: null,
+        gradYear: null,
+        name: null,
+        desc: null,
+        photo: null,
+        category: null,
+        country: null,
+        streetAddress: null,
+        state: null,
+        city: null,
+        zip: null,
+        phoneNumber: null,
+        website: null,
         verified: false,
-      }
+      },
     };
     
+    this.error = this.error.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -49,31 +50,36 @@ export default class NewBusinessModal extends React.Component {
           ...prevState.submission, [name]: value
         }
       }
-    }, () => console.log(this.state.submission));
+    });
   }
   
   handleSubmit(e) {
     e.preventDefault();
     
-    // TODO validate input
     // TODO if logged in as admin, enable direct insert
   
-    Meteor.call('businesses.insert', {
-      name: this.state.submission.name,
-      desc: this.state.submission.desc,
-      photo: this.state.submission.photo,
-      country: this.state.submission.country,
-      streetAddress: this.state.submission.streetAddress,
-      state: this.state.submission.state,
-      city: this.state.submission.city,
-      zip: this.state.submission.zip,
-      phoneNumber: this.state.submission.phoneNumber,
-      website: this.state.submission.website,
-      category: this.state.submission.category,
-      verified: this.state.submission.verified, // TODO set default to false
+    Meteor.call('submissions.insert', {
+      name: this.state.submission.yourName,
+      email: this.state.submission.yourEmail,
+      phoneNumber: this.state.submission.yourPhone,
+      gradYear: parseInt(this.state.submission.gradYear),
+      business: {
+        name: this.state.submission.name,
+        desc: this.state.submission.desc,
+        photo: this.state.submission.photo,
+        country: this.state.submission.country,
+        streetAddress: this.state.submission.streetAddress,
+        state: this.state.submission.state,
+        city: this.state.submission.city,
+        zip: this.state.submission.zip,
+        phoneNumber: this.state.submission.phoneNumber,
+        website: this.state.submission.website,
+        category: this.state.submission.category,
+        verified: this.state.submission.verified, // TODO set default to false
+      },
     }, (err, res) => {
       if (err) {
-        this.setState({ error: err.error, });
+        this.error(err);
       } else {
         this.toggle();
       }
@@ -90,12 +96,10 @@ export default class NewBusinessModal extends React.Component {
           <ModalHeader toggle={ this.toggle }>Submit New Business</ModalHeader>
           <ModalBody>
             { this.renderForm() }
-            <Error
-              msg={ this.state.error }
-            />
+            <Error details={ this.state.error } />
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Submit for Review</Button>{' '}
+            <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Submit for Review</Button>
             <Button color="secondary" onClick={ this.toggle }>Cancel</Button>
           </ModalFooter>
         </Modal>
@@ -111,7 +115,7 @@ export default class NewBusinessModal extends React.Component {
           <FormGroup>
             <Label for="yourName">Your Name</Label>
             <Input type="text" name="yourName" placeholder="Your full name"
-                   onChange={ this.handleInput } />
+                   onChange={ this.handleInput } required />
           </FormGroup>
           <FormGroup>
             <Label for="yourEmail">Email</Label>
@@ -125,8 +129,8 @@ export default class NewBusinessModal extends React.Component {
           </FormGroup>
           <FormGroup>
             <Label for="gradYear">Graduation Year</Label>
-            <Input type="text" name="gradYear" placeholder="Your graduation year"
-                   onChange={ this.handleInput } />
+            <Input type="tel" name="gradYear" placeholder="Your graduation year"
+                   onChange={ this.handleInput } required />
           </FormGroup>
         </FormGroup>
         <hr />
@@ -135,22 +139,22 @@ export default class NewBusinessModal extends React.Component {
           <FormGroup>
             <Label for="name">Business Name</Label>
             <Input type="text" name="name" placeholder="The Krusty Krab"
-                   onChange={ this.handleInput } />
+                   onChange={ this.handleInput } required />
           </FormGroup>
           <FormGroup>
             <Label for="website">Website</Label>
-            <Input type="tel" name="website" placeholder="www.yourwebsite.com"
+            <Input type="text" name="website" placeholder="www.yourwebsite.com"
                    onChange={ this.handleInput } />
           </FormGroup>
           <FormGroup>
             <Label for="phone">Phone</Label>
-            <Input type="tel" name="phone" placeholder="(111) 222-3333"
+            <Input type="tel" name="phoneNumber" placeholder="(111) 222-3333"
                    onChange={ this.handleInput } />
           </FormGroup>
           <FormGroup>
             <Label for="category">Category</Label>
             <Input type="select" name="category"
-                   onChange={ this.handleInput }>
+                   onChange={ this.handleInput } required>
               <option name="Entertainment" value="Entertainment">Entertainment</option>
               <option name="Food" value="Food">Food</option>
             </Input>
@@ -158,12 +162,12 @@ export default class NewBusinessModal extends React.Component {
           <FormGroup>
             <Label for="desc">Brief Description</Label>
             <Input type="text" name="desc" placeholder="A fictional fast food restaurant in the American animated TV series SpongeBob SquarePants."
-                   onChange={ this.handleInput } />
+                   onChange={ this.handleInput } required />
           </FormGroup>
           <FormGroup>
             <Label for="address">Address</Label>
             <Input type="text" name="address" placeholder="111 Conch St"
-                   onChange={ this.handleInput } />
+                   onChange={ this.handleInput } required />
           </FormGroup>
           <Row>
             <Col md={6}>
@@ -176,7 +180,8 @@ export default class NewBusinessModal extends React.Component {
             <Col md={3}>
               <FormGroup>
                 <Label for="state">State</Label>
-                <Input type="select" name="state">
+                <Input type="select" name="state"
+                       onChange={ this.handleInput }>
                   <option value="AL">Alabama</option>
                   <option value="AK">Alaska</option>
                   <option value="AZ">Arizona</option>
@@ -252,10 +257,12 @@ export default class NewBusinessModal extends React.Component {
     );
   }
   
+  error(e) {
+    this.setState({ error: `${e.error}: ${e.details}` });
+  }
+  
   toggle() {
-    this.setState({
-      modal: !this.state.modal,
-    });
+    this.setState({ modal: !this.state.modal });
   }
   
 }

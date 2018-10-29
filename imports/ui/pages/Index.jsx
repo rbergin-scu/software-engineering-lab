@@ -4,18 +4,13 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import Businesses from '/imports/api/businesses/businesses';
 import Business from '/imports/ui/components/Business';
-import Error from '/imports/ui/components/Error';
 import NewBusinessModal from '/imports/ui/components/NewBusinessModal';
 import Submissions from '/imports/api/submissions/submissions';
 
 class Index extends React.Component {
   
-  constructor( props ) {
+  constructor(props) {
     super(props);
-    
-    this.state = {
-      error: '',
-    };
   }
   
   render() {
@@ -23,13 +18,6 @@ class Index extends React.Component {
       <div>
         <div className="bg-light py-3">
           { this.renderSubmit() }
-        </div>
-        <div className="error bg-warning">
-          <div className="container">
-            <Error
-              msg={ this.state.error }
-            />
-          </div>
         </div>
         <div className="container py-5">
           <section className="index-businesses">
@@ -43,12 +31,12 @@ class Index extends React.Component {
   }
   
   renderBusinesses() {
-    return this.props.businesses.map(( biz, i ) => {
+    return this.props.businesses.map((biz, i) => {
       return (
         <Business
-          key={i}
-          name={biz.name}
-          desc={biz.desc}
+          key={ i }
+          name={ biz.name }
+          desc={ biz.desc }
         />
       );
     });
@@ -59,7 +47,7 @@ class Index extends React.Component {
       <div className="container">
         <div className="row d-flex align-items-center">
           <div className="col">
-            <NewBusinessModal/>
+            <NewBusinessModal />
           </div>
           <div className="col text-right">
             <p className="mb-0">Hello, <u>admin</u></p>
@@ -76,7 +64,7 @@ export default withTracker(() => {
   Meteor.subscribe('submissions');
   
   return {
-    businesses: Businesses.find({verified: true,}).fetch(),
-    submissions: Submissions.find({}).fetch(),
+    businesses: Businesses.find({ verified: true }).fetch(),
+    submissions: Submissions.find({ }).fetch(),
   };
 })(Index);
