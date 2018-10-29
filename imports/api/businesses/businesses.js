@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
 
+
 // create business table
 const Businesses = new Mongo.Collection('businesses');
 
@@ -147,7 +148,46 @@ Meteor.methods({
     Businesses.schema.validate({
       name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
     });
-    
+
+    if (Businesses.findOne({ _id: id, })) {
+      if(!name) {
+        name = this.name;
+      }
+      if(!desc) {
+        desc = this.name;
+      }
+      if(!photo) {
+        photo = this.name;
+      }
+      if(!category) {
+        category = this.name;
+      }
+      if(!streetAddress) {
+        streetAddress = this.name;
+      }
+      if(!country) {
+        country = this.name;
+      }
+      if(!state) {
+        state = this.name;
+      }
+      if(!city) {
+        city = this.name;
+      }
+      if(!zip) {
+        zip = this.name;
+      }
+      if(!phoneNumber) {
+        phoneNumber = this.name;
+      }
+      if(!website) {
+        website = this.name;
+      }
+      if(!category) {
+        category = this.name;
+      }
+    }
+
     // submit to database
     // TODO need to validate that Business with this id exists!
     Businesses.update({ _id: id, }, {
@@ -162,7 +202,7 @@ Meteor.methods({
       zip: zip,
       phoneNumber: phoneNumber,
       website: website,
-      verified: verified,
+      verified: this.verified,
     });
   },
 });
