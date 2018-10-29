@@ -12,12 +12,15 @@
     "bootstrap": "^4.1.3",
     "cloudinary": "^1.11.0",
     "history": "^4.7.2",
+    "imports": "^1.0.0",
     "meteor-node-stubs": "^0.4.1",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-router": "^4.3.1",
     "reactstrap": "^6.5.0",
-    "simpl-schema": "^1.5.3"
+    "simpl-schema": "^1.5.3",
+    "uniforms": "^1.27.0",
+    "uniforms-bootstrap4": "^1.27.0"
   },
   "meteor": {
     "mainModule": {
@@ -40,7 +43,7 @@
   },
   "eslintConfig": {
     "parserOptions": {
-      "ecmaVersion": 6,
+      "ecmaVersion": 9,
       "sourceType": "module",
       "ecmaFeatures": {
         "impliedStrict": true,

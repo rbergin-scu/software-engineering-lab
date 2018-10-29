@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default class Header extends React.Component {
-
+  
   render() {
     return (
       <div className="bg-light border-top border-primary">
@@ -12,5 +12,5 @@ export default class Header extends React.Component {
       </div>
     );
   }
-
+  
 }

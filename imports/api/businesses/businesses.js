@@ -6,45 +6,87 @@ import { Tracker } from 'meteor/tracker';
 // create business table
 const Businesses = new Mongo.Collection('businesses');
 
-// establish schema defining each business entry
-Businesses.schema = new SimpleSchema({
-  
+const schema = new SimpleSchema({
   /* title of business */
-  name: { type: String },
-
-  /* brief description */
-  desc: { type: String },
-
-  /* header photo */
-  photo: { type: String },
-
-  /* country (location) */
-  country: { type: String },
-
-  /* address of business */
-  streetAddress: { type: String },
-
-  /* state (location) */
-  state: { type: String, optional: true },
-
-  /* city (location) */
-  city: { type: String },
-
-  /* zip (location) */
-  zip: { type: String, optional: true },
-
-  /* phone number of business */
-  phoneNumber: { type: String, optional: true},
-
-  /* url of website for business */
-  website: { type: String, optional: true},
-
-  /* type/category of business (food, entertainment, etc) */
-  type: { type: String },
-
-  verified: { type: Boolean, defaultValue: false },
+  name: {
+    type: String,
+    required: true,
+    max: 70,
+    label: 'Business title',
+  },
   
-}, { tracker: Tracker });
+  /* brief description */
+  desc: {
+    type: String,
+    required: true,
+    max: 140,
+    label: 'Description',
+  },
+  
+  /* header photo */
+  photo: {
+    type: String,
+  },
+  
+  /* type/category of business (food, entertainment, etc) */
+  category: {
+    type: String,
+    required: true,
+    min: 4,
+  },
+  
+  /* country (location) */
+  country: {
+    type: String,
+    defaultValue: 'United States',
+  },
+  
+  /* address (location) */
+  streetAddress: {
+    type: String,
+    required: true,
+  },
+  
+  /* state (location) */
+  state: {
+    type: String,
+  },
+  
+  /* city (location) */
+  city: {
+    type: String,
+  },
+  
+  /* zip (location) */
+  zip: {
+    type: String,
+    regEx: SimpleSchema.RegEx.ZipCode,
+    label: 'ZIP',
+  },
+  
+  /* phone number of business */
+  phoneNumber: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Phone,
+  },
+  
+  /* url of website for business */
+  website: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Domain,
+  },
+  
+  /* whether this business has been verified by admin (is public) */
+  verified: {
+    type: Boolean,
+    defaultValue: true,
+  },
+}, {
+  requiredByDefault: false,
+  tracker: Tracker,
+});
+const schemaContext = schema.newContext();
+Businesses.schema = schema;
 
 // publish Business data to client
 if (Meteor.isServer) {
@@ -56,37 +98,72 @@ if (Meteor.isServer) {
 // define CRUD methods
 Meteor.methods({
   'businesses.insert'({
-    name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
+    name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
   }) {
-    // validate input
-    Businesses.schema.validate({
-      name, desc, photo, country, streetAddress, state, city, zip, phoneNumber, website, type, verified,
-    });
+    const item = {
+      name: name,
+      desc: desc,
+      photo: photo,
+      category: category,
+      country: country,
+      streetAddress: streetAddress,
+      state: state,
+      city: city,
+      zip: zip,
+      phoneNumber: phoneNumber,
+      website: website,
+      verified: verified,
+    };
     
-    // check for duplicate (by name)
+    // validate input
+    Businesses.schema.validate(item);
+    
+    // check for duplicate (by name and phone match)
     if (Businesses.findOne({ name: name, phoneNumber: phoneNumber, })) {
-      throw new Meteor.Error('businesses-already-exists', 'A business by that name already exists.');
+      throw new Meteor.Error('businesses-found', 'That business already exists.');
     } else {
       // submit to database
-      Businesses.insert({
-        name: name,
-        desc: desc,
-        photo: photo,
-        country: country,
-        streetAddress: streetAddress,
-        state: state,
-        city: city,
-        zip: zip,
-        phoneNumber: phoneNumber,
-        website: website,
-        type: type,
-        verified: verified,
+      // TODO prevent this unless user is signed in as admin
+      Businesses.insert(item, (err, res) => {
+        if (err) {
+          throw new Meteor.Error('businesses-insert', err);
+        }
       });
     }
   },
   
-  'businesses.remove'( businessId ) {
+  'businesses.remove'({
+    id
+  }) {
+    Businesses.remove({
+      _id: id,
+    });
+  },
   
+  'businesses.update'({
+    id, name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
+  }) {
+    // validate update
+    Businesses.schema.validate({
+      name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
+    });
+    
+    // submit to database
+    // TODO need to validate that Business with this id exists!
+    Businesses.update({ _id: id, }, {
+      name: name,
+      desc: desc,
+      photo: photo,
+      category: category,
+      country: country,
+      streetAddress: streetAddress,
+      state: state,
+      city: city,
+      zip: zip,
+      phoneNumber: phoneNumber,
+      website: website,
+      verified: verified,
+    });
   },
 });
 
