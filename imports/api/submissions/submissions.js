@@ -98,6 +98,21 @@ Meteor.methods({
     Submissions.schema.validate({
       id, name, email, phoneNumber, gradYear,
     });
+
+    if (Submissions.findOne({ _id: id, })) {
+      if(!name) {
+        name = this.name;
+      }
+      if(!email) {
+        email = this.name;
+      }
+      if(!phoneNumber) {
+        phoneNumber = this.name;
+      }
+      if(!gradYear) {
+        gradYear = this.name;
+      }
+    }
     
     // submit to database
     Submissions.update({ _id: id }, {
