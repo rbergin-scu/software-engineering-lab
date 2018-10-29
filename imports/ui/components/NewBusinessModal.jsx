@@ -81,6 +81,7 @@ export default class NewBusinessModal extends React.Component {
       if (err) {
         this.error(err);
       } else {
+        console.log(res);
         this.toggle();
       }
     });
@@ -165,8 +166,8 @@ export default class NewBusinessModal extends React.Component {
                    onChange={ this.handleInput } required />
           </FormGroup>
           <FormGroup>
-            <Label for="address">Address</Label>
-            <Input type="text" name="address" placeholder="111 Conch St"
+            <Label for="streetAddress">Address</Label>
+            <Input type="text" name="streetAddress" placeholder="111 Conch St"
                    onChange={ this.handleInput } required />
           </FormGroup>
           <Row>

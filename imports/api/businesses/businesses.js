@@ -44,7 +44,6 @@ const schema = new SimpleSchema({
   /* address (location) */
   streetAddress: {
     type: String,
-    required: true,
   },
   
   /* state (location) */
@@ -128,6 +127,7 @@ Meteor.methods({
         if (err) {
           throw new Meteor.Error('businesses-insert', err);
         }
+        console.log(res);
       });
     }
   },
