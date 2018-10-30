@@ -6,4 +6,4 @@ Accounts.ui.config({
 
 Accounts.config({
   loginExpirationInDays: 0.02
-})
+});
