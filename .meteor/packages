@@ -26,4 +26,4 @@ jquery
 accounts-ui
 accounts-password
 alanning:roles
-
+iron:router

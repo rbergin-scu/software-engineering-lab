@@ -1,12 +1,17 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
+import { withTracker } from 'meteor/react-meteor-data';
+import Submissions from '/imports/api/submissions/submissions';
 import {
   Button, Input, Label,
 } from 'reactstrap';
 
-import Error from './components/Error';
+import '../imports/startup/server/accounts-config.js';
 
-export default class AdminPage extends React.Component {
+import Error from './components/Error';
+import Businesses from "../../api/businesses/businesses";
+
+class AdminPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -55,10 +60,12 @@ export default class AdminPage extends React.Component {
     if (Meteor.user() == null) {
       return (
         <div>
+          <form class="login">
           <Label for="password">Password</Label>
           <Input type="password" name="password" placeholder="*****"
                  onChange={this.handleInput}/>
           <Button color="primary" onClick={this.handleSubmit.bind(this)}>Login</Button>
+          </form>
         </div>
       );
     }
@@ -78,5 +85,11 @@ export default class AdminPage extends React.Component {
   toggle() {
     this.setState({ modal: !this.state.modal });
   }
-  
 }
+export default withTracker(() => {
+  Meteor.subscribe('submissions');
+
+  return {
+    submissions: Submissions.find({ }).fetch(),
+  };
+})(AdminPage);
