@@ -11,6 +11,16 @@ class Index extends React.Component {
   
   constructor(props) {
     super(props);
+
+    this.state = {
+      food: false,
+      entertainment: false,
+    };
+
+    this.food = this.food.bind(this);
+    this.entertainment = this.entertainment.bind(this);
+    // this.handleInput = this.handleInput.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
   }
   
   render() {
@@ -18,6 +28,9 @@ class Index extends React.Component {
       <div>
         <div className="bg-light py-3">
           { this.renderSubmit() }
+        </div>
+        <div className="bg-light py-4">
+          { this.renderFilters() }
         </div>
         <div className="container py-5">
           <section className="index-businesses">
@@ -54,6 +67,33 @@ class Index extends React.Component {
           </div>
         </div>
       </div>
+    );
+  }
+
+  renderFilters() {
+    return (
+      <fieldset>
+        <legend>Choose some monster features</legend>
+
+        <div>
+        <input type="checkbox" id="scales" name="feature"
+               value="scales" checked />
+        <label for="scales">Scales</label>
+        </div>
+
+        <div>
+        <input type="checkbox" id="horns" name="feature"
+               value="horns" />
+        <label for="horns">Horns</label>
+        </div>
+
+        <div>
+        <input type="checkbox" id="claws" name="feature"
+               value="claws" />
+        <label for="claws">Claws</label>
+        </div>
+
+      </fieldset>
     );
   }
   
