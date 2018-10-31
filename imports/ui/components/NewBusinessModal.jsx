@@ -37,6 +37,7 @@ export default class NewBusinessModal extends React.Component {
     this.error = this.error.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputCheck = this.handleInputCheck.bind(this);
     this.toggle = this.toggle.bind(this);
   }
   
@@ -54,7 +55,7 @@ export default class NewBusinessModal extends React.Component {
   }
 
   handleInputCheck(e) {
-    let checked = e.target.value;
+    let checked = e.target.checked;
     let name = e.target.name;
 
     this.setState(prevState => {
@@ -98,7 +99,7 @@ export default class NewBusinessModal extends React.Component {
         this.toggle();
       }
     });
-    Meteor.call('business.insert', {
+    Meteor.call('businesses.insert', {
       name: business.name,
       desc: business.desc,
       photo: business.photo,
