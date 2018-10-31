@@ -18,17 +18,19 @@ class Index extends React.Component {
     super(props);
 
     this.state = {
-      categories: ['Food', 'Entertainment']
+      categories: {
+        Food: false,
+        Entertainment: false,
+      }
     };
 
-    //this.categories = this.categories.bind(this);
     this.handleInput = this.handleInput.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
   }
   
   render() {
     console.log('Begin page render')
-    Session.set("categories", "Food")
+    //Session.set("categories", "Food")
+    console.log(Session.get("categories"))
     return (
       <div>
         <div className="bg-light py-3">
@@ -47,7 +49,29 @@ class Index extends React.Component {
   }
   
   renderBusinesses() {
-    return this.props.businesses.map((biz, i) => {
+
+    if (this.state.categories.Food && !this.state.categories.Entertainment) {
+      return Businesses.find({ verified: true, categories: 'Food'}).fetch().map((biz, i) => {
+        return (
+          <Business
+            key={ i }
+            name={ biz.name }
+            desc={ biz.desc }
+          />
+        );
+      });
+    } else if (!this.state.categories.Food && this.state.categories.Entertainment) {
+      return Businesses.find({ verified: true, categories: 'Entertainment'}).fetch().map((biz, i) => {
+        return (
+          <Business
+            key={ i }
+            name={ biz.name }
+            desc={ biz.desc }
+          />
+        );
+      });
+    } else {
+      return this.props.businesses.map((biz, i) => {
       return (
         <Business
           key={ i }
@@ -56,6 +80,7 @@ class Index extends React.Component {
         />
       );
     });
+  }
   }
   
   renderSubmit() {
@@ -98,27 +123,18 @@ class Index extends React.Component {
   }
 
   handleInput(e) {
-    let value = e.target.value;
-    let name = e.target.name;
-    let state = e.target.checked;
-    console.log(name)
-    console.log(value)
-    console.log(state)
-
+    let checked = e.target.checked;
+    let name = e.target.value;
     
-    // this.setState(prevState => {
-    //   return {
-        
-    //   }
-    // });
+    this.setState(prevState => {
+      return {
+        categories : {
+          ...prevState.categories, [name]: checked
+        }
+      }
+    });
 
-    // this.props.businesses = Businesses.find({ verified: true, category: 'Entertainment'}).fetch()
-
-    console.log(this.state)
-
-    Session.set("categories", "Entertainment")
-    console.log(Session.get("categories"))
-    console.log('Input was Handled')
+    console.log(this.state.categories);
   }
   
 }
@@ -126,9 +142,12 @@ class Index extends React.Component {
 export default withTracker(() => {
   Meteor.subscribe('businesses');
   Meteor.subscribe('submissions');
-  
+  console.log("Touching database...");
+
   return {
-    businesses: Businesses.find({ verified: true, category: Session.get("categories")}).fetch(),
-    submissions: Submissions.find({ }).fetch(),
-  };
+        businesses: Businesses.find({ verified: true}).fetch(),
+        submissions: Submissions.find({ }).fetch(),
+      };
+
+  
 })(Index);
