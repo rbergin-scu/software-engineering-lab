@@ -23,4 +23,7 @@ xolvio:cleaner
 hwillson:stub-collections
 dburles:factory
 jquery
+accounts-base
+accounts-ui
+accounts-password
 session

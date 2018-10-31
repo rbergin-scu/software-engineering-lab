@@ -3,8 +3,9 @@ import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
 
+
 // create business table
-const Businesses = new Mongo.Collection('businesses');
+const Businesses = new Mongo.Collection("businesses");
 
 const schema = new SimpleSchema({
   /* title of business */

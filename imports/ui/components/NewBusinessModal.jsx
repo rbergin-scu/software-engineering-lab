@@ -37,6 +37,7 @@ export default class NewBusinessModal extends React.Component {
     this.error = this.error.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputCheck = this.handleInputCheck.bind(this);
     this.toggle = this.toggle.bind(this);
   }
   
@@ -52,10 +53,36 @@ export default class NewBusinessModal extends React.Component {
       }
     });
   }
+
+  handleInputCheck(e) {
+    let checked = e.target.checked;
+    let name = e.target.name;
+
+    this.setState(prevState => {
+      return {
+        submission: {
+          ...prevState.submission, [name]: checked,
+        }
+      }
+    });
+  }
   
   handleSubmit(e) {
     e.preventDefault();
-    
+    let business = {
+      name: this.state.submission.name,
+      desc: this.state.submission.desc,
+      photo: this.state.submission.photo,
+      country: this.state.submission.country,
+      streetAddress: this.state.submission.streetAddress,
+      state: this.state.submission.state,
+      city: this.state.submission.city,
+      zip: this.state.submission.zip,
+      phoneNumber: this.state.submission.phoneNumber,
+      website: this.state.submission.website,
+      category: this.state.submission.category,
+      verified: this.state.submission.verified,
+    };
     // TODO if logged in as admin, enable direct insert
   
     Meteor.call('submissions.insert', {
@@ -63,20 +90,7 @@ export default class NewBusinessModal extends React.Component {
       email: this.state.submission.yourEmail,
       phoneNumber: this.state.submission.yourPhone,
       gradYear: parseInt(this.state.submission.gradYear),
-      business: {
-        name: this.state.submission.name,
-        desc: this.state.submission.desc,
-        photo: this.state.submission.photo,
-        country: this.state.submission.country,
-        streetAddress: this.state.submission.streetAddress,
-        state: this.state.submission.state,
-        city: this.state.submission.city,
-        zip: this.state.submission.zip,
-        phoneNumber: this.state.submission.phoneNumber,
-        website: this.state.submission.website,
-        category: this.state.submission.category,
-        verified: this.state.submission.verified, // TODO set default to false
-      },
+      business: business,
     }, (err, res) => {
       if (err) {
         this.error(err);
@@ -84,6 +98,20 @@ export default class NewBusinessModal extends React.Component {
         console.log(res);
         this.toggle();
       }
+    });
+    Meteor.call('businesses.insert', {
+      name: business.name,
+      desc: business.desc,
+      photo: business.photo,
+      country: business.country,
+      streetAddress: business.streetAddress,
+      state: business.state,
+      city: business.city,
+      zip: business.zip,
+      phoneNumber: business.phoneNumber,
+      website: business.website,
+      category: business.category,
+      verified: business.verified,
     });
   }
   
@@ -156,8 +184,8 @@ export default class NewBusinessModal extends React.Component {
             <Label for="category">Category</Label>
             <Input type="select" name="category"
                    onChange={ this.handleInput } required>
-              <option name="Entertainment" value="Entertainment">Entertainment</option>
-              <option name="Food" value="Food">Food</option>
+              <option name="entertainment" value="entertainment">Entertainment</option>
+              <option name="food" value="food">Food</option>
             </Input>
           </FormGroup>
           <FormGroup>
@@ -242,6 +270,10 @@ export default class NewBusinessModal extends React.Component {
                 <Label for="zip">ZIP</Label>
                 <Input type="text" name="zip" placeholder="12345"
                        onChange={ this.handleInput } />
+              </FormGroup>
+              <FormGroup>
+                <Input type="checkbox" id="verified" name="verified" value="verified" onChange= { this.handleInputCheck } />
+                <Label for="verified">Verified</Label>
               </FormGroup>
             </Col>
           </Row>

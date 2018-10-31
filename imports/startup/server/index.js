@@ -2,6 +2,7 @@ import cloudinary from 'cloudinary';
 import { Meteor } from 'meteor/meteor';
 
 import Businesses from '/imports/api/businesses/businesses';
+import {Accounts} from "meteor/accounts-base";
 
 Meteor.startup(() => {
   // insert test data if there's nothing
@@ -10,8 +11,14 @@ Meteor.startup(() => {
       name: 'Krusty Krab',
       desc: 'Use your imagination, let it go. This is your world. In your world you have total and absolute power. Trees get lonely too, so we\'ll give him a little friend.',
       photo: 'https://res.cloudinary.com/dir7oszd4/image/upload/v1540095717/sample.jpg',
-      category: 'Food',
       verified: true,
+    });
+  }
+
+  if (!Meteor.users.findOne({username: "admin"})) {
+    Accounts.createUser({
+      username: "admin",
+      password: "12345",
     });
   }
   

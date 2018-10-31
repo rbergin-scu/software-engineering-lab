@@ -99,6 +99,7 @@ describe('Submissions', () => {
       email: submission2.email,
       phoneNumber: submission2.phoneNumber,
       gradYear: submission2.gradYear,
+      business: submission2.business,
     });
   });
   
