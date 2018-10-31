@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
+import { Session } from 'meteor/session'
 
 import {
   Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
@@ -17,15 +18,17 @@ class Index extends React.Component {
     super(props);
 
     this.state = {
-      food: false,
-      entertainment: false,
+      categories: ['Food', 'Entertainment']
     };
 
+    //this.categories = this.categories.bind(this);
     this.handleInput = this.handleInput.bind(this);
     // this.handleSubmit = this.handleSubmit.bind(this);
   }
   
   render() {
+    console.log('Begin page render')
+    Session.set("categories", "Food")
     return (
       <div>
         <div className="bg-light py-3">
@@ -77,15 +80,15 @@ class Index extends React.Component {
           <legend>Filter by Business Type</legend>
 
           <FormGroup>
-            <Input type="checkbox" id="food" name="feature" value="food" onChange= { this.handleInput } />
+            <Input type="checkbox" id="Food" name="feature" value="Food" onChange= { this.handleInput } />
                   
             <Label for="food">Food</Label>
           </FormGroup>
 
           <FormGroup>
-            <Input type="checkbox" id="entertainment" name="feature" onChange= { this.handleInput }
-                  value="entertainment" />
-            <Label for="entertainment">Entertainment</Label>
+            <Input type="checkbox" id="Entertainment" name="feature" onChange= { this.handleInput }
+                  value="Entertainment" />
+            <Label for="Entertainment">Entertainment</Label>
           </FormGroup>
 
         </FormGroup>
@@ -97,14 +100,25 @@ class Index extends React.Component {
   handleInput(e) {
     let value = e.target.value;
     let name = e.target.name;
+    let state = e.target.checked;
+    console.log(name)
+    console.log(value)
+    console.log(state)
+
     
-    this.setState(prevState => {
-      return {
-        food : {
-          ...prevState.submission, [name]: value
-        }
-      }
-    });
+    // this.setState(prevState => {
+    //   return {
+        
+    //   }
+    // });
+
+    // this.props.businesses = Businesses.find({ verified: true, category: 'Entertainment'}).fetch()
+
+    console.log(this.state)
+
+    Session.set("categories", "Entertainment")
+    console.log(Session.get("categories"))
+    console.log('Input was Handled')
   }
   
 }
@@ -114,7 +128,7 @@ export default withTracker(() => {
   Meteor.subscribe('submissions');
   
   return {
-    businesses: Businesses.find({ verified: true }).fetch(),
+    businesses: Businesses.find({ verified: true, category: Session.get("categories")}).fetch(),
     submissions: Submissions.find({ }).fetch(),
   };
 })(Index);
