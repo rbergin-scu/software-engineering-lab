@@ -72,28 +72,29 @@ class Index extends React.Component {
 
   renderFilters() {
     return (
-      <fieldset>
-        <legend>Choose some monster features</legend>
+      <div><fieldset>
+      <legend>Choose some monster features</legend>
 
-        <div>
-        <input type="checkbox" id="scales" name="feature"
-               value="scales" checked />
-        <label for="scales">Scales</label>
-        </div>
+      <div>
+      <input type="checkbox" id="scales" name="feature"
+             value="scales" checked />
+      <label for="scales">Scales</label>
+      </div>
 
-        <div>
-        <input type="checkbox" id="horns" name="feature"
-               value="horns" />
-        <label for="horns">Horns</label>
-        </div>
+      <div>
+      <input type="checkbox" id="horns" name="feature"
+             value="horns" />
+      <label for="horns">Horns</label>
+      </div>
 
-        <div>
-        <input type="checkbox" id="claws" name="feature"
-               value="claws" />
-        <label for="claws">Claws</label>
-        </div>
+      <div>
+      <input type="checkbox" id="claws" name="feature"
+             value="claws" />
+      <label for="claws">Claws</label>
+      </div>
 
-      </fieldset>
+    </fieldset></div>
+      
     );
   }
   
