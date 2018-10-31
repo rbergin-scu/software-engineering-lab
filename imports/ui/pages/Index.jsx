@@ -66,5 +66,6 @@ export default withTracker(() => {
   return {
     businesses: Businesses.find({ verified: true }).fetch(),
     submissions: Submissions.find({ }).fetch(),
+    currentUser: Meteor.user(),
   };
 })(Index);

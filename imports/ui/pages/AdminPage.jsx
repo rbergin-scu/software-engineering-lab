@@ -6,19 +6,12 @@ import {
   Button, Input, Label,
 } from 'reactstrap';
 
-import '../imports/startup/server/accounts-config.js';
-
-import Error from './components/Error';
-import Businesses from "../../api/businesses/businesses";
-
 class AdminPage extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      error: '',
-      modal: false,
       password: null,
     };
 
@@ -57,26 +50,16 @@ class AdminPage extends React.Component {
   }
 
   render() {
-    if (Meteor.user() == null) {
-      return (
-        <div>
-          <form class="login">
-          <Label for="password">Password</Label>
-          <Input type="password" name="password" placeholder="*****"
-                 onChange={this.handleInput}/>
-          <Button color="primary" onClick={this.handleSubmit.bind(this)}>Login</Button>
-          </form>
-        </div>
-      );
-    }
-    else {
-      return (
-        //TODO create admin view here
-        <div>
-        </div>
-      );
-    }
-}
+    console.log(this.props.currentUser);
+    return (
+      <form className="login">
+        <Label for="password">Password</Label>
+        <Input type="password" name="password" placeholder="*****"
+               onChange={ this.handleInput } />
+        <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Login</Button>
+      </form>
+    );
+  }
 
   error(e) {
     this.setState({ error: `${e.error}: ${e.details}` });
@@ -91,5 +74,6 @@ export default withTracker(() => {
 
   return {
     submissions: Submissions.find({ }).fetch(),
+    currentUser: Meteor.user(),
   };
 })(AdminPage);
