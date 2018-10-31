@@ -19,8 +19,8 @@ class Index extends React.Component {
 
     this.state = {
       categories: {
-        Food: false,
-        Entertainment: false,
+        food: false,
+        entertainment: false,
       }
     };
 
@@ -29,7 +29,6 @@ class Index extends React.Component {
   
   render() {
     console.log('Begin page render')
-    //Session.set("categories", "Food")
     console.log(Session.get("categories"))
     return (
       <div>
@@ -50,8 +49,8 @@ class Index extends React.Component {
   
   renderBusinesses() {
 
-    if (this.state.categories.Food && !this.state.categories.Entertainment) {
-      return Businesses.find({ verified: true, categories: 'Food'}).fetch().map((biz, i) => {
+    if (this.state.categories.food && !this.state.categories.entertainment) {
+      return Businesses.find({ verified: true, category: 'food'}).fetch().map((biz, i) => {
         return (
           <Business
             key={ i }
@@ -60,8 +59,8 @@ class Index extends React.Component {
           />
         );
       });
-    } else if (!this.state.categories.Food && this.state.categories.Entertainment) {
-      return Businesses.find({ verified: true, categories: 'Entertainment'}).fetch().map((biz, i) => {
+    } else if (!this.state.categories.food && this.state.categories.entertainment) {
+      return Businesses.find({ verified: true, category: 'entertainment'}).fetch().map((biz, i) => {
         return (
           <Business
             key={ i }
@@ -105,15 +104,15 @@ class Index extends React.Component {
           <legend>Filter by Business Type</legend>
 
           <FormGroup>
-            <Input type="checkbox" id="Food" name="feature" value="Food" onChange= { this.handleInput } />
+            <Input type="checkbox" id="food" name="feature" value="food" onChange= { this.handleInput } />
                   
             <Label for="food">Food</Label>
           </FormGroup>
 
           <FormGroup>
-            <Input type="checkbox" id="Entertainment" name="feature" onChange= { this.handleInput }
-                  value="Entertainment" />
-            <Label for="Entertainment">Entertainment</Label>
+            <Input type="checkbox" id="entertainment" name="feature" onChange= { this.handleInput }
+                  value="entertainment" />
+            <Label for="entertainment">Entertainment</Label>
           </FormGroup>
 
         </FormGroup>
