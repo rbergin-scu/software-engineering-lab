@@ -100,8 +100,8 @@ class Index extends React.Component {
     
     this.setState(prevState => {
       return {
-        [name]: {
-          ...prevState.[name]: value;
+        food : {
+          ...prevState.submission, [name]: value
         }
       }
     });
