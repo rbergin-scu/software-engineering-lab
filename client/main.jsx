@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import Footer from '/imports/ui/components/Footer';
 import Header from '/imports/ui/components/Header';
 import Index from '/imports/ui/pages/Index';
-import AdminPage from '/imports/ui/pages/AdminPage';
+//import AdminPage from '/imports/ui/pages/AdminPage';
 
 Meteor.startup(() => {
   // define language in <html> decl., as standard in WCAG 2.0, Guideline 3.1.1
