@@ -26,5 +26,4 @@ jquery
 accounts-base
 accounts-ui
 accounts-password
-
-
+session
