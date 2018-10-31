@@ -2,6 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 
+import {
+  Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
+} from 'reactstrap';
+
 import Businesses from '/imports/api/businesses/businesses';
 import Business from '/imports/ui/components/Business';
 import NewBusinessModal from '/imports/ui/components/NewBusinessModal';
@@ -17,9 +21,7 @@ class Index extends React.Component {
       entertainment: false,
     };
 
-    this.food = this.food.bind(this);
-    this.entertainment = this.entertainment.bind(this);
-    // this.handleInput = this.handleInput.bind(this);
+    this.handleInput = this.handleInput.bind(this);
     // this.handleSubmit = this.handleSubmit.bind(this);
   }
   
@@ -29,10 +31,8 @@ class Index extends React.Component {
         <div className="bg-light py-3">
           { this.renderSubmit() }
         </div>
-        <div className="bg-light py-4">
-          { this.renderFilters() }
-        </div>
         <div className="container py-5">
+        { this.renderFilters() }
           <section className="index-businesses">
             <div className="card-deck">
               { this.renderBusinesses() }
@@ -72,30 +72,39 @@ class Index extends React.Component {
 
   renderFilters() {
     return (
-      <div><fieldset>
-      <legend>Choose some monster features</legend>
+      <Form className="formFilterBusinesses">
+        <FormGroup tag="fieldset">
+          <legend>Filter by Business Type</legend>
 
-      <div>
-      <input type="checkbox" id="scales" name="feature"
-             value="scales" checked />
-      <label for="scales">Scales</label>
-      </div>
+          <FormGroup>
+            <Input type="checkbox" id="food" name="feature" value="food" onChange= { this.handleInput } />
+                  
+            <Label for="food">Food</Label>
+          </FormGroup>
 
-      <div>
-      <input type="checkbox" id="horns" name="feature"
-             value="horns" />
-      <label for="horns">Horns</label>
-      </div>
+          <FormGroup>
+            <Input type="checkbox" id="entertainment" name="feature" onChange= { this.handleInput }
+                  value="entertainment" />
+            <Label for="entertainment">Entertainment</Label>
+          </FormGroup>
 
-      <div>
-      <input type="checkbox" id="claws" name="feature"
-             value="claws" />
-      <label for="claws">Claws</label>
-      </div>
-
-    </fieldset></div>
+        </FormGroup>
+    </Form>
       
     );
+  }
+
+  handleInput(e) {
+    let value = e.target.value;
+    let name = e.target.name;
+    
+    this.setState(prevState => {
+      return {
+        [name]: {
+          ...prevState.[name]: value;
+        }
+      }
+    });
   }
   
 }
