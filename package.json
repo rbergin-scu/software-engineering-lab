@@ -1,5 +1,6 @@
 {
   "name": "scu-alumni-businesses",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "start": "meteor run",
@@ -20,9 +21,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "reactstrap": "^6.5.0",
-    "simpl-schema": "^1.5.3",
-    "uniforms": "^1.27.0",
-    "uniforms-bootstrap4": "^1.27.0"
+    "simpl-schema": "^1.5.3"
   },
   "meteor": {
     "mainModule": {
