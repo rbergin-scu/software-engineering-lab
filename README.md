@@ -69,3 +69,23 @@ There's a few different components involved in testing:
 Understanding each of these components is important to writing tests. Essentially, you use Mocha to organize the tests, Chai to write the actual test conditions, Faker to create quick test data, and Enzyme to write React tests. Most tests will be of a single unit. Integration testing is also useful, but will likely be closer to the end of the project/may never be fully fleshed out.
 
 An example of some pretty simple tests can be found here: https://github.com/rbergin-scu/software-engineering-lab/blob/1efc4ae6f8c01701f0fc0953790d43952effbc18/imports/api/businesses/businesses.tests.js
+
+
+## Deployment
+
+Two components:
+
+- [MongoDB data host](https://mlab.com)
+- [Galaxy for Meteor web host](https://galaxy.meteor.com)
+
+Deployment is simple. We use mLab's free tier account to gain access to a 500 MB data store, which is more than sufficient for demo purposes. Galaxy deploys directly through Meteor in the command line, and we use their DNS to host the demo page.
+
+To deploy, create a Production configuration which runs this command:
+
+```
+DEPLOY_HOSTNAME=us-east-1.galaxy.deploy.meteor.com meteor deploy scu-alumni-businesses.meteorapp.com --settings settings.json
+```
+
+You will need to supply `settings.json` with database info, and have access to the hosting account credentials in order to complete the deployment.
+
+Live page with latest publish: http://scu-alumni-businesses.meteorapp.com
