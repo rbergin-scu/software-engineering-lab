@@ -68,7 +68,7 @@ export default class Footer extends React.Component {
             <div className="mr-auto">
               &copy; 2018 &middot; <a href="/accessibility" className="text-white">Accessibility</a>
             </div>
-            <a href="/login" className="text-white px-2">Login</a>
+            <a href="/admin" className="text-white px-2">Admin</a>
             <span className="text-white px-2">|</span>
             <a className="facebook text-white px-2" href="http://www.facebook.com">
               <i className="demo-icon fab fa-facebook"/>

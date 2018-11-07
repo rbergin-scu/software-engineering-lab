@@ -12,13 +12,16 @@ class AdminPage extends React.Component {
     super(props);
 
     this.state = {
-      password: null,
+      submission: {
+        password: null
+      },
     };
 
     this.error = this.error.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   handleInput(e) {
@@ -36,29 +39,42 @@ class AdminPage extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
-    Meteor.call('accounts.login', {
-      password: this.state.submission.password,
-    }, (err, res) => {
-      if (err) {
-        this.error(err);
-      } else {
-        console.log(res);
-        this.toggle();
+    Meteor.loginWithPassword("admin", this.state.submission.password, function(err) {
+      if(err) {
+        document.getElementById("login").reset();
+        alert(err.message);
       }
     });
   }
 
+  handleLogin(e) {
+    this.handleInput(e);
+    this.handleSubmit(e);
+  }
+
+
+
+
   render() {
     console.log(this.props.currentUser);
-    return (
-      <form className="login">
-        <Label for="password">Password</Label>
-        <Input type="password" name="password" placeholder="*****"
-               onChange={ this.handleInput } />
-        <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Login</Button>
-      </form>
-    );
+    if(!Meteor.user()) {
+      return (
+        <form className="login" id ="login">
+          <Label for="password">Password</Label>
+          <Input type="password" name="password" placeholder="*****"
+                 onChange={ this.handleInput } />
+          <Button color="primary" onClick={ this.handleLogin.bind(this) }>Login</Button>
+        </form>
+      );
+    }
+    else {
+      return (
+        <form className="logout">
+          <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
+        </form>
+      );
+    }
+
   }
 
   error(e) {
