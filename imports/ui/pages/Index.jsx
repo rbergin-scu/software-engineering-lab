@@ -7,7 +7,7 @@ import {
   Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
 } from 'reactstrap';
 
-import Businesses from '/imports/api/businesses/businesses';
+import { Businesses } from '/imports/api/businesses/businesses';
 import Business from '/imports/ui/components/Business';
 import NewBusinessModal from '/imports/ui/components/NewBusinessModal';
 import Submissions from '/imports/api/submissions/submissions';
@@ -105,7 +105,7 @@ class Index extends React.Component {
 
           <FormGroup>
             <Input type="checkbox" id="food" name="feature" value="food" onChange= { this.handleInput } />
-                  
+            
             <Label for="food">Food</Label>
           </FormGroup>
 
@@ -117,7 +117,7 @@ class Index extends React.Component {
 
         </FormGroup>
     </Form>
-      
+    
     );
   }
 
