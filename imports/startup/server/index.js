@@ -11,6 +11,7 @@ Meteor.startup(() => {
       name: 'Krusty Krab',
       desc: 'Use your imagination, let it go. This is your world. In your world you have total and absolute power. Trees get lonely too, so we\'ll give him a little friend.',
       photo: 'https://res.cloudinary.com/dir7oszd4/image/upload/v1540095717/sample.jpg',
+      category: 'food',
       verified: true,
     });
   }

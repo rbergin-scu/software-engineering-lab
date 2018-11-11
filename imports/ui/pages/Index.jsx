@@ -24,6 +24,7 @@ class Index extends React.Component {
       this.state.categories[c] = false;
     }
 
+    this.filters = this.filters.bind(this);
     this.handleInput = this.handleInput.bind(this);
   }
   
@@ -46,29 +47,9 @@ class Index extends React.Component {
   }
   
   renderBusinesses() {
-
-    if (this.state.categories.food && !this.state.categories.entertainment) {
-      return Businesses.find({ verified: true, category: 'food'}).fetch().map((biz, i) => {
-        return (
-          <Business
-            key={ i }
-            name={ biz.name }
-            desc={ biz.desc }
-          />
-        );
-      });
-    } else if (!this.state.categories.food && this.state.categories.entertainment) {
-      return Businesses.find({ verified: true, category: 'entertainment'}).fetch().map((biz, i) => {
-        return (
-          <Business
-            key={ i }
-            name={ biz.name }
-            desc={ biz.desc }
-          />
-        );
-      });
-    } else {
-      return this.props.businesses.map((biz, i) => {
+    let filters = this.filters();
+    
+    return this.props.businesses.filter(biz => filters.includes(biz.category)).map((biz, i) => {
       return (
         <Business
           key={ i }
@@ -77,7 +58,6 @@ class Index extends React.Component {
         />
       );
     });
-  }
   }
   
   renderSubmit() {
@@ -123,6 +103,8 @@ class Index extends React.Component {
     let checked = e.target.checked;
     let name = e.target.value;
     
+    console.log(checked);
+    
     this.setState(prevState => {
       return {
         categories : {
@@ -134,14 +116,25 @@ class Index extends React.Component {
     console.log(this.state.categories);
   }
   
+  filters() {
+    let result = [];
+    
+    for (let [category, value] of Object.entries(this.state.categories)) {
+      if (value) {
+        result.push(category);
+      }
+    }
+    
+    return result;
+  }
+  
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('businesses');
-  Meteor.subscribe('submissions');
-
+  Meteor.subscribe('businesses.public');
+  
   return {
-    businesses: Businesses.find({ verified: true, }).fetch(),
+    businesses: Businesses.find({}).fetch(),
     submissions: Submissions.find({ }).fetch(),
     currentUser: Meteor.user(),
   };

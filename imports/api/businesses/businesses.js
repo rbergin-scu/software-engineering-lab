@@ -117,7 +117,11 @@ if (Meteor.isServer) {
   Meteor.publish('businesses', () => {
     return Businesses.find({ /* TODO: if (!loggedIn) verified: true */ });
   });
-}
+  
+  Meteor.publish('businesses.public', () => {
+    return Businesses.find({ verified: true, });
+  })
+;}
 
 // define CRUD methods
 Meteor.methods({
