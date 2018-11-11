@@ -1,13 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Session } from 'meteor/session'
 
 import {
   Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
 } from 'reactstrap';
 
-import { Businesses } from '/imports/api/businesses/businesses';
+import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import Business from '/imports/ui/components/Business';
 import NewBusinessModal from '/imports/ui/components/NewBusinessModal';
 import Submissions from '/imports/api/submissions/submissions';
@@ -18,18 +17,17 @@ class Index extends React.Component {
     super(props);
 
     this.state = {
-      categories: {
-        food: false,
-        entertainment: false,
-      }
+      categories: {},
     };
+    
+    for (let c of Object.keys(Categories)) {
+      this.state.categories[c] = false;
+    }
 
     this.handleInput = this.handleInput.bind(this);
   }
   
   render() {
-    console.log('Begin page render')
-    console.log(Session.get("categories"))
     return (
       <div>
         <div className="bg-light py-3">
@@ -141,10 +139,9 @@ class Index extends React.Component {
 export default withTracker(() => {
   Meteor.subscribe('businesses');
   Meteor.subscribe('submissions');
-  console.log("Touching database...");
 
   return {
-    businesses: Businesses.find({ verified: true }).fetch(),
+    businesses: Businesses.find({ verified: true, }).fetch(),
     submissions: Submissions.find({ }).fetch(),
     currentUser: Meteor.user(),
   };
