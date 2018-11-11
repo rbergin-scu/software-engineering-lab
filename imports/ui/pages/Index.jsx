@@ -24,7 +24,6 @@ class Index extends React.Component {
       this.state.categories[c] = false;
     }
 
-    this.filters = this.filters.bind(this);
     this.handleInput = this.handleInput.bind(this);
   }
   
@@ -47,7 +46,7 @@ class Index extends React.Component {
   }
   
   renderBusinesses() {
-    let filters = this.filters();
+    let filters = Object.keys(this.state.categories).filter(c => this.state.categories[c]);
     
     return this.props.businesses.filter(biz => filters.includes(biz.category)).map((biz, i) => {
       return (
@@ -103,8 +102,6 @@ class Index extends React.Component {
     let checked = e.target.checked;
     let name = e.target.value;
     
-    console.log(checked);
-    
     this.setState(prevState => {
       return {
         categories : {
@@ -114,18 +111,6 @@ class Index extends React.Component {
     });
 
     console.log(this.state.categories);
-  }
-  
-  filters() {
-    let result = [];
-    
-    for (let [category, value] of Object.entries(this.state.categories)) {
-      if (value) {
-        result.push(category);
-      }
-    }
-    
-    return result;
   }
   
 }
