@@ -1,8 +1,8 @@
 import cloudinary from 'cloudinary';
 import { Meteor } from 'meteor/meteor';
 
-import Businesses from '/imports/api/businesses/businesses';
-import {Accounts} from "meteor/accounts-base";
+import { Accounts } from "meteor/accounts-base";
+import { Businesses } from '/imports/api/businesses/businesses';
 
 Meteor.startup(() => {
   // insert test data if there's nothing
@@ -15,10 +15,10 @@ Meteor.startup(() => {
     });
   }
 
-  if (!Meteor.users.findOne({username: "admin"})) {
+  if (!Meteor.users.findOne({ username: 'admin', })) {
     Accounts.createUser({
-      username: "admin",
-      password: "12345",
+      username: 'admin',
+      password: '12345',
     });
   }
   
