@@ -1,10 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import Submissions from '/imports/api/submissions/submissions';
 import {
-  Button, Input, Label,
+  Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
 } from 'reactstrap';
+import Submissions from '/imports/api/submissions/submissions';
+import Submission from '/imports/ui/components/Submission';
+
+import Businesses from '/imports/api/businesses/businesses';
 
 class AdminPage extends React.Component {
 
@@ -52,6 +55,22 @@ class AdminPage extends React.Component {
     this.handleSubmit(e);
   }
 
+  renderSubmissions() {
+    console.log("returning with submissions")
+      return this.props.submissions.map((sub, i) => {
+        console.log("returned with submissions")
+        return (
+          <Submission
+            key={ i }
+            name={ sub.business.name }
+            submitterName={ sub.name }
+            email={ sub.email }
+            phoneNumber={ sub.phoneNumber }
+            gradYear={ sub.gradYear }
+          />
+        );
+      });
+  }
 
 
 
@@ -69,9 +88,21 @@ class AdminPage extends React.Component {
     }
     else {
       return (
-        <form className="logout">
-          <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
-        </form>
+        <div>
+          <h2>Submissions</h2>
+          <div className="container py-5">
+            <section className="index-submissions">
+              <div className="card-deck">
+                { this.renderSubmissions() }
+              </div>
+            </section>
+          </div>
+          <div>
+            <form className="logout">
+              <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
+            </form>
+          </div>
+        </div>
       );
     }
 
@@ -87,6 +118,7 @@ class AdminPage extends React.Component {
 }
 export default withTracker(() => {
   Meteor.subscribe('submissions');
+  Meteor.subscribe('businesses');
 
   return {
     submissions: Submissions.find({ }).fetch(),
