@@ -92,6 +92,30 @@ class Index extends React.Component {
             <Label for="entertainment">Entertainment</Label>
           </FormGroup>
 
+          <FormGroup>
+            <Input type="checkbox" id="service" name="feature" value="service" onChange= { this.handleInput } />
+            
+            <Label for="service">Service</Label>
+          </FormGroup>
+
+          <FormGroup>
+            <Input type="checkbox" id="manufacturing" name="feature" onChange= { this.handleInput }
+                  value="manufacturing" />
+            <Label for="manufacturing">Manufacturing</Label>
+          </FormGroup>
+
+          <FormGroup>
+            <Input type="checkbox" id="merchandising" name="feature" value="merchandising" onChange= { this.handleInput } />
+            
+            <Label for="merchandising">Merchandising</Label>
+          </FormGroup>
+
+          <FormGroup>
+            <Input type="checkbox" id="management" name="feature" onChange= { this.handleInput }
+                  value="management" />
+            <Label for="management">Management</Label>
+          </FormGroup>
+
         </FormGroup>
     </Form>
     

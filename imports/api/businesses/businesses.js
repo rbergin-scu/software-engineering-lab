@@ -14,6 +14,10 @@ const Businesses = new Mongo.Collection('businesses');
 const Categories = {
   food: 'Food',
   entertainment: 'Entertainment',
+  service: 'Service',
+  manufacturing: 'Manufacturing',
+  merchandising: 'Merchandising',
+  management: 'Management'
 };
 
 /*

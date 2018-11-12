@@ -179,6 +179,10 @@ export default class NewBusinessModal extends React.Component {
                    onChange={ this.handleInput } required>
               <option name="entertainment" value="entertainment">Entertainment</option>
               <option name="food" value="food">Food</option>
+              <option name="service" value="service">Service</option>
+              <option name="manufacturing" value="manufacturing">Manufacturing</option>
+              <option name="merchandising" value="merchandising">Merchandising</option>
+              <option name="management" value="management">Management</option>
             </Input>
           </FormGroup>
           <FormGroup>
