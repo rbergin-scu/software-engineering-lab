@@ -52,13 +52,13 @@ const schema = new SimpleSchema({
   category: {
     type: String,
     required: true,
-    allowedValues: Object.values(Categories),
+    allowedValues: Object.keys(Categories),
   },
   
   /* country (location) */
   country: {
     type: String,
-    regEx: /[a-zA-Z]{2,}/,
+    regEx: /^[a-zA-Z_ ]*$/,
     max: 60,
     defaultValue: 'United States',
   },
