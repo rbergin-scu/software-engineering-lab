@@ -98,6 +98,7 @@ class AdminPage extends React.Component {
             </section>
           </div>
           <div>
+
             <form className="logout">
               <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
             </form>

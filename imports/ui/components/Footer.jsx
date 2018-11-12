@@ -70,6 +70,8 @@ export default class Footer extends React.Component {
             </div>
             <a href="/admin" className="text-white px-2">Admin</a>
             <span className="text-white px-2">|</span>
+            <a href="/" className="text-white px-2">Home</a>
+            <span className="text-white px-2">|</span>
             <a className="facebook text-white px-2" href="http://www.facebook.com">
               <i className="demo-icon fab fa-facebook"/>
               <span className="sr-only">SCU on Facebook</span>
