@@ -1,13 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Session } from 'meteor/session'
 
 import {
   Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
 } from 'reactstrap';
 
-import Businesses from '/imports/api/businesses/businesses';
+import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import Business from '/imports/ui/components/Business';
 import NewBusinessModal from '/imports/ui/components/NewBusinessModal';
 import Submissions from '/imports/api/submissions/submissions';
@@ -18,18 +17,17 @@ class Index extends React.Component {
     super(props);
 
     this.state = {
-      categories: {
-        food: false,
-        entertainment: false,
-      }
+      categories: {},
     };
+    
+    for (let c of Object.keys(Categories)) {
+      this.state.categories[c] = false;
+    }
 
     this.handleInput = this.handleInput.bind(this);
   }
   
   render() {
-    console.log('Begin page render')
-    console.log(Session.get("categories"))
     return (
       <div>
         <div className="bg-light py-3">
@@ -48,29 +46,9 @@ class Index extends React.Component {
   }
   
   renderBusinesses() {
-
-    if (this.state.categories.food && !this.state.categories.entertainment) {
-      return Businesses.find({ verified: true, category: 'food'}).fetch().map((biz, i) => {
-        return (
-          <Business
-            key={ i }
-            name={ biz.name }
-            desc={ biz.desc }
-          />
-        );
-      });
-    } else if (!this.state.categories.food && this.state.categories.entertainment) {
-      return Businesses.find({ verified: true, category: 'entertainment'}).fetch().map((biz, i) => {
-        return (
-          <Business
-            key={ i }
-            name={ biz.name }
-            desc={ biz.desc }
-          />
-        );
-      });
-    } else {
-      return this.props.businesses.map((biz, i) => {
+    let filters = Object.keys(this.state.categories).filter(c => this.state.categories[c]);
+    
+    return this.props.businesses.filter(biz => filters.includes(biz.category)).map((biz, i) => {
       return (
         <Business
           key={ i }
@@ -79,7 +57,6 @@ class Index extends React.Component {
         />
       );
     });
-  }
   }
   
   renderSubmit() {
@@ -105,7 +82,7 @@ class Index extends React.Component {
 
           <FormGroup>
             <Input type="checkbox" id="food" name="feature" value="food" onChange= { this.handleInput } />
-                  
+            
             <Label for="food">Food</Label>
           </FormGroup>
 
@@ -117,7 +94,7 @@ class Index extends React.Component {
 
         </FormGroup>
     </Form>
-      
+    
     );
   }
 
@@ -139,12 +116,10 @@ class Index extends React.Component {
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('businesses');
-  Meteor.subscribe('submissions');
-  console.log("Touching database...");
-
+  Meteor.subscribe('businesses.public');
+  
   return {
-    businesses: Businesses.find({ verified: true }).fetch(),
+    businesses: Businesses.find({}).fetch(),
     submissions: Submissions.find({ }).fetch(),
     currentUser: Meteor.user(),
   };

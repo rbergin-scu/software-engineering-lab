@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
 
-import Businesses from '/imports/api/businesses/businesses';
+import { Businesses } from '/imports/api/businesses/businesses';
 
 // create submissions table
 const Submissions = new Mongo.Collection('submissions');
@@ -75,11 +75,13 @@ Meteor.methods({
       throw new Meteor.Error('submissions-found', 'You have already submitted that business.');
     } else {
       // submit to database
-      Submissions.insert(item, (err, res) => {
+      const result = Submissions.insert(item, (err) => {
         if (err) {
           throw new Meteor.Error('submissions-insert', err.details);
         }
       });
+      
+      return Submissions.find({ _id: result }).fetch();
     }
   },
   

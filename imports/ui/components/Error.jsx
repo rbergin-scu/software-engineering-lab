@@ -7,11 +7,15 @@ export default class Error extends React.Component {
   }
   
   render() {
+    const details = this.props.details;
+    
     return (
       <div>
-        <div className="d-flex align-items-center justify-content-between">
-          <p className="text-warning mb-0" dangerouslySetInnerHTML={ { __html: this.props.details } } />
+        { details && details.length > 0 &&
+        <div className="error d-flex align-items-center justify-content-between bg-warning p-3">
+          <p className="mb-0" dangerouslySetInnerHTML={ { __html: details } } />
         </div>
+        }
       </div>
     );
   }

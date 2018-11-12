@@ -4,84 +4,121 @@ import Enzyme from 'enzyme';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import React from 'react';
+import { resetDatabase } from 'meteor/xolvio:cleaner';
+import StubCollections from 'meteor/hwillson:stub-collections';
 import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button } from 'reactstrap';
 
-import Businesses from './businesses';
+import { Businesses, Categories } from './businesses';
 import Business from '/imports/ui/components/Business';
 
-// configure React test adapter
+let expect = chai.expect;
+chai.use(require('chai-string'));
+
+/*
+  enable React component testing
+ */
 Enzyme.configure({adapter: new Adapter()});
+
+/*
+  create a false Business with randomly-generated content
+ */
+StubCollections.stub(Businesses);
 
 Factory.define('business', Businesses, {
   name: () => faker.company.companyName(),
   desc: () => faker.company.catchPhrase(),
   photo: () => faker.image.imageUrl(),
+  category: () => {
+    let keys = Object.keys(Categories);
+    return Categories[keys[ keys.length * Math.random() << 0 ]];
+  },
   country: () => faker.address.country(),
   streetAddress: () => faker.address.streetAddress(),
-  state: () => faker.address.state(),
+  state: () => faker.address.stateAbbr(),
   city: () => faker.address.city(),
   zip: () => faker.address.zipCode(undefined),
   phoneNumber: () => faker.phone.phoneNumber(),
   website: () => faker.internet.url(),
-  type: () => faker.commerce.product(),
-  verified: false,
+  verified: true,
 });
 
-let expect = chai.expect;
-
 describe('Businesses', () => {
+  let business = Factory.build('business');
   
-  let business;
-  let business2;
-  let id;
-  let id2;
-  
-  before(() => {
-    business = Factory.create('business');
-    business2 = Factory.create('business');
-    id = business._id;
-    id2 = business2._id;
+  describe('schema', () => {
+    it('should have a Name of at most 60 characters which resembles the title of a company', () => {
+      expect(business.name).to.not.be.empty;
+      expect(business.name).to.have.lengthOf.at.most(60);
+      expect(business.name).to.match(/^(?!\s)(?!.*\s$)(?=.*[a-zA-Z0-9])[a-zA-Z0-9 '~?!\-":;,]{2,}$/);
+    });
+    
+    it('should have a Description of at most 140 characters', () => {
+      expect(business.desc).to.not.be.empty;
+      expect(business.desc).to.have.lengthOf.at.most(140);
+      expect(business.desc).to.match(/(\n|^).*?(?=\n|$)/);
+    });
+    
+    it('should have a valid Category', () => {
+      expect(business.category).to.not.be.empty;
+    });
+    
+    it('should have a Country of at most 60 characters', () => {
+      expect(business.country).to.not.be.empty;
+      expect(business.country).to.have.lengthOf.at.most(60);
+      expect(business.country).to.match(/[a-zA-Z]{2,}/);
+    });
+    
+    it('should have a Street address of at most 60 characters', () => {
+      expect(business.streetAddress).to.not.be.empty;
+      expect(business.streetAddress).to.have.lengthOf.at.most(60);
+      expect(business.streetAddress).to.match(/^\s*\S+(?:\s+\S+){2}/);
+    });
+    
+    it('should have a State in code format (AL, AK, ..)', () => {
+      expect(business.state).to.not.be.empty;
+      expect(business.state).to.match(/[A-Z]{2}/);
+    });
+    
+    it('should have a City of at most 60 characters', () => {
+      expect(business.city).to.not.be.empty;
+      expect(business.city).to.have.lengthOf.at.most(60);
+      expect(business.city).to.match(/[a-zA-Z]{2,}/);
+    });
+    
+    it('should have a ZIP code', () => {
+      expect(business.zip).to.not.be.empty;
+      expect(business.zip).to.match(/^\d{5}(?:[-\s]\d{4})?$/);
+    });
+    
+    it('should have a Phone number', () => {
+      expect(business.phoneNumber).to.not.be.empty;
+      expect(business.phoneNumber).to
+        .match(/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/);
+    });
+    
+    it('should have a Website of at most 100 characters', () => {
+      expect(business.website).to.not.be.empty;
+      expect(business.website).to.have.lengthOf.at.most(100);
+      expect(business.website).to.match(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/);
+    });
   });
   
-  it('should have a name of at most 60 characters', () => {
-    expect(business.name).to.not.be.empty;
-    expect(business.name).to.have.lengthOf.at.most(60);
-  });
+  describe('methods', () => {
+    beforeEach(() => {
+      resetDatabase();
+    });
+    
+    it('should be added to the collection', () => {
+      Meteor.call('businesses.insert', business, (error, result) => {
+        if (error) {
+          console.log('error: ' + error);
+        }
+      });
+    });
   
-  it('should have an alphanumeric description of at most 140 characters', () => {
-    expect(business.desc).to.not.be.empty;
-    expect(business.desc).to.match(/^.+$/);
-    expect(business.desc).to.have.lengthOf.at.most(140);
-  });
-  
-  it('should have a country of at most 60 characters', () => {
-    expect(business.country).to.not.be.empty;
-    expect(business.country).to.have.lengthOf.at.most(60);
-  });
-  
-  it('should have a streetAddress of at most 60 characters', () => {
-    expect(business.streetAddress).to.not.be.empty;
-    expect(business.streetAddress).to.have.lengthOf.at.most(60);
-  });
-  
-  it('should have a state of at most 30 characters', () => {
-    expect(business.state).to.not.be.empty;
-    expect(business.state).to.have.lengthOf.at.most(30);
-  });
-  
-  it('should have a phone number of at most 30 characters', () => {
-    expect(business.phoneNumber).to.not.be.empty;
-    expect(business.phoneNumber).to.have.lengthOf.at.most(30);
-  });
-  
-  it('should have a webite url of at most 100 characters', () => {
-    expect(business.website).to.not.be.empty;
-    expect(business.website).to.have.lengthOf.at.most(100);
-  });
-  
-  it('should have a type of at most 30 characters', () => {
-    expect(business.type).to.not.be.empty;
-    expect(business.type).to.have.lengthOf.at.most(30);
+    it('should be removed from the collection', () => {
+    
+    });
   });
   
   it('should render', () => {
@@ -92,45 +129,6 @@ describe('Businesses', () => {
     expect(item.find(CardText).dive().text()).to.equal(business.desc);
   });
   
-  it('should be added to the collection', () => {
-    Meteor.call('businesses.insert', {
-      name: faker.company.companyName(),
-      desc: faker.company.catchPhrase(),
-      photo: faker.image.imageUrl(),
-      country: faker.address.country(),
-      streetAddress: faker.address.streetAddress(),
-      state: faker.address.state(),
-      city: faker.address.city(),
-      zip: faker.address.zipCode(undefined),
-      phoneNumber: faker.phone.phoneNumber(),
-      website: faker.internet.url(),
-      type: faker.commerce.product(),
-      verified: false,
-    });
-  });
-  
-  it('should be removed from the collection', () => {
-    Meteor.call('businesses.remove', {
-      _id: id,
-    });
-  });
-  
-  it('should update the collection', () => {
-    Meteor.call('businesses.update', {
-      _id: id2,
-      name: 'NANI!?!?',
-      desc: business2.desc,
-      photo: business2.photo,
-      country: business2.country,
-      streetAddress: business2.streetAddress,
-      state: business2.state,
-      city: business2.city,
-      zip: business2.zip,
-      phoneNumber: business2.phoneNumber,
-      website: business2.website,
-      type: business2.type,
-      verified: business2.verified,
-    });
-  });
-  
 });
+
+StubCollections.restore();

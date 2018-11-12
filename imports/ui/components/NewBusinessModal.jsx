@@ -6,6 +6,9 @@ import {
 
 import Error from './Error';
 
+/* an index of all possible business categories */
+const categories = [ 'entertainment', 'food' ];
+
 export default class NewBusinessModal extends React.Component {
   
   constructor(props) {
@@ -15,21 +18,21 @@ export default class NewBusinessModal extends React.Component {
       error: '',
       modal: false,
       submission: {
-        yourName: null,
-        yourEmail: null,
-        yourPhone: null,
-        gradYear: null,
-        name: null,
-        desc: null,
-        photo: null,
-        category: null,
-        country: null,
-        streetAddress: null,
-        state: null,
-        city: null,
-        zip: null,
-        phoneNumber: null,
-        website: null,
+        yourName: '',
+        yourEmail: '',
+        yourPhone: '',
+        gradYear: '',
+        name: '',
+        desc: '',
+        photo: '',
+        category: categories[0],
+        country: '',
+        streetAddress: '',
+        state: '',
+        city: '',
+        zip: '',
+        phoneNumber: '',
+        website: '',
         verified: false,
       },
     };
@@ -37,13 +40,31 @@ export default class NewBusinessModal extends React.Component {
     this.error = this.error.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInputCheck = this.handleInputCheck.bind(this);
     this.toggle = this.toggle.bind(this);
   }
   
   handleInput(e) {
-    let value = e.target.value;
     let name = e.target.name;
+    let value;
+    
+    switch (e.target.type) {
+      case 'checkbox':
+        value = e.target.checked;
+        break;
+        
+      case 'email':
+      case 'select-one':
+      case 'tel':
+      case 'text':
+        value = e.target.value;
+        break;
+        
+      default:
+        console.log(e.target.type);
+        break;
+    }
+    
+    console.log(`handleInput: ${name} => ${value}]`);
     
     this.setState(prevState => {
       return {
@@ -53,23 +74,11 @@ export default class NewBusinessModal extends React.Component {
       }
     });
   }
-
-  handleInputCheck(e) {
-    let checked = e.target.checked;
-    let name = e.target.name;
-
-    this.setState(prevState => {
-      return {
-        submission: {
-          ...prevState.submission, [name]: checked,
-        }
-      }
-    });
-  }
   
   handleSubmit(e) {
     e.preventDefault();
-    let business = {
+    
+    const business = {
       name: this.state.submission.name,
       desc: this.state.submission.desc,
       photo: this.state.submission.photo,
@@ -83,7 +92,6 @@ export default class NewBusinessModal extends React.Component {
       category: this.state.submission.category,
       verified: this.state.submission.verified,
     };
-    // TODO if logged in as admin, enable direct insert
   
     Meteor.call('submissions.insert', {
       name: this.state.submission.yourName,
@@ -95,23 +103,8 @@ export default class NewBusinessModal extends React.Component {
       if (err) {
         this.error(err);
       } else {
-        console.log(res);
         this.toggle();
       }
-    });
-    Meteor.call('businesses.insert', {
-      name: business.name,
-      desc: business.desc,
-      photo: business.photo,
-      country: business.country,
-      streetAddress: business.streetAddress,
-      state: business.state,
-      city: business.city,
-      zip: business.zip,
-      phoneNumber: business.phoneNumber,
-      website: business.website,
-      category: business.category,
-      verified: business.verified,
     });
   }
   
@@ -209,7 +202,7 @@ export default class NewBusinessModal extends React.Component {
             <Col md={3}>
               <FormGroup>
                 <Label for="state">State</Label>
-                <Input type="select" name="state"
+                <Input type="select" name="state" value={ this.state.submission.state }
                        onChange={ this.handleInput }>
                   <option value="AL">Alabama</option>
                   <option value="AK">Alaska</option>
@@ -272,7 +265,7 @@ export default class NewBusinessModal extends React.Component {
                        onChange={ this.handleInput } />
               </FormGroup>
               <FormGroup>
-                <Input type="checkbox" id="verified" name="verified" value="verified" onChange= { this.handleInputCheck } />
+                <Input type="checkbox" id="verified" name="verified" value="verified" onChange= { this.handleInput } />
                 <Label for="verified">Verified</Label>
               </FormGroup>
             </Col>
