@@ -1,0 +1,31 @@
+$primary: #b30738;
+
+.badge-group {
+  font-size: 1.5rem;
+
+  span {
+    cursor: pointer;
+    margin-right: 1.5rem;
+    padding: .5rem 1rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.badge-primary {
+      &:hover {
+        background-color: darken($primary, 5%);
+      }
+    }
+  }
+}
+
+.submit-new-business {
+  h5 {
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
