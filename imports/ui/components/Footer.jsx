@@ -4,7 +4,7 @@ export default class Footer extends React.Component {
   
   render() {
     return (
-      <div>
+      <footer className="footer-core bg-white pt-5">
         <div className="container">
           <a href="/" className="h4 text-dark text-uppercase wordmark d-block mb-4">
             Alumni Office
@@ -80,7 +80,7 @@ export default class Footer extends React.Component {
             </a>
           </div>
         </div>
-      </div>
+      </footer>
     );
   }
   
