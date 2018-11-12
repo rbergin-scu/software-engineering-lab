@@ -265,7 +265,7 @@ export default class NewBusinessModal extends React.Component {
                        onChange={ this.handleInput } />
               </FormGroup>
               <FormGroup>
-                <Input type="checkbox" id="verified" name="verified" value="verified" onChange= { this.handleInputCheck } />
+                <Input type="checkbox" id="verified" name="verified" value="verified" onChange= { this.handleInput } />
                 <Label for="verified">Verified</Label>
               </FormGroup>
             </Col>
