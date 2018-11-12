@@ -77,7 +77,7 @@ export default class NewBusinessModal extends React.Component {
   
   handleSubmit(e) {
     e.preventDefault();
-    
+
     const business = {
       name: this.state.submission.name,
       desc: this.state.submission.desc,
@@ -90,22 +90,43 @@ export default class NewBusinessModal extends React.Component {
       phoneNumber: this.state.submission.phoneNumber,
       website: this.state.submission.website,
       category: this.state.submission.category,
-      verified: this.state.submission.verified,
     };
-  
-    Meteor.call('submissions.insert', {
-      name: this.state.submission.yourName,
-      email: this.state.submission.yourEmail,
-      phoneNumber: this.state.submission.yourPhone,
-      gradYear: parseInt(this.state.submission.gradYear),
-      business: business,
-    }, (err, res) => {
-      if (err) {
-        this.error(err);
-      } else {
-        this.toggle();
-      }
-    });
+
+    if (this.state.submission.verified == false) {
+      Meteor.call('submissions.insert', {
+        name: this.state.submission.yourName,
+        email: this.state.submission.yourEmail,
+        phoneNumber: this.state.submission.yourPhone,
+        gradYear: parseInt(this.state.submission.gradYear),
+        business: business,
+      }, (err, res) => {
+        if (err) {
+          this.error(err);
+        } else {
+          this.toggle();
+        }
+      });
+    } else {
+      Meteor.call('businesses.insert', {
+        name: this.state.submission.name,
+        desc: this.state.submission.desc,
+        photo: this.state.submission.photo,
+        country: this.state.submission.country,
+        streetAddress: this.state.submission.streetAddress,
+        state: this.state.submission.state,
+        city: this.state.submission.city,
+        zip: this.state.submission.zip,
+        phoneNumber: this.state.submission.phoneNumber,
+        website: this.state.submission.website,
+        category: this.state.submission.category,
+      }, (err, res) => {
+        if (err) {
+          this.error(err);
+        } else {
+          this.toggle();
+        }
+      });
+    }
   }
   
   render() {
