@@ -97,12 +97,6 @@ const schema = new SimpleSchema({
     type: String,
     regEx: /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/,
   },
-  
-  /* whether this business has been verified by admin (is public) */
-  verified: {
-    type: Boolean,
-    defaultValue: true,
-  },
 }, {
   requiredByDefault: false,
   tracker: Tracker,
@@ -119,14 +113,14 @@ if (Meteor.isServer) {
   });
   
   Meteor.publish('businesses.public', () => {
-    return Businesses.find({ verified: true, });
+    return Businesses.find({ });
   })
 ;}
 
 // define CRUD methods
 Meteor.methods({
   'businesses.insert'({
-    name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
+    name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
   }) {
     const item = {
       name: name,
@@ -140,7 +134,6 @@ Meteor.methods({
       zip: zip,
       phoneNumber: phoneNumber,
       website: website,
-      verified: verified,
     };
     
     // validate input
@@ -176,7 +169,7 @@ Meteor.methods({
   },
   
   'businesses.update'({
-    id, name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website, verified,
+    id, name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
   }) {
     let item = {
       name: name,
@@ -190,7 +183,6 @@ Meteor.methods({
       zip: zip,
       phoneNumber: phoneNumber,
       website: website,
-      verified: verified,
     };
     
     // validate input proposed for update
@@ -219,7 +211,6 @@ Meteor.methods({
         zip: item.zip,
         phoneNumber: item.phoneNumber,
         website: item.website,
-        verified: item.verified,
       });
     }
   },
