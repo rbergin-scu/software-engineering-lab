@@ -56,9 +56,7 @@ class AdminPage extends React.Component {
   }
 
   renderSubmissions() {
-    console.log("returning with submissions")
       return this.props.submissions.map((sub, i) => {
-        console.log("returned with submissions")
         return (
           <Submission
             key={ i }
@@ -67,6 +65,8 @@ class AdminPage extends React.Component {
             email={ sub.email }
             phoneNumber={ sub.phoneNumber }
             gradYear={ sub.gradYear }
+            id = { sub._id }
+            business = { sub.business }
           />
         );
       });

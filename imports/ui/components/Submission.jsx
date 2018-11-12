@@ -4,12 +4,44 @@ import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button } from
 
 export default class Submission extends React.Component {
 
-  approve(e) {
 
+  constructor(props) {
+    super(props);
+
+    this.approve = this.approve.bind(this);
+    this.deny = this.deny.bind(this);
   }
 
-  deny(e) {
 
+  approve() {
+    let id = this.props.id;
+    let business = this.props.business;
+
+    Meteor.call('businesses.insert', {
+      name: business.name,
+      desc: business.desc,
+      photo: business.photo,
+      country: business.country,
+      streetAddress: business.streetAddress,
+      state: business.state,
+      city: business.city,
+      zip: business.zip,
+      phoneNumber: business.phoneNumber,
+      website: business.website,
+      category: business.category,
+    });
+
+    Meteor.call('submissions.remove', {
+      id: id
+    });
+  }
+
+  deny() {
+    let id = this.props.id;
+
+    Meteor.call('submissions.remove', {
+      id: id
+    });
   }
 
   render() {
@@ -24,14 +56,15 @@ export default class Submission extends React.Component {
           <CardText className="mb-0">Grad year: {this.props.gradYear}</CardText>
         </CardBody>
         <CardFooter className="bg-primary text-white">
-          <Button color="primary" className="mr-1" onClick = { this.approve() } >
+          <Button color="primary" className="mr-1" onClick = { this.approve.bind(this) } >
             <i className="fas fa-check-circle" aria-hidden="true"/>
           </Button>
-          <Button color="primary" onClick = { this.deny() } >
+          <Button color="primary" onClick = { this.deny.bind(this) } >
             <i className="fas fa-times-circle" aria-hidden="true"/>
           </Button>
         </CardFooter>
       </Card>
     );
   }
+
 }
