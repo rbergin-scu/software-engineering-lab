@@ -79,19 +79,12 @@ class Index extends React.Component {
       <Form className="formFilterBusinesses">
         <FormGroup tag="fieldset">
           <legend>Filter by Business Type</legend>
-
-          <FormGroup>
-            <Input type="checkbox" id="food" name="feature" value="food" onChange= { this.handleInput } />
-            
-            <Label for="food">Food</Label>
-          </FormGroup>
-
-          <FormGroup>
-            <Input type="checkbox" id="entertainment" name="feature" onChange= { this.handleInput }
-                  value="entertainment" />
-            <Label for="entertainment">Entertainment</Label>
-          </FormGroup>
-
+          { Object.entries(Categories).map(([c, name], i) =>
+            <FormGroup key={ i }>
+              <Input type="checkbox" name="feature" id={ c } value={ c } onChange={ this.handleInput } />
+              <Label for={ c }>{ name }</Label>
+            </FormGroup>
+          ) }
         </FormGroup>
     </Form>
     
