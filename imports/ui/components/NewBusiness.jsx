@@ -23,12 +23,12 @@ export default class NewBusiness extends React.Component {
   
   render() {
     return (
-      <div className="submit-new-business py-4">
-        <h5 className="text-white mb-0" onClick={ this.toggle }>
+      <div className={this.state.collapse ? 'py-5' : 'py-3'}>
+        <h5 className={`text-link text-white mb-0 ${this.state.collapse ? 'text-underline' : ''}`} onClick={ this.toggle }>
           Santa Clara Alum? Submit your proudly owned business to us.&nbsp;
-          <i className="fa fa-caret-right pl-2" aria-hidden="true" />
+          <i className={`fa ${this.state.collapse ? 'fa-caret-down' : 'fa-caret-right' } pl-2`} aria-hidden="true" />
         </h5>
-        <Collapse isOpen={ this.state.collapse } className="mt-3 p-5 bg-white">
+        <Collapse isOpen={ this.state.collapse } className="mt-3 p-5 bg-white shadow">
           { this.renderForm() }
           <div>
            <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Submit for Review</Button>

@@ -18,9 +18,7 @@ export default class App extends React.Component {
     return (
       <div>
         <Header />
-        <div className="container py-4">
-          { renderRoutes() }
-        </div>
+        { renderRoutes() }
         <Footer />
       </div>
     )
