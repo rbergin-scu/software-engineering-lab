@@ -54,7 +54,7 @@ class BusinessCard extends React.Component {
   handleRemove() {
     // TODO display prompt confirming desire to remove
     // on Yes, Meteor.call
-    Meteor.call('businesses.remove', this.props.id, (err, res) => {
+    Meteor.call('businesses.remove', this.props.business._id, (err, res) => {
       console.log('err'+err);
       console.log('res'+res);
     });

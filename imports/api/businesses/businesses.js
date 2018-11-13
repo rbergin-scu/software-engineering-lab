@@ -160,9 +160,9 @@ Meteor.methods({
     }
   },
   
-  'businesses.remove'({
+  'businesses.remove'(
     id,
-  }) {
+  ) {
     if (Businesses.find({ _id: id, })) {
       Businesses.remove({ _id: id, });
     } else {
