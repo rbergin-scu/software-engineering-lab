@@ -45,9 +45,7 @@ class Index extends React.Component {
       return (
         <BusinessCard
           key={ i }
-          id={ biz._id }
-          name={ biz.name }
-          desc={ biz.desc }
+          business={ biz }
         />
       );
     });

@@ -161,32 +161,30 @@ Meteor.methods({
   },
   
   'businesses.remove'({
-    id
+    id,
   }) {
-    if (Businesses.findOne({ _id: id, })) {
-      Businesses.remove({
-        _id: id,
-      });
+    if (Businesses.find({ _id: id, })) {
+      Businesses.remove({ _id: id, });
     } else {
       throw new Meteor.Error('businesses.remove: error', 'Could not find a business with that ID.');
     }
   },
   
-  'businesses.update'({
-    id, name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
-  }) {
+  'businesses.update'(
+    business,
+  ) {
     let item = {
-      name: name,
-      desc: desc,
-      photo: photo,
-      category: category,
-      country: country,
-      streetAddress: streetAddress,
-      state: state,
-      city: city,
-      zip: zip,
-      phoneNumber: phoneNumber,
-      website: website,
+      name: business.name,
+      desc: business.desc,
+      photo: business.photo,
+      category: business.category,
+      country: business.country,
+      streetAddress: business.streetAddress,
+      state: business.state,
+      city: business.city,
+      zip: business.zip,
+      phoneNumber: business.phoneNumber,
+      website: business.website,
     };
     
     // validate input proposed for update
@@ -194,28 +192,9 @@ Meteor.methods({
 
     // look for direct match in ID
     let target;
-    if (target = Businesses.findOne({ _id: id, })) {
-      // fill empty values with existing values for convenience to user
-      Object.keys(item).forEach((key) => {
-        if (key.equals('')) {
-          item[key] = target[key];
-        }
-      });
-      
+    if (target = Businesses.find({ _id: business._id, })) {
       // update if found
-      Businesses.update({ _id: id, }, {
-        name: item.name,
-        desc: item.desc,
-        photo: item.photo,
-        category: item.category,
-        country: item.country,
-        streetAddress: item.streetAddress,
-        state: item.state,
-        city: item.city,
-        zip: item.zip,
-        phoneNumber: item.phoneNumber,
-        website: item.website,
-      });
+      Businesses.update({ _id: business._id, }, item);
     }
   },
 });
