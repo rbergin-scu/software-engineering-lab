@@ -5,7 +5,7 @@ import {
   Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
 } from 'reactstrap';
 import Submissions from '/imports/api/submissions/submissions';
-import Submission from '/imports/ui/components/Submission';
+import SubmissionCard from '/imports/ui/components/SubmissionCard';
 
 import Businesses from '/imports/api/businesses/businesses';
 
@@ -58,7 +58,7 @@ class AdminPage extends React.Component {
   renderSubmissions() {
       return this.props.submissions.map((sub, i) => {
         return (
-          <Submission
+          <SubmissionCard
             key={ i }
             name={ sub.business.name }
             submitterName={ sub.name }
