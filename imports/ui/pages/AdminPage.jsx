@@ -78,12 +78,12 @@ class AdminPage extends React.Component {
     console.log(this.props.currentUser);
     if(!Meteor.user()) {
       return (
-        <form className="login" id ="login">
+        <div className="login" id ="login" >
           <Label for="password">Password</Label>
           <Input type="password" name="password" placeholder="*****"
                  onChange={ this.handleInput } />
           <Button color="primary" onClick={ this.handleLogin.bind(this) }>Login</Button>
-        </form>
+        </div>
       );
     }
     else {
