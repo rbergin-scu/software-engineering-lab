@@ -254,7 +254,6 @@ export default class NewBusiness extends React.Component {
       phoneNumber: this.state.submission.phoneNumber,
       website: this.state.submission.website,
       category: this.state.submission.category,
-      verified: this.state.submission.verified,
     };
     
     Meteor.call('submissions.insert', {
