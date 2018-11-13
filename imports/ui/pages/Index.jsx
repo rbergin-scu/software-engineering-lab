@@ -16,6 +16,7 @@ class Index extends React.Component {
 
     this.state = {
       categories: {},
+      search: "",
     };
     
     for (let c of Object.keys(Categories)) {
@@ -23,6 +24,7 @@ class Index extends React.Component {
     }
   
     this.handleCategory = this.handleCategory.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
   
   render() {
@@ -59,7 +61,7 @@ class Index extends React.Component {
         <InputGroup className="mb-3">
           <Input type="search" name="searchBusinesses" id="searchBusinesses" />
           <InputGroupAddon addonType="append">
-            <Button type="submit" color="primary">Search</Button>
+            <Button type="submit" color="primary" onClick= {this.handleSearch}>Search</Button>
           </InputGroupAddon>
         </InputGroup>
         { this.renderFilters() }
@@ -96,6 +98,17 @@ class Index extends React.Component {
         categories : {
           ...prevState.categories, [name]: !active
         }
+      }
+    });
+  }
+
+  handleSearch(e) {
+    let searchTerm = document.getElementById("searchBusinesses").value;
+    console.log(searchTerm);
+
+    this.setState(prevState => {
+      return {
+        search : searchTerm
       }
     });
   }
