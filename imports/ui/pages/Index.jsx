@@ -27,7 +27,7 @@ class Index extends React.Component {
   
   render() {
     return (
-      <div>
+      <div className="container my-4">
         { this.renderSearch() }
         <section className="index-businesses mb-5">
           <div className="row">
