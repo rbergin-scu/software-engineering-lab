@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button } from 'reactstrap';
 
-export default class Business extends React.Component {
+export default class BusinessCard extends React.Component {
   
   render() {
     return (
@@ -10,7 +11,7 @@ export default class Business extends React.Component {
         <Card className="bg-light shadow">
           <CardImg top width="100%" src="test.jpg" alt={this.props.name}/>
           <CardBody>
-            <CardTitle>{this.props.name}</CardTitle>
+            <CardTitle><Link to={`/businesses/${this.props.id}`}>{this.props.name}</Link></CardTitle>
             <hr className="mt-0"/>
             <CardText className="mb-0">{this.props.desc}</CardText>
           </CardBody>

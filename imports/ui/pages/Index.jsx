@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
-import Business from '/imports/ui/components/Business';
+import BusinessCard from '/imports/ui/components/BusinessCard';
 
 class Index extends React.Component {
   
@@ -43,8 +43,9 @@ class Index extends React.Component {
     
     return this.props.businesses.filter(biz => filters.includes(biz.category)).map((biz, i) => {
       return (
-        <Business
+        <BusinessCard
           key={ i }
+          id={ biz._id }
           name={ biz.name }
           desc={ biz.desc }
         />
@@ -108,5 +109,4 @@ export default withTracker(() => {
     businesses: Businesses.find({}).fetch(),
     currentUser: Meteor.user(),
   };
-  
 })(Index);
