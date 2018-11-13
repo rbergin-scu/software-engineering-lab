@@ -1,5 +1,9 @@
 $primary: #b30738;
 
+.badge {
+  font-weight: normal;
+}
+
 .badge-group {
   font-size: 1.5rem;
 
@@ -30,4 +34,9 @@ $primary: #b30738;
   &:hover {
     text-decoration: underline;
   }
+}
+
+.business-page img {
+  max-width: 100%;
+  height: auto;
 }
