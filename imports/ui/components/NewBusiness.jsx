@@ -251,7 +251,7 @@ export default class NewBusiness extends React.Component {
       state: this.state.submission.state,
       city: this.state.submission.city,
       zip: this.state.submission.zip,
-      phoneNumber: this.state.submission.phoneNumber,
+      phoneNumber: this.state.submission.phoneNumber.replace(/\D/g,''),
       website: this.state.submission.website,
       category: this.state.submission.category,
     };
@@ -259,7 +259,7 @@ export default class NewBusiness extends React.Component {
     Meteor.call('submissions.insert', {
       name: this.state.submission.yourName,
       email: this.state.submission.yourEmail,
-      phoneNumber: this.state.submission.yourPhone,
+      phoneNumber: this.state.submission.yourPhone.replace(/\D/g,''),
       gradYear: parseInt(this.state.submission.gradYear),
       business: business,
     }, (err, res) => {
