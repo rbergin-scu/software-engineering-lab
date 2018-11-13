@@ -1,0 +1,42 @@
+$primary: #b30738;
+
+.badge {
+  font-weight: normal;
+}
+
+.badge-group {
+  font-size: 1.5rem;
+
+  span {
+    cursor: pointer;
+    margin-right: 1.5rem;
+    padding: .5rem 1rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.badge-primary {
+      &:hover {
+        background-color: darken($primary, 5%);
+      }
+    }
+  }
+}
+
+.text-underline {
+  text-decoration: underline;
+}
+
+.text-link {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.business-page img {
+  max-width: 100%;
+  height: auto;
+}

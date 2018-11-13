@@ -6,13 +6,18 @@ import { Businesses } from '/imports/api/businesses/businesses';
 
 Meteor.startup(() => {
   // insert test data if there's nothing
-  if (!Businesses.findOne({})) {
+  if (!Businesses.findOne()) {
     Businesses.insert({
       name: 'Krusty Krab',
       desc: 'Use your imagination, let it go. This is your world. In your world you have total and absolute power. Trees get lonely too, so we\'ll give him a little friend.',
-      photo: 'https://res.cloudinary.com/dir7oszd4/image/upload/v1540095717/sample.jpg',
+      photo: '/test.jpg',
       category: 'food',
-      verified: true,
+      phoneNumber: '1234567890',
+      website: 'https://scu.edu',
+      streetAddress: '111 Conch St',
+      city: 'Bikini Bottom',
+      state: 'OR',
+      zip: '12345',
     });
   }
 

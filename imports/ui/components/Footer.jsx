@@ -4,7 +4,7 @@ export default class Footer extends React.Component {
   
   render() {
     return (
-      <div>
+      <footer className="footer-core bg-white pt-5">
         <div className="container">
           <a href="/" className="h4 text-dark text-uppercase wordmark d-block mb-4">
             Alumni Office
@@ -68,7 +68,9 @@ export default class Footer extends React.Component {
             <div className="mr-auto">
               &copy; 2018 &middot; <a href="/accessibility" className="text-white">Accessibility</a>
             </div>
-            <a href="/login" className="text-white px-2">Login</a>
+            <a href="/admin" className="text-white px-2">Admin</a>
+            <span className="text-white px-2">|</span>
+            <a href="/" className="text-white px-2">Home</a>
             <span className="text-white px-2">|</span>
             <a className="facebook text-white px-2" href="http://www.facebook.com">
               <i className="demo-icon fab fa-facebook"/>
@@ -80,7 +82,7 @@ export default class Footer extends React.Component {
             </a>
           </div>
         </div>
-      </div>
+      </footer>
     );
   }
   
