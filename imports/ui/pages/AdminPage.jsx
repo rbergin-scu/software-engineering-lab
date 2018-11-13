@@ -1,10 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import Submissions from '/imports/api/submissions/submissions';
 import {
-  Button, Input, Label,
+  Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
 } from 'reactstrap';
+import Submissions from '/imports/api/submissions/submissions';
+import Submission from '/imports/ui/components/Submission';
+
+import Businesses from '/imports/api/businesses/businesses';
 
 class AdminPage extends React.Component {
 
@@ -12,13 +15,16 @@ class AdminPage extends React.Component {
     super(props);
 
     this.state = {
-      password: null,
+      submission: {
+        password: null
+      },
     };
 
     this.error = this.error.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   handleInput(e) {
@@ -36,29 +42,71 @@ class AdminPage extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
-    Meteor.call('accounts.login', {
-      password: this.state.submission.password,
-    }, (err, res) => {
-      if (err) {
-        this.error(err);
-      } else {
-        console.log(res);
-        this.toggle();
+    Meteor.loginWithPassword("admin", this.state.submission.password, function(err) {
+      if(err) {
+        document.getElementById("login").reset();
+        alert(err.message);
       }
     });
   }
 
+  handleLogin(e) {
+    this.handleInput(e);
+    this.handleSubmit(e);
+  }
+
+  renderSubmissions() {
+      return this.props.submissions.map((sub, i) => {
+        return (
+          <Submission
+            key={ i }
+            name={ sub.business.name }
+            submitterName={ sub.name }
+            email={ sub.email }
+            phoneNumber={ sub.phoneNumber }
+            gradYear={ sub.gradYear }
+            id = { sub._id }
+            business = { sub.business }
+          />
+        );
+      });
+  }
+
+
+
   render() {
     console.log(this.props.currentUser);
-    return (
-      <form className="login">
-        <Label for="password">Password</Label>
-        <Input type="password" name="password" placeholder="*****"
-               onChange={ this.handleInput } />
-        <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Login</Button>
-      </form>
-    );
+    if(!Meteor.user()) {
+      return (
+        <form className="login" id ="login">
+          <Label for="password">Password</Label>
+          <Input type="password" name="password" placeholder="*****"
+                 onChange={ this.handleInput } />
+          <Button color="primary" onClick={ this.handleLogin.bind(this) }>Login</Button>
+        </form>
+      );
+    }
+    else {
+      return (
+        <div>
+          <h2>Submissions</h2>
+          <div className="container py-5">
+            <section className="index-submissions">
+              <div className="card-deck">
+                { this.renderSubmissions() }
+              </div>
+            </section>
+          </div>
+          <div>
+
+            <form className="logout">
+              <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
   }
 
   error(e) {
@@ -71,6 +119,7 @@ class AdminPage extends React.Component {
 }
 export default withTracker(() => {
   Meteor.subscribe('submissions');
+  Meteor.subscribe('businesses');
 
   return {
     submissions: Submissions.find({ }).fetch(),
