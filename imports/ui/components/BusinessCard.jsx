@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Modal, ModalBody, ModalFooter, ModalHeader
+  Badge, Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 
@@ -29,11 +29,19 @@ export default class BusinessCard extends React.Component {
         <Card className="bg-light shadow">
           <CardImg top width="100%" src="test.jpg" alt={ this.props.business.name } />
           <CardBody>
-            <CardTitle>
+            <CardTitle className="d-flex align-items-center">
               <Link to={`/businesses/${this.props.business._id}`}>{ this.props.business.name }</Link>
+              <Badge color="primary" className="ml-2">{ this.props.business.category }</Badge>
             </CardTitle>
-            <hr className="mt-0"/>
-            <CardText className="mb-0">{ this.props.business.desc }</CardText>
+            <hr />
+            <div className="d-flex flex-column justify-content-between">
+              <CardText className="mb-4">
+                { this.props.business.desc }
+              </CardText>
+              <CardText>
+                <strong>{ this.props.business.city }, { this.props.business.state }, { this.props.business.zip }</strong>
+              </CardText>
+            </div>
           </CardBody>
           { this.props.admin &&
             <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
