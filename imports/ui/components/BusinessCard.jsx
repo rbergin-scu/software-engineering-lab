@@ -34,7 +34,7 @@ export default class BusinessCard extends React.Component {
               <Badge color="primary" className="ml-2">{ this.props.business.category }</Badge>
             </CardTitle>
             <hr />
-            <div className="d-flex flex-column justify-content-between">
+            <div className="d-flex flex-column align-items-stretch justify-content-between">
               <CardText className="mb-4">
                 { this.props.business.desc }
               </CardText>

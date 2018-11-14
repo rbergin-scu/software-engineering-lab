@@ -78,17 +78,23 @@ class AdminPage extends React.Component {
     console.log(this.props.currentUser);
     if(!Meteor.user()) {
       return (
-        <form className="login" id ="login">
-          <Label for="password">Password</Label>
-          <Input type="password" name="password" placeholder="*****"
-                 onChange={ this.handleInput } />
-          <Button color="primary" onClick={ this.handleLogin.bind(this) }>Login</Button>
-        </form>
+        <div className="container py-5">
+          <form className="login" id ="login">
+            <FormGroup row>
+              <Label for="password" sm={1}>Password</Label>
+              <Col sm={5}>
+                <Input type="password" name="password" placeholder="*****"
+                       onChange={ this.handleInput } />
+              </Col>
+            </FormGroup>
+            <Button color="primary" onClick={ this.handleLogin.bind(this) }>Login</Button>
+          </form>
+        </div>
       );
     }
     else {
       return (
-        <div>
+        <div className="container py-5">
           <h2>Submissions</h2>
           <div className="container py-5">
             <section className="index-submissions">

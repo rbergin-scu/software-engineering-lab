@@ -182,6 +182,7 @@ class EditBusiness extends React.Component {
       case 'select-one':
       case 'tel':
       case 'text':
+      case 'textarea':
         value = e.target.value;
         break;
       
@@ -211,6 +212,8 @@ class EditBusiness extends React.Component {
         console.log('res'+res);
       });
     }
+  
+    this.props.done();
   }
   
 }
