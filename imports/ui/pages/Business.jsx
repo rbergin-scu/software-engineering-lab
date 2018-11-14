@@ -55,7 +55,7 @@ class Business extends React.Component {
         <Container className="py-4">
           <Row>
             <Col md={9}>
-              <p>{ business.desc }</p>
+              <p className="business-desc">{ business.desc }</p>
             </Col>
             <Col md={3} className="d-flex flex-column justify-content-end">
               <Button outline color="dark" className="mb-2">Find on Yelp <i className="fab fa-yelp ml-2" /></Button>
