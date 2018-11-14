@@ -19,6 +19,7 @@ class BusinessCard extends React.Component {
       removeConfirmed: false,
     };
     
+    this.admin = this.admin.bind(this);
     this.handleEditing = this.handleEditing.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
@@ -35,19 +36,21 @@ class BusinessCard extends React.Component {
             <hr className="mt-0"/>
             <CardText className="mb-0">{ this.props.business.desc }</CardText>
           </CardBody>
-          <CardFooter className="bg-primary text-white">
-            <Button color="primary" className="mr-1" onClick={ this.handleEditing }>
-              <i className="fas fa-pencil-alt" aria-hidden="true" />
-            </Button>
-            <Button color="primary" onClick={ this.handleRemove }>
-              <i className="fas fa-minus-circle" aria-hidden="true" />
-            </Button>
-          </CardFooter>
+          { this.admin() &&
+            <CardFooter className="bg-primary text-white">
+              <Button color="primary" className="mr-1" onClick={ this.handleEditing }>
+                <i className="fas fa-pencil-alt" aria-hidden="true" />
+              </Button>
+              <Button color="primary" onClick={ this.handleRemove }>
+                <i className="fas fa-minus-circle" aria-hidden="true" />
+              </Button>
+            </CardFooter>
+          }
         </Card>
-        { this.state.editing &&
+        { this.admin() && this.state.editing &&
           <EditBusiness id={ this.props.business._id } />
         }
-        { this.state.removeRequested &&
+        { this.admin() && this.state.removeRequested &&
           this.renderConfirmModal()
         }
       </div>
@@ -57,16 +60,18 @@ class BusinessCard extends React.Component {
   renderConfirmModal() {
     return (
       <div>
-        <Modal isOpen={ this.state.removeRequested } toggle={ this.handleRemove }>
-          <ModalHeader toggle={ this.handleRemove }>Confirm Business Deletion</ModalHeader>
-          <ModalBody>
-            Are you sure you want to remove "{ this.props.business.name }" from the Business Directory?
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" id="removeConfirmed" onClick={ this.handleRemove }>Confirm</Button>
-            <Button color="secondary" onClick={ this.handleRemove }>Never mind</Button>
-          </ModalFooter>
-        </Modal>
+        { this.admin() &&
+          <Modal isOpen={ this.state.removeRequested } toggle={ this.handleRemove }>
+            <ModalHeader toggle={ this.handleRemove }>Confirm Business Deletion</ModalHeader>
+            <ModalBody>
+              Are you sure you want to remove "{ this.props.business.name }" from the Business Directory?
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" id="removeConfirmed" onClick={ this.handleRemove }>Confirm</Button>
+              <Button color="secondary" onClick={ this.handleRemove }>Never mind</Button>
+            </ModalFooter>
+          </Modal>
+        }
       </div>
     );
   }
@@ -83,6 +88,10 @@ class BusinessCard extends React.Component {
     } else {
       this.setState({ removeRequested: !this.state.removeRequested, });
     }
+  }
+  
+  admin() {
+    return this.props.currentUser !== null;
   }
   
 }
