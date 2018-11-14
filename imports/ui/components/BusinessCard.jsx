@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button } from 'reactstrap';
+import {
+  Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Modal, ModalBody, ModalFooter, ModalHeader
+} from 'reactstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { Businesses } from '/imports/api/businesses/businesses';
@@ -13,6 +15,8 @@ class BusinessCard extends React.Component {
     
     this.state = {
       editing: false,
+      removeRequested: false,
+      removeConfirmed: false,
     };
     
     this.handleEditing = this.handleEditing.bind(this);
@@ -43,6 +47,26 @@ class BusinessCard extends React.Component {
         { this.state.editing &&
           <EditBusiness id={ this.props.business._id } />
         }
+        { this.state.removeRequested &&
+          this.renderConfirmModal()
+        }
+      </div>
+    );
+  }
+  
+  renderConfirmModal() {
+    return (
+      <div>
+        <Modal isOpen={ this.state.removeRequested } toggle={ this.handleRemove }>
+          <ModalHeader toggle={ this.handleRemove }>Confirm Business Deletion</ModalHeader>
+          <ModalBody>
+            Are you sure you want to remove "{ this.props.business.name }" from the Business Directory?
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" id="removeConfirmed" onClick={ this.handleRemove }>Confirm</Button>
+            <Button color="secondary" onClick={ this.handleRemove }>Never mind</Button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }
@@ -51,13 +75,14 @@ class BusinessCard extends React.Component {
     this.setState({ editing: !this.state.editing, });
   }
   
-  handleRemove() {
-    // TODO display prompt confirming desire to remove
-    // on Yes, Meteor.call
-    Meteor.call('businesses.remove', this.props.business._id, (err, res) => {
-      console.log('err'+err);
-      console.log('res'+res);
-    });
+  handleRemove(e) {
+    if (e.target.id === 'removeConfirmed') {
+      Meteor.call('businesses.remove', this.props.business._id, (err, res) => {
+        console.log(err, res);
+      });
+    } else {
+      this.setState({ removeRequested: !this.state.removeRequested, });
+    }
   }
   
 }
