@@ -13,7 +13,9 @@ export default class NewBusiness extends React.Component {
     
     this.state = {
       collapse: false,
-      submission: { },
+      submission: {
+        category: 'entertainment',
+      },
     };
     
     this.handleInput = this.handleInput.bind(this);
@@ -106,9 +108,9 @@ export default class NewBusiness extends React.Component {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Label for="desc" sm={2}>Brief Description</Label>
+            <Label for="desc" sm={2}>Description</Label>
             <Col sm={10}>
-              <Input type="text" name="desc" placeholder="A fictional fast food restaurant in the American animated TV series SpongeBob SquarePants."
+              <Input type="textarea" name="desc" placeholder="A fictional fast food restaurant in the American animated TV series SpongeBob SquarePants."
                      onChange={ this.handleInput } required />
             </Col>
           </FormGroup>
@@ -220,6 +222,7 @@ export default class NewBusiness extends React.Component {
       case 'select-one':
       case 'tel':
       case 'text':
+      case 'textarea':
         value = e.target.value;
         break;
       

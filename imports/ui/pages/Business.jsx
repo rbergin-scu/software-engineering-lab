@@ -55,7 +55,7 @@ class Business extends React.Component {
         <Container className="py-4">
           <Row>
             <Col md={9}>
-              <p>{ business.desc }</p>
+              <p className="business-desc">{ business.desc }</p>
             </Col>
             <Col md={3} className="d-flex flex-column justify-content-end">
               <Button outline color="dark" className="mb-2">Find on Yelp <i className="fab fa-yelp ml-2" /></Button>
@@ -68,10 +68,12 @@ class Business extends React.Component {
   }
   
   formatPhoneNumber(phone) {
-    phone = phone.replace(/[^\d]/g, '');
-    
-    if (phone.length === 10) {
-      return phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+    if (phone && phone.length > 0) {
+      phone = phone.replace(/[^\d]/g, '');
+  
+      if (phone.length === 10) {
+        return phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+      }
     }
   }
   

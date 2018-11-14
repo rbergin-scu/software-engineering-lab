@@ -26,6 +26,7 @@ class EditBusiness extends React.Component {
         { this.renderForm() }
         <div>
           <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Update Business</Button>
+          <Button outline color="secondary" onClick={ this.props.done } className="ml-2">Cancel</Button>
         </div>
       </div>
     );
@@ -36,7 +37,7 @@ class EditBusiness extends React.Component {
       <Form onSubmit={ this.handleSubmit }>
         <FormGroup tag="fieldset">
           <FormGroup row>
-            <Label for="name" sm={3}>Business Name</Label>
+            <Label for="name" sm={3}>Name</Label>
             <Col sm={9}>
               <Input type="text" name="name" value={ this.state.submission.name }
                      onChange={ this.handleInput } required />
@@ -67,14 +68,14 @@ class EditBusiness extends React.Component {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Label for="desc" sm={3}>Brief Description</Label>
+            <Label for="desc" sm={3}>Description</Label>
             <Col sm={9}>
-              <Input type="text" name="desc" value={ this.state.submission.desc }
+              <Input type="textarea" name="desc" value={ this.state.submission.desc }
                      onChange={ this.handleInput } required />
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Label for="photo" sm={3}>A Nice Photo</Label>
+            <Label for="photo" sm={3}>Photo</Label>
             <Col sm={9}>
               <Input type="file" name="photo"
                      onChange={ this.handleInput } />
@@ -181,6 +182,7 @@ class EditBusiness extends React.Component {
       case 'select-one':
       case 'tel':
       case 'text':
+      case 'textarea':
         value = e.target.value;
         break;
       
@@ -203,10 +205,15 @@ class EditBusiness extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     
-    Meteor.call('businesses.update', this.state.submission, (err, res) => {
-      console.log('err'+err);
-      console.log('res'+res);
-    });
+    // uniquely identify just the submit button
+    if (e.target.classList.contains('btn-primary')) {
+      Meteor.call('businesses.update', this.state.submission, (err, res) => {
+        console.log('err'+err);
+        console.log('res'+res);
+      });
+    }
+  
+    this.props.done();
   }
   
 }

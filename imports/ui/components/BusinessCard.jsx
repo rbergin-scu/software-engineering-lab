@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Modal, ModalBody, ModalFooter, ModalHeader
+  Badge, Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { Businesses } from '/imports/api/businesses/businesses';
 import EditBusiness from '/imports/ui/components/EditBusiness';
 
-class BusinessCard extends React.Component {
+export default class BusinessCard extends React.Component {
   
   constructor(props) {
     super(props);
@@ -19,7 +19,6 @@ class BusinessCard extends React.Component {
       removeConfirmed: false,
     };
     
-    this.admin = this.admin.bind(this);
     this.handleEditing = this.handleEditing.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
@@ -30,27 +29,45 @@ class BusinessCard extends React.Component {
         <Card className="bg-light shadow">
           <CardImg top width="100%" src="test.jpg" alt={ this.props.business.name } />
           <CardBody>
-            <CardTitle>
+            <CardTitle className="d-flex align-items-center">
               <Link to={`/businesses/${this.props.business._id}`}>{ this.props.business.name }</Link>
+              <Badge color="primary" className="ml-2">{ this.props.business.category }</Badge>
             </CardTitle>
-            <hr className="mt-0"/>
-            <CardText className="mb-0">{ this.props.business.desc }</CardText>
+            <hr />
+            <div className="d-flex flex-column align-items-stretch justify-content-between">
+              <CardText className="mb-4">
+                { this.props.business.desc }
+              </CardText>
+              <CardText>
+                <strong>{ this.props.business.city }, { this.props.business.state }, { this.props.business.zip }</strong>
+              </CardText>
+            </div>
           </CardBody>
-          { this.admin() &&
-            <CardFooter className="bg-primary text-white">
-              <Button color="primary" className="mr-1" onClick={ this.handleEditing }>
-                <i className="fas fa-pencil-alt" aria-hidden="true" />
-              </Button>
-              <Button color="primary" onClick={ this.handleRemove }>
-                <i className="fas fa-minus-circle" aria-hidden="true" />
-              </Button>
+          { this.props.admin &&
+            <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
+              <div>
+                <Button color="primary" className="mr-1" onClick={ this.handleEditing }>
+                  <i className="fas fa-pencil-alt" aria-hidden="true" />
+                </Button>
+                <Button color="primary" onClick={ this.handleRemove }>
+                  <i className="fas fa-minus-circle" aria-hidden="true" />
+                </Button>
+              </div>
+              <div>
+                { this.state.editing &&
+                <p className="mb-0 text-white text-sans-bold">Editing..</p>
+                }
+              </div>
             </CardFooter>
           }
         </Card>
-        { this.admin() && this.state.editing &&
-          <EditBusiness id={ this.props.business._id } />
+        { this.props.admin && this.state.editing &&
+          <EditBusiness
+            id={ this.props.business._id }
+            done={ this.handleEditing }
+          />
         }
-        { this.admin() && this.state.removeRequested &&
+        { this.props.admin && this.state.removeRequested &&
           this.renderConfirmModal()
         }
       </div>
@@ -60,7 +77,7 @@ class BusinessCard extends React.Component {
   renderConfirmModal() {
     return (
       <div>
-        { this.admin() &&
+        { this.props.admin &&
           <Modal isOpen={ this.state.removeRequested } toggle={ this.handleRemove }>
             <ModalHeader toggle={ this.handleRemove }>Confirm Business Deletion</ModalHeader>
             <ModalBody>
@@ -76,7 +93,7 @@ class BusinessCard extends React.Component {
     );
   }
   
-  handleEditing() {
+  handleEditing(e) {
     this.setState({ editing: !this.state.editing, });
   }
   
@@ -85,22 +102,9 @@ class BusinessCard extends React.Component {
       Meteor.call('businesses.remove', this.props.business._id, (err, res) => {
         console.log(err, res);
       });
-    } else {
-      this.setState({ removeRequested: !this.state.removeRequested, });
     }
-  }
-  
-  admin() {
-    return this.props.currentUser !== null;
+    
+    this.setState({ removeRequested: !this.state.removeRequested, });
   }
   
 }
-
-export default withTracker(() => {
-  Meteor.subscribe('businesses.public');
-  
-  return {
-    businesses: Businesses.find({}).fetch(),
-    currentUser: Meteor.user(),
-  };
-})(BusinessCard);

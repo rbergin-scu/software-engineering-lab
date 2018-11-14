@@ -22,6 +22,7 @@ class Index extends React.Component {
       this.state.categories[c] = true;
     }
   
+    this.admin = this.admin.bind(this);
     this.handleCategory = this.handleCategory.bind(this);
   }
   
@@ -46,6 +47,7 @@ class Index extends React.Component {
         <BusinessCard
           key={ i }
           business={ biz }
+          admin={ this.admin() }
         />
       );
     });
@@ -96,6 +98,10 @@ class Index extends React.Component {
         }
       }
     });
+  }
+  
+  admin() {
+    return this.props.currentUser !== null;
   }
   
 }
