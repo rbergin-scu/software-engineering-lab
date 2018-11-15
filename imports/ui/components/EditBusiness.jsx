@@ -62,8 +62,9 @@ class EditBusiness extends React.Component {
             <Col sm={9}>
               <Input type="select" name="category"
                      onChange={ this.handleInput } required>
-                <option name="entertainment" value="entertainment">Entertainment</option>
-                <option name="food" value="food">Food</option>
+                { Object.entries(Categories).map(([c, C], i) => {
+                  return (<option key={ i } name={ c } value={ C }>{ C }</option>);
+                }) }
               </Input>
             </Col>
           </FormGroup>
