@@ -17,7 +17,7 @@ Meteor.startup(() => {
       streetAddress: '111 Conch St',
       city: 'Bikini Bottom',
       state: 'OR',
-      zip: '12345',
+      zip: '97068',
     });
   }
 

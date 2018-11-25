@@ -1,10 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { Button, Col, Collapse, Form, FormGroup, FormText, Input, Label, Row, } from 'reactstrap';
+import { Button, Col, Collapse, Form, FormGroup, FormText, Row, } from 'reactstrap';
 import update from 'immutability-helper';
 
-import { Businesses, Categories } from '/imports/api/businesses/businesses';
-import Submissions from '/imports/api/submissions/submissions';
+import { Categories } from '/imports/api/businesses/businesses';
 import InputField from '/imports/ui/components/InputField';
 
 const USStates = {
@@ -155,7 +154,8 @@ export default class NewBusiness extends React.Component {
             <Col md={3} className="px-0">
               <InputField
                 handle={ this.handleInput } error={ this.state.errors['business.state'] }
-                name="business.state" type="select" options={ USStates } isColumn={ true }/>
+                name="business.state" type="select"
+                options={ USStates } isColumn={ true } />
             </Col>
             <Col md={3} className="px-0">
               <InputField

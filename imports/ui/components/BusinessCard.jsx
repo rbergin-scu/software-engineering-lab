@@ -5,7 +5,6 @@ import {
 } from 'reactstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { Businesses } from '/imports/api/businesses/businesses';
 import EditBusiness from '/imports/ui/components/EditBusiness';
 
 export default class BusinessCard extends React.Component {

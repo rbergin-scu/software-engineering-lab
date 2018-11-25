@@ -126,6 +126,17 @@ if (Meteor.isServer) {
 
 // define CRUD methods
 Meteor.methods({
+  'businesses.validate'(
+    business,
+  ) {
+    try {
+      Businesses.schema.validate(business);
+      return undefined;
+    } catch (e) {
+      return e.details;
+    }
+  },
+  
   'businesses.insert'({
     name, description, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
   }) {
@@ -174,30 +185,11 @@ Meteor.methods({
   },
   
   'businesses.update'(
-    business,
+    id, business,
   ) {
-    let item = {
-      name: business.name,
-      description: business.description,
-      photo: business.photo,
-      category: business.category,
-      country: business.country,
-      streetAddress: business.streetAddress,
-      state: business.state,
-      city: business.city,
-      zip: business.zip,
-      phoneNumber: business.phoneNumber,
-      website: business.website,
-    };
-    
-    // validate input proposed for update
-    Businesses.schema.validate(item);
-
-    // look for direct match in ID
-    let target;
-    if (target = Businesses.find({ _id: business._id, })) {
+    if (Businesses.find({ _id: id })) {
       // update if found
-      Businesses.update({ _id: business._id, }, item);
+      Businesses.update({ _id: id }, business);
     }
   },
 });
