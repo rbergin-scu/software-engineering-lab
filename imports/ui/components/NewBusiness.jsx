@@ -114,10 +114,11 @@ export default class NewBusiness extends React.Component {
    * @param placeholder <input placeholder> attribute.
    * @param required  <input required> attribute.
    * @param options If type <select>, the set of possible dropdown options.
+   * @param column  If desired, set true to display form group as two columns rather than one row.
    */
-  renderField(name, type, placeholder, required, options) {
+  renderField(name, type, placeholder, required, options, column) {
     return (
-      <FormGroup row>
+      <FormGroup row={ column === undefined ? true : !column }>
         <Label for={ name } sm={ 2 }>{ Submissions.schema.label(name) }</Label>
         <Col sm={ 10 }>
           { (type === 'email' || type === 'file' || type === 'tel' || type === 'text') &&
@@ -164,14 +165,14 @@ export default class NewBusiness extends React.Component {
           { this.renderField('business.website', 'text', 'www.website.com', false) }
           { this.renderField('business.streetAddress', 'text', '', false) }
           <Row>
-            <Col md={6}>
-              { this.renderField('business.city', 'text', 'Bikini Bottom', false) }
+            <Col md={6} className="px-0">
+              { this.renderField('business.city', 'text', 'Bikini Bottom', false, undefined, true) }
             </Col>
-            <Col md={3}>
-              { this.renderField('business.state', 'select', undefined, false, USStates) }
+            <Col md={3} className="px-0">
+              { this.renderField('business.state', 'select', undefined, false, USStates, true) }
             </Col>
-            <Col md={3}>
-              { this.renderField('business.zip', 'text', '54321', false) }
+            <Col md={3} className="px-0">
+              { this.renderField('business.zip', 'text', '54321', false, undefined, true) }
             </Col>
           </Row>
           <FormText color="muted">
