@@ -6,19 +6,78 @@ import update from 'immutability-helper';
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import Submissions from '/imports/api/submissions/submissions';
 
+const USStates = {
+  AL: 'Alabama',
+  AK: 'Alaska',
+  AZ: 'Arizona',
+  AR: 'Arkansas',
+  CA: 'California',
+  CO: 'Colorado',
+  CT: 'Connecticut',
+  DE: 'Delaware',
+  DC: 'District Of Columbia',
+  FL: 'Florida',
+  GA: 'Georgia',
+  HI: 'Hawaii',
+  ID: 'Idaho',
+  IL: 'Illinois',
+  IN: 'Indiana',
+  IA: 'Iowa',
+  KS: 'Kansas',
+  KY: 'Kentucky',
+  LA: 'Louisiana',
+  ME: 'Maine',
+  MD: 'Maryland',
+  MA: 'Massachusetts',
+  MI: 'Michigan',
+  MN: 'Minnesota',
+  MS: 'Mississippi',
+  MO: 'Missouri',
+  MT: 'Montana',
+  NE: 'Nebraska',
+  NV: 'Nevada',
+  NH: 'New Hampshire',
+  NJ: 'New Jersey',
+  NM: 'New Mexico',
+  NY: 'New York',
+  NC: 'North Carolina',
+  ND: 'North Dakota',
+  OH: 'Ohio',
+  OK: 'Oklahoma',
+  OR: 'Oregon',
+  PA: 'Pennsylvania',
+  RI: 'Rhode Island',
+  SC: 'South Carolina',
+  SD: 'South Dakota',
+  TN: 'Tennessee',
+  TX: 'Texas',
+  UT: 'Utah',
+  VT: 'Vermont',
+  VA: 'Virginia',
+  WA: 'Washington',
+  WV: 'West Virginia',
+  WI: 'Wisconsin',
+  WY: 'Wyoming',
+};
+
 export default class NewBusiness extends React.Component {
   
   constructor(props) {
     super(props);
     
     this.state = {
+      /* whether the form is open */
       collapse: false,
+      
+      /* latest form validation errors */
+      errors: { },
+      
+      /* latest form input values */
       submission: {
         business: {
           category: Object.keys(Categories)[0],
         },
       },
-      errors: { },
     };
     
     this.handleInput = this.handleInput.bind(this);
@@ -47,6 +106,15 @@ export default class NewBusiness extends React.Component {
     );
   }
   
+  /**
+   * Renders any generic form input field, including <select>, and automatically binds a listener to onChange events.
+   *
+   * @param name  <input name> attribute.
+   * @param type  <input type> attribute.
+   * @param placeholder <input placeholder> attribute.
+   * @param required  <input required> attribute.
+   * @param options If type <select>, the set of possible dropdown options.
+   */
   renderField(name, type, placeholder, required, options) {
     return (
       <FormGroup row>
@@ -91,7 +159,7 @@ export default class NewBusiness extends React.Component {
           { this.renderField('business.name', 'text', 'The Krusty Krab', true) }
           { this.renderField('business.description', 'textarea', '', true) }
           { this.renderField('business.category', 'select', '', true, Categories) }
-          { this.renderField('business.photo', 'file', '', false) }
+          { this.renderField('business.photo', 'file', undefined, false) }
           { this.renderField('business.phoneNumber', 'text', '(123) 456-7890', false) }
           { this.renderField('business.website', 'text', 'www.website.com', false) }
           { this.renderField('business.streetAddress', 'text', '', false) }
@@ -100,63 +168,7 @@ export default class NewBusiness extends React.Component {
               { this.renderField('business.city', 'text', 'Bikini Bottom', false) }
             </Col>
             <Col md={3}>
-              <FormGroup>
-                <Label for="state">State</Label>
-                <Input type="select" className="form-control mb-2" name="business.state"
-                       value={ this.state.submission.state } onChange={ this.handleInput }>
-                  <option value="AL">Alabama</option>
-                  <option value="AK">Alaska</option>
-                  <option value="AZ">Arizona</option>
-                  <option value="AR">Arkansas</option>
-                  <option value="CA">California</option>
-                  <option value="CO">Colorado</option>
-                  <option value="CT">Connecticut</option>
-                  <option value="DE">Delaware</option>
-                  <option value="DC">District Of Columbia</option>
-                  <option value="FL">Florida</option>
-                  <option value="GA">Georgia</option>
-                  <option value="HI">Hawaii</option>
-                  <option value="ID">Idaho</option>
-                  <option value="IL">Illinois</option>
-                  <option value="IN">Indiana</option>
-                  <option value="IA">Iowa</option>
-                  <option value="KS">Kansas</option>
-                  <option value="KY">Kentucky</option>
-                  <option value="LA">Louisiana</option>
-                  <option value="ME">Maine</option>
-                  <option value="MD">Maryland</option>
-                  <option value="MA">Massachusetts</option>
-                  <option value="MI">Michigan</option>
-                  <option value="MN">Minnesota</option>
-                  <option value="MS">Mississippi</option>
-                  <option value="MO">Missouri</option>
-                  <option value="MT">Montana</option>
-                  <option value="NE">Nebraska</option>
-                  <option value="NV">Nevada</option>
-                  <option value="NH">New Hampshire</option>
-                  <option value="NJ">New Jersey</option>
-                  <option value="NM">New Mexico</option>
-                  <option value="NY">New York</option>
-                  <option value="NC">North Carolina</option>
-                  <option value="ND">North Dakota</option>
-                  <option value="OH">Ohio</option>
-                  <option value="OK">Oklahoma</option>
-                  <option value="OR">Oregon</option>
-                  <option value="PA">Pennsylvania</option>
-                  <option value="RI">Rhode Island</option>
-                  <option value="SC">South Carolina</option>
-                  <option value="SD">South Dakota</option>
-                  <option value="TN">Tennessee</option>
-                  <option value="TX">Texas</option>
-                  <option value="UT">Utah</option>
-                  <option value="VT">Vermont</option>
-                  <option value="VA">Virginia</option>
-                  <option value="WA">Washington</option>
-                  <option value="WV">West Virginia</option>
-                  <option value="WI">Wisconsin</option>
-                  <option value="WY">Wyoming</option>
-                </Input>
-              </FormGroup>
+              { this.renderField('business.state', 'select', undefined, false, USStates) }
             </Col>
             <Col md={3}>
               { this.renderField('business.zip', 'text', '54321', false) }
@@ -244,9 +256,7 @@ export default class NewBusiness extends React.Component {
           return list;
         }, {});
         
-        this.setState({
-          errors: errors
-        });
+        this.setState({ errors: errors });
       } else {
         // otherwise, attempt to insert the new Submission
         
