@@ -36,7 +36,7 @@ export default class BusinessCard extends React.Component {
             <hr />
             <div className="d-flex flex-column align-items-stretch justify-content-between">
               <CardText className="mb-4">
-                { this.props.business.desc }
+                { this.props.business.description }
               </CardText>
               <CardText>
                 <strong>{ this.props.business.city }, { this.props.business.state }, { this.props.business.zip }</strong>

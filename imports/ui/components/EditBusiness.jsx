@@ -69,9 +69,9 @@ class EditBusiness extends React.Component {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Label for="desc" sm={3}>Description</Label>
+            <Label for="description" sm={3}>Description</Label>
             <Col sm={9}>
-              <Input type="textarea" name="desc" value={ this.state.submission.desc }
+              <Input type="textarea" name="description" value={ this.state.submission.description }
                      onChange={ this.handleInput } required />
             </Col>
           </FormGroup>

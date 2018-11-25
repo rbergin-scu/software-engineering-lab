@@ -19,7 +19,7 @@ export default class SubmissionCard extends React.Component {
 
     Meteor.call('businesses.insert', {
       name: business.name,
-      desc: business.desc,
+      description: business.description,
       photo: business.photo,
       country: business.country,
       streetAddress: business.streetAddress,

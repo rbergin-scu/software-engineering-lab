@@ -12,8 +12,8 @@ const Businesses = new Mongo.Collection('businesses');
   define Business Category possible values
  */
 const Categories = {
-  food: 'Food',
   entertainment: 'Entertainment',
+  food: 'Food',
 };
 
 /*
@@ -30,12 +30,11 @@ const schema = new SimpleSchema({
   },
   
   /* brief description */
-  desc: {
+  description: {
     type: String,
     required: true,
     regEx: /(\n|^).*?(?=\n|$)/,
     max: 140,
-    label: 'Description',
   },
   
   /* header photo */
@@ -124,11 +123,11 @@ if (Meteor.isServer) {
 // define CRUD methods
 Meteor.methods({
   'businesses.insert'({
-    name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
+    name, description, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
   }) {
     const item = {
       name: name,
-      desc: desc,
+      description: description,
       photo: photo,
       category: category,
       country: country,
@@ -175,7 +174,7 @@ Meteor.methods({
   ) {
     let item = {
       name: business.name,
-      desc: business.desc,
+      description: business.description,
       photo: business.photo,
       category: business.category,
       country: business.country,
