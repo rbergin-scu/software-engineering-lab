@@ -83,7 +83,6 @@ export default class NewBusiness extends React.Component {
     
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.renderField = this.renderField.bind(this);
     this.toggle = this.toggle.bind(this);
   }
   
@@ -104,46 +103,6 @@ export default class NewBusiness extends React.Component {
         </Collapse>
       </div>
     );
-  }
-  
-  /**
-   * Renders any generic form input field, including <select>, and automatically binds a listener to onChange events.
-   *
-   * @param name  <input name> attribute.
-   * @param type  <input type> attribute.
-   * @param placeholder <input placeholder> attribute.
-   * @param required  <input required> attribute.
-   * @param options If type <select>, the set of possible dropdown options.
-   * @param column  If desired, set true to display form group as two columns rather than one row.
-   */
-  renderField(name, type, placeholder, required, options, column) {
-    return (
-      <FormGroup row={ column === undefined ? true : !column }>
-        <Label for={ name } sm={ 2 }>{ Submissions.schema.label(name) }</Label>
-        <Col sm={ 10 }>
-          { (type === 'email' || type === 'file' || type === 'tel' || type === 'text') &&
-          <input type={ type } name={ name } onChange={ this.handleInput }
-                 placeholder={ placeholder } required={ required }
-                 className={`form-control mb-2 ${this.state.errors[name] && 'border-warning'}`} />
-          }
-          
-          { type === 'textarea' &&
-          <textarea name={ name } onChange={ this.handleInput } className="form-control mb-2" required={ required } />
-          }
-          
-          { type === 'select' &&
-          <select name={ name } onChange={ this.handleInput }
-                 className="form-control mb-2" value={ this.state.submission[name] }>
-            { Object.entries(options).map(([key, value], i) => <option key={ i } value={ key }>{ value }</option>) }
-          </select>
-          }
-          
-          { this.state.errors[name] &&
-          <span className="text-sans-bold text-warning">{ this.state.errors[name] && this.state.errors[name] }.</span>
-          }
-        </Col>
-      </FormGroup>
-    )
   }
   
   renderForm() {
@@ -276,7 +235,9 @@ export default class NewBusiness extends React.Component {
     e.preventDefault();
     
     let submission = this.state.submission;
-    console.log(submission);
+  
+    // convert strings to numbers
+    submission.gradYear = parseInt(submission.gradYear);
   
     // attempt to validate newest submission
     Meteor.call('submissions.validate', submission, (err, res) => {
@@ -289,8 +250,6 @@ export default class NewBusiness extends React.Component {
         
         this.setState({ errors: errors });
       } else {
-        // otherwise, attempt to insert the new Submission
-        
         // normalize phone #s
         submission.gradPhone = submission.gradPhone.replace(/\D/g,'');
         submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
