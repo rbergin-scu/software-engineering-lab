@@ -9,23 +9,26 @@ import { Businesses } from '/imports/api/businesses/businesses';
 const Submissions = new Mongo.Collection('submissions');
 
 const schema = new SimpleSchema({
+  
   /* name of submitter */
-  name: {
+  gradName: {
     type: String,
     required: true,
-    label: 'Full name',
+    label: 'Your name',
   },
   
   /* email of submitter */
-  email: {
+  gradEmail: {
     type: String,
     regEx: SimpleSchema.RegEx.Email,
+    label: 'Email address',
   },
   
   /* phone number of submitter */
-  phoneNumber: {
+  gradPhone: {
     type: String,
     regEx: SimpleSchema.RegEx.Phone,
+    label: 'Phone number',
   },
   
   /* graduation year */
@@ -41,9 +44,12 @@ const schema = new SimpleSchema({
     type: Businesses.schema,
     required: true,
   },
+  
 }, {
+  
   requiredByDefault: false,
   tracker: Tracker,
+  
 });
 const schemaContext = schema.newContext();
 Submissions.schema = schema;
@@ -56,28 +62,31 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'submissions.insert'({
-    name, email, phoneNumber, gradYear, business,
-  }) {
-    const item = {
-      name: name,
-      email: email,
-      phoneNumber: phoneNumber,
-      gradYear: gradYear,
-      business: business,
-    };
-    
+  'submissions.validate'(
+    submission,
+  ) {
+    try {
+      Submissions.schema.validate(submission);
+      return undefined;
+    } catch (e) {
+      return e.details;
+    }
+  },
+  
+  'submissions.insert'(
+    submission,
+  ) {
     // validate input
-    Submissions.schema.validate(item);
+    Submissions.schema.validate(submission);
     
     // check for duplicate (by name); Shouldn't come up: any duplicated should be caught be Businesses schema
-    if (Submissions.findOne({ name: item.name, business: item.business, })) {
+    if (Submissions.findOne({ gradName: submission.gradName, business: submission.business, })) {
       throw new Meteor.Error('submissions-found', 'You have already submitted that business.');
     } else {
       // submit to database
-      const result = Submissions.insert(item, (err) => {
+      const result = Submissions.insert(submission, (err) => {
         if (err) {
-          throw new Meteor.Error('submissions-insert', err.details);
+          throw new Meteor.Error('submissions.insert', err.details);
         }
       });
       
@@ -90,39 +99,6 @@ Meteor.methods({
   }) {
     Submissions.remove({
       _id: id,
-    });
-  },
-  
-  'submissions.update'({
-    id, name, email, phoneNumber, gradYear, business,
-  }) {
-    // validate update
-    Submissions.schema.validate({
-      id, name, email, phoneNumber, gradYear,
-    });
-
-    if (Submissions.findOne({ _id: id, })) {
-      if(!name) {
-        name = this.name;
-      }
-      if(!email) {
-        email = this.name;
-      }
-      if(!phoneNumber) {
-        phoneNumber = this.name;
-      }
-      if(!gradYear) {
-        gradYear = this.name;
-      }
-    }
-    
-    // submit to database
-    Submissions.update({ _id: id }, {
-      name: name,
-      email: email,
-      phoneNumber: phoneNumber,
-      gradYear: gradYear,
-      business: business,
     });
   },
 });

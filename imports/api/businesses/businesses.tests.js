@@ -26,7 +26,7 @@ StubCollections.stub(Businesses);
 
 Factory.define('business', Businesses, {
   name: () => faker.company.companyName(),
-  desc: () => faker.company.catchPhrase(),
+  description: () => faker.company.catchPhrase(),
   photo: () => faker.image.imageUrl(),
   category: () => {
     let keys = Object.keys(Categories);
@@ -53,9 +53,9 @@ describe('Businesses', () => {
     });
     
     it('should have a Description of at most 140 characters', () => {
-      expect(business.desc).to.not.be.empty;
-      expect(business.desc).to.have.lengthOf.at.most(140);
-      expect(business.desc).to.match(/(\n|^).*?(?=\n|$)/);
+      expect(business.description).to.not.be.empty;
+      expect(business.description).to.have.lengthOf.at.most(140);
+      expect(business.description).to.match(/(\n|^).*?(?=\n|$)/);
     });
     
     it('should have a valid Category', () => {
@@ -122,11 +122,11 @@ describe('Businesses', () => {
   });
   
   it('should render', () => {
-    const item = Enzyme.shallow(<Business name={business.name} desc={business.desc}/>);
+    const item = Enzyme.shallow(<Business name={business.name} description={business.description}/>);
     
     expect(item.find(Card)).to.have.lengthOf(1);
     expect(item.find(CardTitle).dive().text()).to.equal(business.name);
-    expect(item.find(CardText).dive().text()).to.equal(business.desc);
+    expect(item.find(CardText).dive().text()).to.equal(business.description);
   });
   
 });

@@ -9,7 +9,7 @@ Meteor.startup(() => {
   if (!Businesses.findOne()) {
     Businesses.insert({
       name: 'Krusty Krab',
-      desc: 'This is your world. In your world you have total and absolute power. Trees get lonely too, so we\'ll give him a little friend.',
+      description: 'This is your world. In your world you have total and absolute power. Trees get lonely too, so we\'ll give him a little friend.',
       photo: '/test.jpg',
       category: 'food',
       phoneNumber: '1234567890',
@@ -17,7 +17,7 @@ Meteor.startup(() => {
       streetAddress: '111 Conch St',
       city: 'Bikini Bottom',
       state: 'OR',
-      zip: '12345',
+      zip: '97068',
     });
   }
 

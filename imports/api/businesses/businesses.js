@@ -12,14 +12,15 @@ const Businesses = new Mongo.Collection('businesses');
   define Business Category possible values
  */
 const Categories = {
-  food: 'Food',
   entertainment: 'Entertainment',
+  food: 'Food',
 };
 
 /*
   define Business schema
  */
 const schema = new SimpleSchema({
+  
   /* title of business */
   name: {
     type: String,
@@ -30,17 +31,10 @@ const schema = new SimpleSchema({
   },
   
   /* brief description */
-  desc: {
+  description: {
     type: String,
     required: true,
     regEx: /(\n|^).*?(?=\n|$)/,
-    max: 140,
-    label: 'Description',
-  },
-  
-  /* header photo */
-  photo: {
-    type: String,
     max: 140,
   },
   
@@ -49,6 +43,24 @@ const schema = new SimpleSchema({
     type: String,
     required: true,
     allowedValues: Object.keys(Categories),
+  },
+  
+  /* header photo */
+  photo: {
+    type: String,
+    max: 140,
+  },
+  
+  /* phone number of business */
+  phoneNumber: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Phone,
+  },
+  
+  /* url of website for business */
+  website: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Domain,
   },
   
   /* country (location) */
@@ -66,12 +78,6 @@ const schema = new SimpleSchema({
     max: 60,
   },
   
-  /* state (location) */
-  state: {
-    type: String,
-    regEx: /[A-Z]{2}/,
-  },
-  
   /* city (location) */
   city: {
     type: String,
@@ -79,27 +85,24 @@ const schema = new SimpleSchema({
     max: 60,
   },
   
+  /* state (location) */
+  state: {
+    type: String,
+    regEx: /[A-Z]{2}/,
+  },
+  
   /* zip (location) */
   zip: {
     type: String,
-    regEx: /^\d{5}(?:[-\s]\d{4})?$/,
+    regEx: SimpleSchema.RegEx.ZipCode,
     label: 'ZIP',
   },
   
-  /* phone number of business */
-  phoneNumber: {
-    type: String,
-    regEx: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
-  },
-  
-  /* url of website for business */
-  website: {
-    type: String,
-    regEx: /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/,
-  },
 }, {
+  
   requiredByDefault: false,
   tracker: Tracker,
+  
 });
 const schemaContext = schema.newContext();
 Businesses.schema = schema;
@@ -123,12 +126,23 @@ if (Meteor.isServer) {
 
 // define CRUD methods
 Meteor.methods({
+  'businesses.validate'(
+    business,
+  ) {
+    try {
+      Businesses.schema.validate(business);
+      return undefined;
+    } catch (e) {
+      return e.details;
+    }
+  },
+  
   'businesses.insert'({
-    name, desc, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
+    name, description, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
   }) {
     const item = {
       name: name,
-      desc: desc,
+      description: description,
       photo: photo,
       category: category,
       country: country,
@@ -171,30 +185,11 @@ Meteor.methods({
   },
   
   'businesses.update'(
-    business,
+    id, business,
   ) {
-    let item = {
-      name: business.name,
-      desc: business.desc,
-      photo: business.photo,
-      category: business.category,
-      country: business.country,
-      streetAddress: business.streetAddress,
-      state: business.state,
-      city: business.city,
-      zip: business.zip,
-      phoneNumber: business.phoneNumber,
-      website: business.website,
-    };
-    
-    // validate input proposed for update
-    Businesses.schema.validate(item);
-
-    // look for direct match in ID
-    let target;
-    if (target = Businesses.find({ _id: business._id, })) {
+    if (Businesses.find({ _id: id })) {
       // update if found
-      Businesses.update({ _id: business._id, }, item);
+      Businesses.update({ _id: id }, business);
     }
   },
 });
