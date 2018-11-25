@@ -9,6 +9,7 @@ import { Businesses } from '/imports/api/businesses/businesses';
 const Submissions = new Mongo.Collection('submissions');
 
 const schema = new SimpleSchema({
+  
   /* name of submitter */
   gradName: {
     type: String,
@@ -26,7 +27,7 @@ const schema = new SimpleSchema({
   /* phone number of submitter */
   gradPhone: {
     type: String,
-    regEx: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
+    regEx: SimpleSchema.RegEx.Phone,
     label: 'Phone number',
   },
   
@@ -43,9 +44,12 @@ const schema = new SimpleSchema({
     type: Businesses.schema,
     required: true,
   },
+  
 }, {
+  
   requiredByDefault: false,
   tracker: Tracker,
+  
 });
 const schemaContext = schema.newContext();
 Submissions.schema = schema;

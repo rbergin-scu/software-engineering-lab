@@ -20,6 +20,7 @@ const Categories = {
   define Business schema
  */
 const schema = new SimpleSchema({
+  
   /* title of business */
   name: {
     type: String,
@@ -37,17 +38,29 @@ const schema = new SimpleSchema({
     max: 140,
   },
   
+  /* type/category of business (food, entertainment, etc) */
+  category: {
+    type: String,
+    required: true,
+    allowedValues: Object.keys(Categories),
+  },
+  
   /* header photo */
   photo: {
     type: String,
     max: 140,
   },
   
-  /* type/category of business (food, entertainment, etc) */
-  category: {
+  /* phone number of business */
+  phoneNumber: {
     type: String,
-    required: true,
-    allowedValues: Object.keys(Categories),
+    regEx: SimpleSchema.RegEx.Phone,
+  },
+  
+  /* url of website for business */
+  website: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Domain,
   },
   
   /* country (location) */
@@ -65,12 +78,6 @@ const schema = new SimpleSchema({
     max: 60,
   },
   
-  /* state (location) */
-  state: {
-    type: String,
-    regEx: /[A-Z]{2}/,
-  },
-  
   /* city (location) */
   city: {
     type: String,
@@ -78,27 +85,24 @@ const schema = new SimpleSchema({
     max: 60,
   },
   
+  /* state (location) */
+  state: {
+    type: String,
+    regEx: /[A-Z]{2}/,
+  },
+  
   /* zip (location) */
   zip: {
     type: String,
-    regEx: /^\d{5}(?:[-\s]\d{4})?$/,
+    regEx: SimpleSchema.RegEx.ZipCode,
     label: 'ZIP',
   },
   
-  /* phone number of business */
-  phoneNumber: {
-    type: String,
-    regEx: /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
-  },
-  
-  /* url of website for business */
-  website: {
-    type: String,
-    regEx: /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/,
-  },
 }, {
+  
   requiredByDefault: false,
   tracker: Tracker,
+  
 });
 const schemaContext = schema.newContext();
 Businesses.schema = schema;

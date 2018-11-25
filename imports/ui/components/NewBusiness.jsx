@@ -5,6 +5,7 @@ import update from 'immutability-helper';
 
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import Submissions from '/imports/api/submissions/submissions';
+import InputField from '/imports/ui/components/InputField';
 
 const USStates = {
   AL: 'Alabama',
@@ -87,7 +88,6 @@ export default class NewBusiness extends React.Component {
   }
   
   render() {
-    console.log('errors? ', this.state.errors);
     return (
       <div className={ `${this.state.collapse ? 'py-5' : 'py-3'}` }>
         <h5 className={ `text-link text-white mb-0 ${this.state.collapse ? 'text-underline' : ''}` }
@@ -123,7 +123,8 @@ export default class NewBusiness extends React.Component {
         <Col sm={ 10 }>
           { (type === 'email' || type === 'file' || type === 'tel' || type === 'text') &&
           <input type={ type } name={ name } onChange={ this.handleInput }
-                 className="form-control mb-2" placeholder={ placeholder } required={ required } />
+                 placeholder={ placeholder } required={ required }
+                 className={`form-control mb-2 ${this.state.errors[name] && 'border-warning'}`} />
           }
           
           { type === 'textarea' &&
@@ -150,29 +151,57 @@ export default class NewBusiness extends React.Component {
       <Form onSubmit={ this.handleSubmit }>
         <FormGroup tag="fieldset">
           <legend className="h5">A Little About You <hr /></legend>
-          { this.renderField('gradName', 'text', 'John Doe', true) }
-          { this.renderField('gradEmail', 'email', 'john@doe.org', false) }
-          { this.renderField('gradPhone', 'tel', '(123) 456-7890', false) }
-          { this.renderField('gradYear', 'text', '2006', true) }
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors.gradName }
+            name="gradName" type="text" placeholder="John Doe" required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors.gradEmail }
+            name="gradEmail" type="email" placeholder="john@doe.org" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors.gradPhone }
+            name="gradPhone" type="tel" placeholder="(123) 456-7890" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors.gradYear }
+            name="gradYear" type="text" placeholder="2006" required />
         </FormGroup>
         <FormGroup tag="fieldset">
           <legend className="h5">And Your Business <hr /></legend>
-          { this.renderField('business.name', 'text', 'The Krusty Krab', true) }
-          { this.renderField('business.description', 'textarea', '', true) }
-          { this.renderField('business.category', 'select', '', true, Categories) }
-          { this.renderField('business.photo', 'file', undefined, false) }
-          { this.renderField('business.phoneNumber', 'text', '(123) 456-7890', false) }
-          { this.renderField('business.website', 'text', 'www.website.com', false) }
-          { this.renderField('business.streetAddress', 'text', '', false) }
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.name'] }
+            name="business.name" type="text" placeholder="The Krusty Krab" required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.description'] }
+            name="business.description" type="textarea" required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.category'] }
+            name="business.category" type="select" options={ Categories } required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.photo'] }
+            name="business.photo" type="file" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.phoneNumber'] }
+            name="business.phoneNumber" type="tel" placeholder="(123) 456-7890" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.website'] }
+            name="business.website" type="text" placeholder="www.website.com" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.streetAddress'] }
+            name="business.streetAddress" type="text" placeholder="123 Conch St" />
           <Row>
             <Col md={6} className="px-0">
-              { this.renderField('business.city', 'text', 'Bikini Bottom', false, undefined, true) }
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['business.city'] }
+                name="business.city" type="text" placeholder="Bikini Bottom" isColumn={ true } />
             </Col>
             <Col md={3} className="px-0">
-              { this.renderField('business.state', 'select', undefined, false, USStates, true) }
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['business.state'] }
+                name="business.state" type="select" options={ USStates } isColumn={ true }/>
             </Col>
             <Col md={3} className="px-0">
-              { this.renderField('business.zip', 'text', '54321', false, undefined, true) }
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['business.zip'] }
+                name="business.zip" type="text" placeholder="97068" isColumn={ true } />
             </Col>
           </Row>
           <FormText color="muted">
@@ -247,6 +276,7 @@ export default class NewBusiness extends React.Component {
     e.preventDefault();
     
     let submission = this.state.submission;
+    console.log(submission);
   
     // attempt to validate newest submission
     Meteor.call('submissions.validate', submission, (err, res) => {
