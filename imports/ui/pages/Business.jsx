@@ -1,9 +1,7 @@
 import React from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
 
-import {
-  Badge, Button, Container, Col, Row,
-} from 'reactstrap';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Badge, Button, Container, Col, Row, } from 'reactstrap';
 
 import { Businesses } from '/imports/api/businesses/businesses';
 

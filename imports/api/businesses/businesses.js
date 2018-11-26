@@ -1,23 +1,36 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import SimpleSchema from 'simpl-schema';
 import { Tracker } from 'meteor/tracker';
+import SimpleSchema from 'simpl-schema';
 
-/*
-  create Business collection
+/**
+ * A database of Businesses.
  */
 const Businesses = new Mongo.Collection('businesses');
 
-/*
-  define Business Category possible values
+/**
+ * Allowed values for Business.category, which are generic categories used to make searching easier.
  */
 const Categories = {
   entertainment: 'Entertainment',
   food: 'Food',
 };
 
-/*
-  define Business schema
+/**
+ * Define the Business table schema, which also talks to React so forms validate automatically.
+ * ------------------
+ * name           : the title of the business
+ * description    : a brief (< 140 chars) description of the business
+ * category       : the category that most accurately describes this business
+ * photo          : the URL to a photo of the establishment, if one has been provided
+ * phoneNumber    : ...
+ * website        : ...
+ * country        : ...
+ * streetAddress  : ...
+ * city           : ...
+ * state          : ...
+ * zip            : ...
+ * -----------------
  */
 const schema = new SimpleSchema({
   
@@ -104,31 +117,20 @@ const schema = new SimpleSchema({
   tracker: Tracker,
   
 });
-const schemaContext = schema.newContext();
 Businesses.schema = schema;
 
-/*
-  publish Business data to client
- */
-if (Meteor.isServer) {
-  Meteor.publish('businesses', () => {
-    return Businesses.find({ /* TODO: if (!loggedIn) verified: true */ });
-  });
-  
-  Meteor.publish('businesses.find', ( id ) => {
-    return Businesses.find({ _id: id, });
-  });
-  
-  Meteor.publish('businesses.public', () => {
-    return Businesses.find({ });
-  });
-;}
-
-// define CRUD methods
+/* define CRUD-like methods */
 Meteor.methods({
-  'businesses.validate'(
-    business,
-  ) {
+  
+  /**
+   * Attempts to validate the provided object against the Business schema. Expects strictly fields that are provided
+   * within the schema (e.g., no Meteor ._id).
+   *
+   * @param business  The business object to validate.
+   * @returns {*}     undefined if there were no validation errors, and the error details otherwise.
+   *                  'details' contains objects for each input that failed to validate.
+   */
+  'businesses.validate'(business) {
     try {
       Businesses.schema.validate(business);
       return undefined;
@@ -137,61 +139,63 @@ Meteor.methods({
     }
   },
   
-  'businesses.insert'({
-    name, description, photo, category, country, streetAddress, state, city, zip, phoneNumber, website,
-  }) {
-    const item = {
-      name: name,
-      description: description,
-      photo: photo,
-      category: category,
-      country: country,
-      streetAddress: streetAddress,
-      state: state,
-      city: city,
-      zip: zip,
-      phoneNumber: phoneNumber,
-      website: website,
-    };
+  /**
+   * Attempts to insert the provided object into the Businesses collection. Expects a valid object, but still ensures
+   * no invalid objects are inserted.
+   *
+   * @param business  The business object to insert.
+   */
+  'businesses.insert'(business) {
+    try {
+      Businesses.schema.validate(business);
+    } catch (e) {
+      throw new Meteor.Error('businesses.insert', `The provided business failed to validate. { ${business} }`);
+    }
     
-    // validate input
-    Businesses.schema.validate(item);
-    
-    // check for duplicate (by name and phone match)
-    if (Businesses.findOne({ name: name, phoneNumber: phoneNumber, })) {
-      throw new Meteor.Error('businesses.insert: error', 'That business already exists.');
+    // sanity check for duplicate (by name and phone number match)
+    if (Businesses.findOne({ name: business.name, phoneNumber: business.phoneNumber, })) {
+      throw new Meteor.Error('businesses.insert',
+        `An existing business matches the provided info. { name: ${business.name}, phone: ${business.phoneNumber} }`);
     } else {
-      // submit to database
       // TODO prevent this unless user is signed in as admin
-      
-      Businesses.insert(item, (err, result) => {
+      Businesses.insert(business, (err, res) => {
         if (err) {
-          throw new Meteor.Error('businesses.insert: error', err);
+          throw new Meteor.Error('businesses.insert', err);
         } else {
-          console.log(`businesses.insert: success (${result})`);
+          console.log(`businesses.insert: success => ${res}`);
         }
       });
     }
   },
   
-  'businesses.remove'(
-    id,
-  ) {
-    if (Businesses.find({ _id: id, })) {
-      Businesses.remove({ _id: id, });
+  /**
+   * Removes a Business from the public index.
+   *
+   * @param id  Target business ID.
+   */
+  'businesses.remove'(id) {
+    if (Businesses.find({ _id: id })) {
+      Businesses.remove({ _id: id }, (err, res) => console.log(`businesses.remove: success => ${res}`));
     } else {
-      throw new Meteor.Error('businesses.remove: error', 'Could not find a business with that ID.');
+      throw new Meteor.Error('businesses.remove', `Could not find business to remove. { id: ${id} }`);
     }
   },
   
-  'businesses.update'(
-    id, business,
-  ) {
+  /**
+   * Replaces some field(s) in an existing business.
+   *
+   * @param id        Target business ID.
+   * @param business  The updated contents, which are assumed to be exhaustive (e.g. all properties are set).
+   */
+  'businesses.update'(id, business) {
     if (Businesses.find({ _id: id })) {
-      // update if found
-      Businesses.update({ _id: id }, business);
+      Businesses.update({ _id: id }, business, (err, res) => console.log(`businesses.update: success => ${res}`));
+    } else {
+      throw new
+        Meteor.Error('businesses.update', `Could not find business to update. { id: ${id}, business: ${business} }`);
     }
   },
+  
 });
 
 export {

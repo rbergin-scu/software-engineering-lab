@@ -1,9 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { Button, Col, Form, FormGroup, Row, } from 'reactstrap';
+
 import update from 'immutability-helper';
-import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Button, Col, Form, FormGroup, Row, } from 'reactstrap';
 
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import InputField from '/imports/ui/components/InputField';
@@ -220,7 +221,7 @@ class EditBusiness extends React.Component {
 }
 
 export default withTracker((props) => {
-  Meteor.subscribe('businesses.public');
+  Meteor.subscribe('businesses');
   
   return {
     existing: Businesses.find({ _id: props.id }).fetch(),

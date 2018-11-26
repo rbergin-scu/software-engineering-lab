@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Card, CardBody, CardTitle, CardText, CardFooter, Button } from 'reactstrap';
+import { Button, Card, CardBody, CardFooter, CardText, } from 'reactstrap';
 
 export default class SubmissionCard extends React.Component {
   
   constructor(props) {
     super(props);
-
+    
     this.handleApprove = this.handleApprove.bind(this);
     this.handleDeny = this.handleDeny.bind(this);
   }
@@ -36,13 +36,14 @@ export default class SubmissionCard extends React.Component {
   
   handleApprove() {
     Meteor.call('businesses.insert', this.props.submission.business, (err, res) => {
-      console.log(err, res);
-      Meteor.call('submissions.remove', { id: this.props.submission._id });
+      if (!err) {
+        Meteor.call('submissions.remove', this.props.submission._id);
+      }
     });
   }
 
   handleDeny() {
-    Meteor.call('submissions.remove', { id: this.props.submission._id });
+    Meteor.call('submissions.remove', this.props.submission._id);
   }
 
 }

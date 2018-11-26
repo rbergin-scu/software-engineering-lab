@@ -1,10 +1,26 @@
-import cloudinary from 'cloudinary';
 import { Meteor } from 'meteor/meteor';
 
-import { Accounts } from "meteor/accounts-base";
+import { Accounts } from 'meteor/accounts-base';
 import { Businesses } from '/imports/api/businesses/businesses';
+import Submissions from '/imports/api/submissions/submissions';
 
 Meteor.startup(() => {
+  
+  /* publish all businesses (index) */
+  Meteor.publish('businesses', () => {
+    return Businesses.find({ });
+  });
+  
+  /* publish a specific business, by ID */
+  Meteor.publish('businesses.find', ( id ) => {
+    return Businesses.find({ _id: id, });
+  });
+  
+  /* publish all submissions (admin) */
+  Meteor.publish('submissions', () => {
+    return Submissions.find({});
+  });
+  
   // insert test data if there's nothing
   if (!Businesses.findOne()) {
     Businesses.insert({
@@ -21,22 +37,12 @@ Meteor.startup(() => {
     });
   }
 
-  if (!Meteor.users.findOne({ username: 'admin', })) {
+  // insert admin account if there is none
+  if (!Meteor.users.findOne({ username: 'admin' })) {
     Accounts.createUser({
       username: 'admin',
-      password: '12345',
+      password: '12345'
     });
   }
   
-  // ---- cloudinary config
-  cloudinary.config({
-    cloud_name: 'dir7oszd4',
-    api_key: '882423461476917',
-    api_secret: '8f3qiKdinEUcTTTod_Hj4YDaAxk',
-  });
-  
-  // TODO returns url which can be added to mongodb as link to header image
-  /*cloudinary.v2.uploader.upload('https://res.cloudinary.com/demo/image/upload/v1371281596/sample.jpg', (error, result) => {
-    console.log(result, error);
-  });*/
 });

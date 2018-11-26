@@ -1,9 +1,10 @@
 import React from 'react';
+
+import { withTracker } from 'meteor/react-meteor-data';
 import { Link } from 'react-router-dom';
 import {
-  Badge, Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Modal, ModalBody, ModalFooter, ModalHeader
+  Badge, Button, Card, CardBody, CardFooter, CardImg, CardText, CardTitle, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
-import { withTracker } from 'meteor/react-meteor-data';
 
 import EditBusiness from '/imports/ui/components/EditBusiness';
 

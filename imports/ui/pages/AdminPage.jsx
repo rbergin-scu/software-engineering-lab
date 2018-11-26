@@ -26,39 +26,38 @@ class AdminPage extends React.Component {
   }
   
   render() {
-    if (!Meteor.user()) {
-      return (
-        <div className="container py-5">
-          <form className="login" id="login">
-            <FormGroup row>
-              <Label for="password" sm={1}>Password</Label>
-              <Col sm={5}>
-                <Input type="password" name="password" placeholder="******************" onChange={this.handleInput}/>
-              </Col>
-            </FormGroup>
-            <Button color="primary" onClick={this.handleLogin}>Login</Button>
+    return (
+      <div className="container py-5">
+      { this.props.currentUser ? (
+        <div>
+          <h2>Submissions</h2>
+          <section className="index-submissions mb-5">
+            <div className="row">
+              { this.renderSubmissions() }
+            </div>
+          </section>
+          <form>
+            <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
           </form>
         </div>
-      );
-    } else {
-      return (
-        <div className="container py-5">
-          <h2>Submissions</h2>
-          <div className="container py-5">
-            <section className="index-submissions">
-              <div className="card-deck">
-                {this.renderSubmissions()}
-              </div>
-            </section>
-          </div>
-          <div>
-            <form className="logout">
-              <Button color="primary" onClick={Meteor.logout}>Logout</Button>
-            </form>
-          </div>
+      ) : (
+        <div>
+          { this.state.error &&
+            <p>Whoops! { this.state.error }</p>
+          }
+          <form id="login">
+            <FormGroup row>
+              <Label for="password" sm={ 1 }>Password</Label>
+              <Col sm={ 5 }>
+                <Input type="password" name="password" placeholder="******************" onChange={ this.handleInput } />
+              </Col>
+            </FormGroup>
+            <Button color="primary" onClick={ this.handleLogin }>Login</Button>
+          </form>
         </div>
-      );
-    }
+      )}
+      </div>
+    );
   }
   
   renderSubmissions() {
@@ -84,6 +83,11 @@ class AdminPage extends React.Component {
       }
     });
   }
+  
+  handleLogin(e) {
+    this.handleInput(e);
+    this.handleSubmit(e);
+  }
 
   handleSubmit(e) {
     e.preventDefault();
@@ -91,14 +95,9 @@ class AdminPage extends React.Component {
     Meteor.loginWithPassword('admin', this.state.submission.password, (err, res) => {
       if (err) {
         document.getElementById('login').reset();
-        alert(err.message);
+        this.error(err);
       }
     });
-  }
-
-  handleLogin(e) {
-    this.handleInput(e);
-    this.handleSubmit(e);
   }
 
   error(e) {
@@ -108,10 +107,11 @@ class AdminPage extends React.Component {
   toggle() {
     this.setState({ modal: !this.state.modal });
   }
+  
 }
+
 export default withTracker(() => {
   Meteor.subscribe('submissions');
-  Meteor.subscribe('businesses');
 
   return {
     submissions: Submissions.find({ }).fetch(),

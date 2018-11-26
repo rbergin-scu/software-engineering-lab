@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { Button, Col, Collapse, Form, FormGroup, FormText, Row, } from 'reactstrap';
+
 import update from 'immutability-helper';
+import { Button, Col, Collapse, Form, FormGroup, FormText, Row, } from 'reactstrap';
 
 import { Categories } from '/imports/api/businesses/businesses';
 import InputField from '/imports/ui/components/InputField';
@@ -203,13 +204,14 @@ export default class NewBusiness extends React.Component {
     
     let newState;
     
-    // if we've changed an item in a subobject, like Business inside Submission, we need to go deeper
+    // if we've changed an item in a sub-object, like Business inside Submission, some extra work is involved
     if (name.includes('.')) {
+      name = name.split('.');
       newState = update(this.state, {
         submission: {
           // e.g. business.description --> submission: { business: { description: (value) } }
-          [name.substring(0, name.indexOf('.'))]: {
-            [name.substring(name.indexOf('.') + 1)]: { $set: value }
+          [name[0]]: {
+            [name[1]]: { $set: value }
           }
         }
       });
@@ -237,7 +239,9 @@ export default class NewBusiness extends React.Component {
     let submission = this.state.submission;
   
     // convert strings to numbers
-    submission.gradYear = parseInt(submission.gradYear);
+    if (submission.gradYear) {
+      submission.gradYear = parseInt(submission.gradYear);
+    }
   
     // attempt to validate newest submission
     Meteor.call('submissions.validate', submission, (err, res) => {
@@ -251,8 +255,13 @@ export default class NewBusiness extends React.Component {
         this.setState({ errors: errors });
       } else {
         // normalize phone #s
-        submission.gradPhone = submission.gradPhone.replace(/\D/g,'');
-        submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
+        if (submission.gradPhone) {
+          submission.gradPhone = submission.gradPhone.replace(/\D/g,'');
+        }
+        
+        if (submission.business.phoneNumber) {
+          submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
+        }
   
         Meteor.call('submissions.insert', submission, (err, res) => {
           if (err) {

@@ -1,10 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
 
-import {
-  Badge, Button, Col, Form, FormGroup, FormText, Input, InputGroup, InputGroupAddon, Label, Row,
-} from 'reactstrap';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Badge, Button, Input, InputGroup, InputGroupAddon, } from 'reactstrap';
 
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import BusinessCard from '/imports/ui/components/BusinessCard';
@@ -107,7 +105,7 @@ class Index extends React.Component {
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('businesses.public');
+  Meteor.subscribe('businesses');
   
   return {
     businesses: Businesses.find({}).fetch(),
