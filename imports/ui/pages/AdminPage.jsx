@@ -6,10 +6,10 @@ import {
 } from 'reactstrap';
 import Submissions from '/imports/api/submissions/submissions';
 import SubmissionCard from '/imports/ui/components/SubmissionCard';
-import EditRequests from 'imports/api/editRequests/editRequests';
-import EditRequestCard from 'imports/ui/components/EditRequestCard';
-import RemovalRequests from 'imports/api/removalRequests/removalRequests';
-import RemovalRequestCard from 'imports/ui/components/RemovalRequestCard';
+import EditRequests from '/imports/api/editRequests/editRequests';
+import EditRequestCard from '/imports/ui/components/EditRequestCard';
+import RemovalRequests from '/imports/api/removalRequests/removalRequests';
+import RemovalRequestCard from '/imports/ui/components/RemovalRequestCard';
 
 import Businesses from '/imports/api/businesses/businesses';
 
@@ -65,9 +65,9 @@ class AdminPage extends React.Component {
           <SubmissionCard
             key={ i }
             name={ sub.business.name }
-            submitterName={ sub.name }
-            email={ sub.email }
-            phoneNumber={ sub.phoneNumber }
+            submitterName={ sub.gradName }
+            email={ sub.gradEmail }
+            phoneNumber={ sub.gradPhone }
             gradYear={ sub.gradYear }
             id = { sub._id }
             business = { sub.business }

@@ -6,7 +6,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
-import EditRequests from 'imports/api/editRequests/editRequests';
+import EditRequests from '/imports/api/editRequests/editRequests';
 import InputField from '/imports/ui/components/InputField';
 
 const USStates = {
@@ -83,7 +83,7 @@ class EditBusiness extends React.Component {
   render() {
     return (
       <div className="business-editing bg-light p-3 px-4 border-top border-right border-bottom shadow">
-        { this.renderForm() }
+        { Meteor.user() ? this.renderAdminForm() : this.renderForm() }
         <div>
           <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Update Business</Button>
           <Button outline color="secondary" onClick={ this.props.done } className="ml-2">Cancel</Button>
@@ -98,8 +98,8 @@ class EditBusiness extends React.Component {
         <FormGroup tag="fieldset">
           <legend className="h5">{ this.state.submission.name }<hr /></legend>
           <InputField
-            handle={ this.handleInput } error={ this.state.errors['reason'] }
-            name="reason" type="text" value={ this.state.submission.name } required />
+            handle={ this.handleInput } error={ this.state.errors['name'] }
+            name="business.name" type="text" value={ this.state.submission.name } required />
           <InputField
             handle={ this.handleInput } error={ this.state.errors['description'] }
             name="business.description" type="textarea" value={ this.state.submission.description } required />
@@ -156,6 +156,56 @@ class EditBusiness extends React.Component {
       </Form>
     );
   }
+
+  renderAdminForm() {
+    return (
+      <Form onSubmit={ this.handleSubmit }>
+        <FormGroup tag="fieldset">
+          <legend className="h5">{ this.state.submission.name }<hr /></legend>
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['reason'] }
+            name="reason" type="text" value={ this.state.submission.name } required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['description'] }
+            name="business.description" type="textarea" value={ this.state.submission.description } required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['category'] }
+            name="business.category" type="select"
+            value={ this.state.submission.category } options={ Categories } required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['photo'] }
+            name="business.photo" type="file" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['phoneNumber'] }
+            name="business.phoneNumber" type="tel" value={ this.state.submission.phoneNumber } />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['website'] }
+            name="business.website" type="text" value={ this.state.submission.website } />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['streetAddress'] }
+            name="business.streetAddress" type="text" value={ this.state.submission.streetAddress } />
+          <Row>
+            <Col md={6} className="px-0">
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['city'] }
+                name="business.city" type="text" value={ this.state.submission.city } isColumn={ true } />
+            </Col>
+            <Col md={3} className="px-0">
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['state'] }
+                name="business.state" type="select" value={ this.state.submission.state }
+                options={ USStates } isColumn={ true } />
+            </Col>
+            <Col md={3} className="px-0">
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['zip'] }
+                name="business.zip" type="text" value={ this.state.submission.zip } isColumn={ true } />
+            </Col>
+          </Row>
+        </FormGroup>
+      </Form>
+    );
+  }
   
   /**
    * Updates this.state to reflect a new change to a form field.
@@ -206,7 +256,28 @@ class EditBusiness extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    let request = this.state.submission;
+    const request = {
+      gradName: this.state.submission.gradName,
+      gradEmail: this.state.submission.gradEmail,
+      gradPhone: this.state.submission.gradPhone,
+      gradYear: this.state.submission.gradYear,
+      business: {
+        name: this.state.submission.name,
+        description: this.state.submission.description,
+        category: this.state.submission.category,
+        photo: this.state.submission.photo,
+        phoneNumber: this.state.submission.phoneNumber,
+        website: this.state.submission.wesbite,
+        country: this.state.submission.country,
+        streetAddress: this.state.submission.streetAddress,
+        city: this.state.submission.city,
+        state: this.state.submission.state,
+        zip: this.state.submission.zip,
+      }
+    }
+
+    // convert strings to numbers
+    request.gradYear = parseInt(request.gradYear);
     
     // attempt to validate newest submission
     Meteor.call('businesses.validate', request.business, (err, res) => {
@@ -220,7 +291,8 @@ class EditBusiness extends React.Component {
         this.setState({ errors: errors });
       } else {
         // normalize phone #
-        request.phoneNumber = request.phoneNumber.replace(/\D/g,'');
+        request.business.phoneNumber = request.business.phoneNumber.replace(/\D/g,'');
+        request.gradPhone = request.gradPhone.replace(/\D/g,'');
 
         if(Meteor.user()) {
           Meteor.call('businesses.update', this.props.existing[0]._id, request.business, (err, res) => {

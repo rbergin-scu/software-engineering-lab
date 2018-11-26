@@ -94,12 +94,14 @@ class RequestRemoval extends React.Component {
         console.log(e.target.type);
         break;
     }
-    
+
+
     let newState = update(this.state, {
       submission: {
         [name.substring(name.indexOf('.') + 1)]: { $set: value }
       }
     });
+
     
     console.log(`handleInput: { ${name} => ${value} }`);
     this.setState(newState);
@@ -113,8 +115,29 @@ class RequestRemoval extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    
-    let request = this.state.submission;
+
+    const request = {
+      gradName: this.state.submission.gradName,
+      gradEmail: this.state.submission.gradEmail,
+      gradPhone: this.state.submission.gradPhone,
+      gradYear: this.state.submission.gradYear,
+      business: {
+        name: this.state.submission.name,
+        description: this.state.submission.description,
+        category: this.state.submission.category,
+        photo: this.state.submission.photo,
+        phoneNumber: this.state.submission.phoneNumber,
+        website: this.state.submission.wesbite,
+        country: this.state.submission.country,
+        streetAddress: this.state.submission.streetAddress,
+        city: this.state.submission.city,
+        state: this.state.submission.state,
+        zip: this.state.submission.zip,
+      }
+    }
+
+    // convert strings to numbers
+    request.gradYear = parseInt(request.gradYear);
     
     // attempt to validate newest submission
     Meteor.call('removalRequest.validate', request, (err, res) => {
@@ -128,25 +151,16 @@ class RequestRemoval extends React.Component {
         this.setState({ errors: errors });
       } else {
         // normalize phone #
-        request.phoneNumber = request.phoneNumber.replace(/\D/g,'');
+        request.business.phoneNumber = request.business.phoneNumber.replace(/\D/g,'');
+        request.gradPhone = request.gradPhone.replace(/\D/g,'');
 
-        if(Meteor.user()) {
-          Meteor.call('business.remove', request.business, (err, res) => {
-            if (err) {
-              console.log(err);
-            } else {
-              this.props.done();
-            }
-          });
-        } else {
-          Meteor.call('removalRequests.insert', request, (err, res) => {
-            if(err) {
-              console.log(err);
-            } else {
-              this.props.done();
-            }
-          });
-        }
+        Meteor.call('removalRequests.insert', request, (err, res) => {
+          if(err) {
+            console.log(err);
+          } else {
+            this.props.done();
+          }
+        });
       }
     });
   }

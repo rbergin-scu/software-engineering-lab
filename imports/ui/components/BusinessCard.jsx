@@ -6,7 +6,7 @@ import {
 import { withTracker } from 'meteor/react-meteor-data';
 
 import EditBusiness from '/imports/ui/components/EditBusiness';
-import RequestRemoval from 'imports/ui/components/RequestRemoval';
+import RequestRemoval from '/imports/ui/components/RequestRemoval';
 
 export default class BusinessCard extends React.Component {
   
@@ -26,7 +26,7 @@ export default class BusinessCard extends React.Component {
   
   render() {
     return (
-      <div className={`col-md-${this.state.editing ? '12' : '4'} d-flex align-items-stretch mb-3`}>
+      <div className={`col-md-${this.state.editing || this.state.removeRequested ? '12' : '4'} d-flex align-items-stretch mb-3`}>
         <Card className="bg-light shadow">
           <CardImg top width="100%" src="test.jpg" alt={ this.props.business.name } />
           <CardBody>
@@ -49,13 +49,18 @@ export default class BusinessCard extends React.Component {
                 <Button color="primary" className="mr-1" onClick={ this.handleEditing }>
                   <i className="fas fa-pencil-alt" aria-hidden="true" />
                 </Button>
-                <Button color="primary" onClick={ this.handleRemove }>
+                <Button color="primary" onClick={ this.props.admin ? this.handleRemove : this.requestRemoval }>
                   <i className="fas fa-minus-circle" aria-hidden="true" />
                 </Button>
               </div>
               <div>
                 { this.state.editing &&
                 <p className="mb-0 text-white text-sans-bold">Editing..</p>
+                }
+              </div>
+              <div>
+                { this.state.removeRequested &&
+                <p className="mb-0 text-white text-sans-bold">Creating Request...</p>
                 }
               </div>
             </CardFooter>
@@ -66,23 +71,24 @@ export default class BusinessCard extends React.Component {
             done={ this.handleEditing }
           />
         }
-        { this.state.removeRequested && this.props.admin ? (
-            this.renderConfirmModal()
-          ) : (
+        { this.props.admin ?
+          this.state.removeRequested &&
+          this.renderConfirmModal()
+           :
+          this.state.removeRequested &&
             <RequestRemoval
               id={ this.props.business._id }
               done={ this.requestRemoval }
             />
-          )}
+          }
       </div>
     );
   }
   
   renderConfirmModal() {
-    const isAdmin = this.props.admin;
     return (
       <div>
-        { isAdmin &&
+        { this.props.admin &&
           <Modal isOpen={ this.state.removeRequested } toggle={ this.handleRemove }>
             <ModalHeader toggle={ this.handleRemove }>Confirm Business Deletion</ModalHeader>
             <ModalBody>
