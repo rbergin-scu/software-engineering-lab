@@ -6,6 +6,7 @@ import {
 import { withTracker } from 'meteor/react-meteor-data';
 
 import EditBusiness from '/imports/ui/components/EditBusiness';
+import RequestRemoval from 'imports/ui/components/RequestRemoval';
 
 export default class BusinessCard extends React.Component {
   
@@ -20,6 +21,7 @@ export default class BusinessCard extends React.Component {
     
     this.handleEditing = this.handleEditing.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.requestRemoval = this.requestRemoval.bind(this);
   }
   
   render() {
@@ -42,7 +44,6 @@ export default class BusinessCard extends React.Component {
               </CardText>
             </div>
           </CardBody>
-          { this.props.admin &&
             <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
               <div>
                 <Button color="primary" className="mr-1" onClick={ this.handleEditing }>
@@ -58,25 +59,30 @@ export default class BusinessCard extends React.Component {
                 }
               </div>
             </CardFooter>
-          }
         </Card>
-        { this.props.admin && this.state.editing &&
+        { this.state.editing &&
           <EditBusiness
             id={ this.props.business._id }
             done={ this.handleEditing }
           />
         }
-        { this.props.admin && this.state.removeRequested &&
-          this.renderConfirmModal()
-        }
+        { this.state.removeRequested && this.props.admin ? (
+            this.renderConfirmModal()
+          ) : (
+            <RequestRemoval
+              id={ this.props.business._id }
+              done={ this.requestRemoval }
+            />
+          )}
       </div>
     );
   }
   
   renderConfirmModal() {
+    const isAdmin = this.props.admin;
     return (
       <div>
-        { this.props.admin &&
+        { isAdmin &&
           <Modal isOpen={ this.state.removeRequested } toggle={ this.handleRemove }>
             <ModalHeader toggle={ this.handleRemove }>Confirm Business Deletion</ModalHeader>
             <ModalBody>
@@ -95,6 +101,11 @@ export default class BusinessCard extends React.Component {
   handleEditing(e) {
     this.setState({ editing: !this.state.editing, });
   }
+
+  requestRemoval(e) {
+    this.setState({ removeRequested: !this.state.removeRequested, });
+  }
+
   
   handleRemove(e) {
     if (e.target.id === 'removeConfirmed') {

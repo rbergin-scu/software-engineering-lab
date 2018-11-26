@@ -2,10 +2,14 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import {
-  Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
+  Button, Col, Form, FormGroup, FormText, Input, Label,
 } from 'reactstrap';
 import Submissions from '/imports/api/submissions/submissions';
 import SubmissionCard from '/imports/ui/components/SubmissionCard';
+import EditRequests from 'imports/api/editRequests/editRequests';
+import EditRequestCard from 'imports/ui/components/EditRequestCard';
+import RemovalRequests from 'imports/api/removalRequests/removalRequests';
+import RemovalRequestCard from 'imports/ui/components/RemovalRequestCard';
 
 import Businesses from '/imports/api/businesses/businesses';
 
@@ -72,6 +76,40 @@ class AdminPage extends React.Component {
       });
   }
 
+  renderEditRequests() {
+    return this.props.editRequests.map((edit, i) => {
+      return (
+        <EditRequestCard
+          key={ i }
+          name={ edit.business.name }
+          submitterName={ edit.name }
+          email={ edit.email }
+          phoneNumber={ edit.phoneNumber }
+          gradYear={ edit.gradYear }
+          id = { edit._id }
+          business = { edit.business }
+        />
+      );
+    });
+  }
+
+  renderRemovalRequests() {
+    return this.props.removalRequests.map((remove, i) => {
+      return (
+        <RemovalRequestCard
+          key={ i }
+          name={ remove.business.name }
+          submitterName={ remove.name }
+          email={ remove.email }
+          phoneNumber={ remove.phoneNumber }
+          gradYear={ remove.gradYear }
+          id = { remove._id }
+          business = { remove.business }
+        />
+      );
+    });
+  }
+
 
 
   render() {
@@ -103,8 +141,23 @@ class AdminPage extends React.Component {
               </div>
             </section>
           </div>
+          <h2>Edit Requests</h2>
+          <div className="container py-5">
+            <section className="index-editRequests">
+              <div className="card-deck">
+                { this.renderEditRequests() }
+              </div>
+            </section>
+          </div>
+          <h2>Removal Requests</h2>
+          <div className="container py-5">
+            <section className="index-editRequests">
+              <div className="card-deck">
+                { this.renderRemovalRequests() }
+              </div>
+            </section>
+          </div>
           <div>
-
             <form className="logout">
               <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
             </form>
@@ -126,9 +179,13 @@ class AdminPage extends React.Component {
 export default withTracker(() => {
   Meteor.subscribe('submissions');
   Meteor.subscribe('businesses');
+  Meteor.subscribe('editRequests');
+  Meteor.subscribe('removalRequests');
 
   return {
     submissions: Submissions.find({ }).fetch(),
+    editRequests: EditRequests.find({}).fetch(),
+    removalRequests: RemovalRequests.find({}).fetch(),
     currentUser: Meteor.user(),
   };
 })(AdminPage);

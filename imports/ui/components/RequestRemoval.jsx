@@ -6,64 +6,10 @@ import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
-import EditRequests from 'imports/api/editRequests/editRequests';
 import InputField from '/imports/ui/components/InputField';
 
-const USStates = {
-  AL: 'Alabama',
-  AK: 'Alaska',
-  AZ: 'Arizona',
-  AR: 'Arkansas',
-  CA: 'California',
-  CO: 'Colorado',
-  CT: 'Connecticut',
-  DE: 'Delaware',
-  DC: 'District Of Columbia',
-  FL: 'Florida',
-  GA: 'Georgia',
-  HI: 'Hawaii',
-  ID: 'Idaho',
-  IL: 'Illinois',
-  IN: 'Indiana',
-  IA: 'Iowa',
-  KS: 'Kansas',
-  KY: 'Kentucky',
-  LA: 'Louisiana',
-  ME: 'Maine',
-  MD: 'Maryland',
-  MA: 'Massachusetts',
-  MI: 'Michigan',
-  MN: 'Minnesota',
-  MS: 'Mississippi',
-  MO: 'Missouri',
-  MT: 'Montana',
-  NE: 'Nebraska',
-  NV: 'Nevada',
-  NH: 'New Hampshire',
-  NJ: 'New Jersey',
-  NM: 'New Mexico',
-  NY: 'New York',
-  NC: 'North Carolina',
-  ND: 'North Dakota',
-  OH: 'Ohio',
-  OK: 'Oklahoma',
-  OR: 'Oregon',
-  PA: 'Pennsylvania',
-  RI: 'Rhode Island',
-  SC: 'South Carolina',
-  SD: 'South Dakota',
-  TN: 'Tennessee',
-  TX: 'Texas',
-  UT: 'Utah',
-  VT: 'Vermont',
-  VA: 'Virginia',
-  WA: 'Washington',
-  WV: 'West Virginia',
-  WI: 'Wisconsin',
-  WY: 'Wyoming',
-};
 
-class EditBusiness extends React.Component {
+class RequestRemoval extends React.Component {
   
   constructor(props) {
     super(props);
@@ -85,7 +31,7 @@ class EditBusiness extends React.Component {
       <div className="business-editing bg-light p-3 px-4 border-top border-right border-bottom shadow">
         { this.renderForm() }
         <div>
-          <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Update Business</Button>
+          <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Request Removal</Button>
           <Button outline color="secondary" onClick={ this.props.done } className="ml-2">Cancel</Button>
         </div>
       </div>
@@ -95,49 +41,6 @@ class EditBusiness extends React.Component {
   renderForm() {
     return (
       <Form onSubmit={ this.handleSubmit }>
-        <FormGroup tag="fieldset">
-          <legend className="h5">{ this.state.submission.name }<hr /></legend>
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['reason'] }
-            name="reason" type="text" value={ this.state.submission.name } required />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['description'] }
-            name="business.description" type="textarea" value={ this.state.submission.description } required />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['category'] }
-            name="business.category" type="select"
-            value={ this.state.submission.category } options={ Categories } required />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['photo'] }
-            name="business.photo" type="file" />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['phoneNumber'] }
-            name="business.phoneNumber" type="tel" value={ this.state.submission.phoneNumber } />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['website'] }
-            name="business.website" type="text" value={ this.state.submission.website } />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['streetAddress'] }
-            name="business.streetAddress" type="text" value={ this.state.submission.streetAddress } />
-          <Row>
-            <Col md={6} className="px-0">
-              <InputField
-                handle={ this.handleInput } error={ this.state.errors['city'] }
-                name="business.city" type="text" value={ this.state.submission.city } isColumn={ true } />
-            </Col>
-            <Col md={3} className="px-0">
-              <InputField
-                handle={ this.handleInput } error={ this.state.errors['state'] }
-                name="business.state" type="select" value={ this.state.submission.state }
-                options={ USStates } isColumn={ true } />
-            </Col>
-            <Col md={3} className="px-0">
-              <InputField
-                handle={ this.handleInput } error={ this.state.errors['zip'] }
-                name="business.zip" type="text" value={ this.state.submission.zip } isColumn={ true } />
-            </Col>
-          </Row>
-        </FormGroup>
         <FormGroup tag="fieldset">
           <legend className="h5">A Little About You <hr /></legend>
           <InputField
@@ -152,6 +55,11 @@ class EditBusiness extends React.Component {
           <InputField
             handle={ this.handleInput } error={ this.state.errors.gradYear }
             name="gradYear" type="text" placeholder="2006" required />
+        </FormGroup>
+        <FormGroup tag="fieldset">
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['reason'] }
+            name="reason" type="text" placeholder={"Why should this business be removed from our directory?"} required />
         </FormGroup>
       </Form>
     );
@@ -205,11 +113,11 @@ class EditBusiness extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-
+    
     let request = this.state.submission;
     
     // attempt to validate newest submission
-    Meteor.call('businesses.validate', request.business, (err, res) => {
+    Meteor.call('removalRequest.validate', request, (err, res) => {
       // if there were validation errors, update error state to reflect
       if (res) {
         const errors = res.reduce((list, e) => {
@@ -223,7 +131,7 @@ class EditBusiness extends React.Component {
         request.phoneNumber = request.phoneNumber.replace(/\D/g,'');
 
         if(Meteor.user()) {
-          Meteor.call('businesses.update', this.props.existing[0]._id, request.business, (err, res) => {
+          Meteor.call('business.remove', request.business, (err, res) => {
             if (err) {
               console.log(err);
             } else {
@@ -231,7 +139,7 @@ class EditBusiness extends React.Component {
             }
           });
         } else {
-          Meteor.call('editRequests.insert', request, (err, res) => {
+          Meteor.call('removalRequests.insert', request, (err, res) => {
             if(err) {
               console.log(err);
             } else {
@@ -247,10 +155,10 @@ class EditBusiness extends React.Component {
 
 export default withTracker((props) => {
   Meteor.subscribe('businesses.public');
-  Meteor.subscribe('editRequests');
+  Meteor.subscribe('removalRequests');
   
   return {
     existing: Businesses.find({ _id: props.id }).fetch(),
     currentUser: Meteor.user(),
   };
-})(EditBusiness);
+})(RequestRemoval);
