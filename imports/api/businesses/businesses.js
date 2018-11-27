@@ -60,7 +60,7 @@ const schema = new SimpleSchema({
   
   /* header photo */
   photo: {
-    type: Object,
+    type: String,
   },
   
   /* phone number of business */
@@ -131,7 +131,7 @@ Meteor.methods({
    */
   'businesses.validate'(business) {
     try {
-      Businesses.schema.validate(business);
+      Businesses.simpleSchema().validate(business);
       return undefined;
     } catch (e) {
       return e.details;
@@ -146,9 +146,9 @@ Meteor.methods({
    */
   'businesses.insert'(business) {
     try {
-      Businesses.schema.validate(business);
+      Businesses.simpleSchema().validate(business);
     } catch (e) {
-      throw new Meteor.Error('businesses.insert', `The provided business failed to validate. { ${business} }`);
+      throw new Meteor.Error('businesses.insert', `The provided business failed to validate. { ${e} }`);
     }
     
     // sanity check for duplicate (by name and phone number match)

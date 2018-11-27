@@ -24,13 +24,14 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
-  Meteor.publish('files.photos.all', () => Photos.find().cursor)
+  Meteor.publish('files.photos.all', () => Photos.find().cursor);
+  
 }
 
 Meteor.methods({
   
-  'photos.insert'(file) {
-  
+  'files.photos.find'(id) {
+    return Photos.findOne({ _id: id }).link();
   }
   
 });

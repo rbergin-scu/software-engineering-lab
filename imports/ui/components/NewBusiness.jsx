@@ -109,15 +109,6 @@ export default class NewBusiness extends React.Component {
   renderForm() {
     return (
       <Form onSubmit={ this.handleSubmit }>
-        <div>
-          {
-            Photos.find().fetch().map((photo, i) => {
-              let link = Photos.findOne({ _id: photo._id }).link();
-              
-              return (<img key={ i } src={ link } alt={ photo.name } />);
-            })
-          }
-        </div>
         <FormGroup tag="fieldset">
           <legend className="h5">A Little About You <hr /></legend>
           <InputField
@@ -210,8 +201,6 @@ export default class NewBusiness extends React.Component {
       case 'file':
         value = e.target.files[0];
         
-        console.log(value);
-        
         let upload = Photos.insert({
           file: value,
           streams: 'dynamic',
@@ -220,6 +209,10 @@ export default class NewBusiness extends React.Component {
         
         upload.on('uploaded', (err, file) => {
           if (err) throw err;
+          Meteor.call('files.photos.find', file._id, (err, result) => {
+            if (err) throw err;
+            this.setState({ submission: { business: { photo: result } } });
+          });
         });
         
         upload.start();
@@ -279,15 +272,6 @@ export default class NewBusiness extends React.Component {
     if (submission.business.phoneNumber) {
       submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
     }
-  
-    console.log(submission.business.photo);
-    Meteor.call('photos.insert', submission.business.photo, (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('saved: ' + result);
-      }
-    });
     
     /* attempt to validate newest submission */
     Meteor.call('submissions.validate', submission, (err, result) => {
