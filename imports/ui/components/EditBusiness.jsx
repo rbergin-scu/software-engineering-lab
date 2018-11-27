@@ -268,7 +268,7 @@ class EditBusiness extends React.Component {
         category: this.state.submission.category,
         photo: this.state.submission.photo,
         phoneNumber: this.state.submission.phoneNumber,
-        website: this.state.submission.wesbite,
+        website: this.state.submission.website,
         country: this.state.submission.country,
         streetAddress: this.state.submission.streetAddress,
         city: this.state.submission.city,
@@ -292,11 +292,9 @@ class EditBusiness extends React.Component {
         
         this.setState({ errors: errors });
       } else {
-        // normalize phone #
-        request.business.phoneNumber = request.business.phoneNumber.replace(/\D/g,'');
-        request.gradPhone = request.gradPhone.replace(/\D/g,'');
-
         if(Meteor.user()) {
+          // normalize phone #
+          request.business.phoneNumber = request.business.phoneNumber.replace(/\D/g,'');
           Meteor.call('businesses.update', this.props.existing[0]._id, request.business, (err, res) => {
             if (err) {
               console.log(err);
@@ -305,6 +303,9 @@ class EditBusiness extends React.Component {
             }
           });
         } else {
+          // normalize phone #
+          request.business.phoneNumber = request.business.phoneNumber.replace(/\D/g,'');
+          request.gradPhone = request.gradPhone.replace(/\D/g,'');
           Meteor.call('editRequests.insert', request, (err, res) => {
             if(err) {
               console.log(err);

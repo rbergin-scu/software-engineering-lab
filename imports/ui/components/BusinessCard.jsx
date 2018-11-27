@@ -26,7 +26,7 @@ export default class BusinessCard extends React.Component {
   
   render() {
     return (
-      <div className={`col-md-${this.state.editing || this.state.removeRequested ? '12' : '4'} d-flex align-items-stretch mb-3`}>
+      <div className={`col-md-${this.state.editing || (this.state.removeRequested && !this.props.admin) ? '12' : '4'} d-flex align-items-stretch mb-3`}>
         <Card className="bg-light shadow">
           <CardImg top width="100%" src="test.jpg" alt={ this.props.business.name } />
           <CardBody>

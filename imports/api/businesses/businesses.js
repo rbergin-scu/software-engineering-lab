@@ -174,24 +174,36 @@ Meteor.methods({
     }
   },
   
-  'businesses.remove'(
+  'businesses.remove'({
     id,
-  ) {
+  }) {
     if (Businesses.find({ _id: id, })) {
       Businesses.remove({ _id: id, });
     } else {
       throw new Meteor.Error('businesses.remove: error', 'Could not find a business with that ID.');
     }
   },
-  
-  'businesses.update'(
-    id, business,
+
+  'businesses.removeRequest'(
+    id,
   ) {
+    if (Businesses.find({ _id: id.id, })) {
+      Businesses.remove({ _id: id.id, });
+    } else {
+      throw new Meteor.Error('businesses.remove: error', 'Could not find a business with that ID.');
+    }
+  },
+
+
+  'businesses.update'({
+    id, business,
+  }) {
     if (Businesses.find({ _id: id })) {
       // update if found
       Businesses.update({ _id: id }, business);
     }
   },
+
 });
 
 export {

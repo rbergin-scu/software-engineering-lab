@@ -5,6 +5,7 @@ import update from 'immutability-helper';
 import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 
+
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import InputField from '/imports/ui/components/InputField';
 

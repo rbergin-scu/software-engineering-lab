@@ -105,70 +105,123 @@ export default class NewBusiness extends React.Component {
   }
   
   renderForm() {
-    return (
-      <Form onSubmit={ this.handleSubmit }>
-        <FormGroup tag="fieldset">
-          <legend className="h5">A Little About You <hr /></legend>
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors.gradName }
-            name="gradName" type="text" placeholder="John Doe" required />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors.gradEmail }
-            name="gradEmail" type="email" placeholder="john@doe.org" />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors.gradPhone }
-            name="gradPhone" type="tel" placeholder="(123) 456-7890" />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors.gradYear }
-            name="gradYear" type="text" placeholder="2006" required />
-        </FormGroup>
-        <FormGroup tag="fieldset">
-          <legend className="h5">And Your Business <hr /></legend>
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['business.name'] }
-            name="business.name" type="text" placeholder="The Krusty Krab" required />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['business.description'] }
-            name="business.description" type="textarea" required />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['business.category'] }
-            name="business.category" type="select" options={ Categories } required />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['business.photo'] }
-            name="business.photo" type="file" />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['business.phoneNumber'] }
-            name="business.phoneNumber" type="tel" placeholder="(123) 456-7890" />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['business.website'] }
-            name="business.website" type="text" placeholder="www.website.com" />
-          <InputField
-            handle={ this.handleInput } error={ this.state.errors['business.streetAddress'] }
-            name="business.streetAddress" type="text" placeholder="123 Conch St" />
-          <Row>
-            <Col md={6} className="px-0">
-              <InputField
-                handle={ this.handleInput } error={ this.state.errors['business.city'] }
-                name="business.city" type="text" placeholder="Bikini Bottom" isColumn={ true } />
-            </Col>
-            <Col md={3} className="px-0">
-              <InputField
-                handle={ this.handleInput } error={ this.state.errors['business.state'] }
-                name="business.state" type="select"
-                options={ USStates } isColumn={ true } />
-            </Col>
-            <Col md={3} className="px-0">
-              <InputField
-                handle={ this.handleInput } error={ this.state.errors['business.zip'] }
-                name="business.zip" type="text" placeholder="97068" isColumn={ true } />
-            </Col>
-          </Row>
-          <FormText color="muted">
-            Note that this submission will be reviewed internally pending approval.
-          </FormText>
-        </FormGroup>
-      </Form>
-    );
+    if(Meteor.user()) {
+      return (
+        <Form onSubmit={ this.handleSubmit }>
+          <FormGroup tag="fieldset">
+            <legend className="h5">Your Business <hr /></legend>
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.name'] }
+              name="business.name" type="text" placeholder="The Krusty Krab" required />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.description'] }
+              name="business.description" type="textarea" required />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.category'] }
+              name="business.category" type="select" options={ Categories } required />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.photo'] }
+              name="business.photo" type="file" />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.phoneNumber'] }
+              name="business.phoneNumber" type="tel" placeholder="(123) 456-7890" />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.website'] }
+              name="business.website" type="text" placeholder="www.website.com" />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.streetAddress'] }
+              name="business.streetAddress" type="text" placeholder="123 Conch St" />
+            <Row>
+              <Col md={6} className="px-0">
+                <InputField
+                  handle={ this.handleInput } error={ this.state.errors['business.city'] }
+                  name="business.city" type="text" placeholder="Bikini Bottom" isColumn={ true } />
+              </Col>
+              <Col md={3} className="px-0">
+                <InputField
+                  handle={ this.handleInput } error={ this.state.errors['business.state'] }
+                  name="business.state" type="select"
+                  options={ USStates } isColumn={ true } />
+              </Col>
+              <Col md={3} className="px-0">
+                <InputField
+                  handle={ this.handleInput } error={ this.state.errors['business.zip'] }
+                  name="business.zip" type="text" placeholder="97068" isColumn={ true } />
+              </Col>
+            </Row>
+            <FormText color="muted">
+              Note that this submission will be reviewed internally pending approval.
+            </FormText>
+          </FormGroup>
+        </Form>
+      );
+    } else {
+      return (
+        <Form onSubmit={ this.handleSubmit }>
+          <FormGroup tag="fieldset">
+            <legend className="h5">A Little About You <hr /></legend>
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors.gradName }
+              name="gradName" type="text" placeholder="John Doe" required />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors.gradEmail }
+              name="gradEmail" type="email" placeholder="john@doe.org" />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors.gradPhone }
+              name="gradPhone" type="tel" placeholder="(123) 456-7890" />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors.gradYear }
+              name="gradYear" type="text" placeholder="2006" required />
+          </FormGroup>
+          <FormGroup tag="fieldset">
+            <legend className="h5">And Your Business <hr /></legend>
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.name'] }
+              name="business.name" type="text" placeholder="The Krusty Krab" required />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.description'] }
+              name="business.description" type="textarea" required />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.category'] }
+              name="business.category" type="select" options={ Categories } required />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.photo'] }
+              name="business.photo" type="file" />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.phoneNumber'] }
+              name="business.phoneNumber" type="tel" placeholder="(123) 456-7890" />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.website'] }
+              name="business.website" type="text" placeholder="www.website.com" />
+            <InputField
+              handle={ this.handleInput } error={ this.state.errors['business.streetAddress'] }
+              name="business.streetAddress" type="text" placeholder="123 Conch St" />
+            <Row>
+              <Col md={6} className="px-0">
+                <InputField
+                  handle={ this.handleInput } error={ this.state.errors['business.city'] }
+                  name="business.city" type="text" placeholder="Bikini Bottom" isColumn={ true } />
+              </Col>
+              <Col md={3} className="px-0">
+                <InputField
+                  handle={ this.handleInput } error={ this.state.errors['business.state'] }
+                  name="business.state" type="select"
+                  options={ USStates } isColumn={ true } />
+              </Col>
+              <Col md={3} className="px-0">
+                <InputField
+                  handle={ this.handleInput } error={ this.state.errors['business.zip'] }
+                  name="business.zip" type="text" placeholder="97068" isColumn={ true } />
+              </Col>
+            </Row>
+            <FormText color="muted">
+              Note that this submission will be reviewed internally pending approval.
+            </FormText>
+          </FormGroup>
+        </Form>
+      );
+    }
+
   }
   
   /**
@@ -238,31 +291,49 @@ export default class NewBusiness extends React.Component {
   
     // convert strings to numbers
     submission.gradYear = parseInt(submission.gradYear);
-  
-    // attempt to validate newest submission
-    Meteor.call('submissions.validate', submission, (err, res) => {
-      // if there were validation errors, update error state to reflect
-      if (res) {
-        const errors = res.reduce((list, e) => {
-          list[e.name] = e.message;
-          return list;
-        }, {});
-        
-        this.setState({ errors: errors });
-      } else {
-        // normalize phone #s
-        submission.gradPhone = submission.gradPhone.replace(/\D/g,'');
-        submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
-  
-        Meteor.call('submissions.insert', submission, (err, res) => {
-          if (err) {
-            console.log(err);
-          } else {
-            this.toggle();
-          }
-        });
-      }
-    });
+
+    if(Meteor.user()) {
+      submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
+      Meteor.call('businesses.insert', {
+        name: submission.business.name,
+        description: submission.business.description,
+        photo: submission.business.photo,
+        country: submission.business.country,
+        streetAddress: submission.business.streetAddress,
+        state: submission.business.state,
+        city: submission.business.city,
+        zip: submission.business.zip,
+        phoneNumber: submission.business.phoneNumber,
+        website: submission.business.website,
+        category: submission.business.category,
+      });
+      this.toggle();
+    } else {
+      // attempt to validate newest submission
+      Meteor.call('submissions.validate', submission, (err, res) => {
+        // if there were validation errors, update error state to reflect
+        if (res) {
+          const errors = res.reduce((list, e) => {
+            list[e.name] = e.message;
+            return list;
+          }, {});
+
+          this.setState({ errors: errors });
+        } else {
+          // normalize phone #s
+          submission.gradPhone = submission.gradPhone.replace(/\D/g,'');
+          submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
+
+          Meteor.call('submissions.insert', submission, (err, res) => {
+            if (err) {
+              console.log(err);
+            } else {
+              this.toggle();
+            }
+          });
+        }
+      });
+    }
   }
   
   toggle() {
