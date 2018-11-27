@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { Tracker } from 'meteor/tracker';
+import { Tracker } from 'meteor/tracker'
 import SimpleSchema from 'simpl-schema';
 
 /**
@@ -60,8 +60,7 @@ const schema = new SimpleSchema({
   
   /* header photo */
   photo: {
-    type: String,
-    max: 140,
+    type: Object,
   },
   
   /* phone number of business */
@@ -117,7 +116,7 @@ const schema = new SimpleSchema({
   tracker: Tracker,
   
 });
-Businesses.schema = schema;
+Businesses.attachSchema(schema);
 
 /* define CRUD-like methods */
 Meteor.methods({

@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 import { Accounts } from 'meteor/accounts-base';
 import { Businesses } from '/imports/api/businesses/businesses';
+import Photos from '/imports/api/photos/photos';
 import Submissions from '/imports/api/submissions/submissions';
 
 Meteor.startup(() => {
@@ -12,8 +13,12 @@ Meteor.startup(() => {
   });
   
   /* publish a specific business, by ID */
-  Meteor.publish('businesses.find', ( id ) => {
+  Meteor.publish('businesses.find', (id) => {
     return Businesses.find({ _id: id, });
+  });
+  
+  Meteor.publish('photos', () => {
+    return Photos.find().cursor;
   });
   
   /* publish all submissions (admin) */

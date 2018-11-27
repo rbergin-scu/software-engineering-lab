@@ -53,7 +53,7 @@ const schema = new SimpleSchema({
   
   /* reference to business in table */
   business: {
-    type: Businesses.schema,
+    type: Businesses.simpleSchema(),
     required: true,
   },
   
@@ -63,7 +63,7 @@ const schema = new SimpleSchema({
   tracker: Tracker,
   
 });
-Submissions.schema = schema;
+Submissions.attachSchema(schema);
 
 /* define CRUD-like methods */
 Meteor.methods({
@@ -78,7 +78,7 @@ Meteor.methods({
    */
   'submissions.validate'(submission) {
     try {
-      Submissions.schema.validate(submission);
+      Submissions.simpleSchema().validate(submission);
       return undefined;
     } catch (e) {
       return e.details;
@@ -95,7 +95,7 @@ Meteor.methods({
    */
   'submissions.insert'(submission) {
     try {
-      Submissions.schema.validate(submission);
+      Submissions.simpleSchema().validate(submission);
     } catch (e) {
       throw new Meteor.Error('submissions.insert', `The provided submission failed to validate. { ${submission} }`);
     }

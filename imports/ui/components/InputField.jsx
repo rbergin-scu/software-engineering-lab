@@ -13,7 +13,7 @@ export default class InputField extends React.Component {
   render() {
     return (
       <FormGroup row={ this.props.isColumn === undefined ? true : !this.props.isColumn }>
-        <Label for={ this.props.name } sm={ 3 }>{ Submissions.schema.label(this.props.name) }</Label>
+        <Label for={ this.props.name } sm={ 3 }>{ Submissions.simpleSchema().label(this.props.name) }</Label>
         <Col sm={ 9 }>
           
           { ['email', 'file', 'tel', 'text'].includes(this.props.type) &&

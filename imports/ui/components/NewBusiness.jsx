@@ -6,6 +6,7 @@ import { Button, Col, Collapse, Form, FormGroup, FormText, Row, } from 'reactstr
 
 import { Categories } from '/imports/api/businesses/businesses';
 import InputField from '/imports/ui/components/InputField';
+import Photos from '/imports/api/photos/photos';
 
 const USStates = {
   AL: 'Alabama',
@@ -196,6 +197,25 @@ export default class NewBusiness extends React.Component {
       case 'textarea':
         value = e.target.value;
         break;
+        
+      case 'file':
+        value = e.target.files[0];
+        
+        console.log(value);
+        
+        let upload = Photos.insert({
+          file: value,
+          streams: 'dynamic',
+          chunkSize: 'dynamic',
+        }, false);
+        
+        upload.on('uploaded', (err, file) => {
+          if (err) throw err;
+          console.log('uploaded ' + file);
+        });
+        
+        upload.start();
+        return;
       
       default:
         console.log(e.target.type);
@@ -238,32 +258,41 @@ export default class NewBusiness extends React.Component {
     
     let submission = this.state.submission;
   
+    /* first, sanitize submitted info */
     // convert strings to numbers
     if (submission.gradYear) {
       submission.gradYear = parseInt(submission.gradYear);
     }
   
-    // attempt to validate newest submission
-    Meteor.call('submissions.validate', submission, (err, res) => {
+    // normalize phone #s
+    if (submission.gradPhone) {
+      submission.gradPhone = submission.gradPhone.replace(/\D/g,'');
+    }
+    if (submission.business.phoneNumber) {
+      submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
+    }
+  
+    console.log(submission.business.photo);
+    Meteor.call('photos.insert', submission.business.photo, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('saved: ' + result);
+      }
+    });
+    
+    /* attempt to validate newest submission */
+    Meteor.call('submissions.validate', submission, (err, result) => {
       // if there were validation errors, update error state to reflect
-      if (res) {
-        const errors = res.reduce((list, e) => {
+      if (result) {
+        const errors = result.reduce((list, e) => {
           list[e.name] = e.message;
           return list;
         }, {});
         
         this.setState({ errors: errors });
       } else {
-        // normalize phone #s
-        if (submission.gradPhone) {
-          submission.gradPhone = submission.gradPhone.replace(/\D/g,'');
-        }
-        
-        if (submission.business.phoneNumber) {
-          submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
-        }
-  
-        Meteor.call('submissions.insert', submission, (err, res) => {
+        Meteor.call('submissions.insert', submission, (err) => {
           if (err) {
             console.log(err);
           } else {

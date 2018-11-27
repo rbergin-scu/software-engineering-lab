@@ -27,7 +27,7 @@ export default class BusinessCard extends React.Component {
     return (
       <div className={`col-md-${this.state.editing ? '12' : '4'} d-flex align-items-stretch mb-3`}>
         <Card className="bg-light shadow">
-          <CardImg top width="100%" src="test.jpg" alt={ this.props.business.name } />
+          <CardImg top width="100%" src={ this.props.business.photo } alt={ this.props.business.name } />
           <CardBody>
             <CardTitle className="d-flex align-items-center">
               <Link to={`/businesses/${this.props.business._id}`}>{ this.props.business.name }</Link>
