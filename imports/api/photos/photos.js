@@ -8,7 +8,6 @@ const Photos = new FilesCollection({
   
   collectionName: 'photos',
   allowClientCode: false,
-  storagePath: 'private/photos',
   
   onBeforeUpload(file) {
     if (file.size <= (10 * 1024 * 1024) && /png|jp?eg/i.test(file.extension)) {

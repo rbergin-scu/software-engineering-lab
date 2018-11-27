@@ -31,10 +31,9 @@ Meteor.startup(() => {
     Businesses.insert({
       name: 'Krusty Krab',
       description: 'This is your world. In your world you have total and absolute power. Trees get lonely too, so we\'ll give him a little friend.',
-      photo: '/test.jpg',
       category: 'food',
       phoneNumber: '1234567890',
-      website: 'https://scu.edu',
+      website: 'www.scu.edu',
       streetAddress: '111 Conch St',
       city: 'Bikini Bottom',
       state: 'OR',

@@ -109,6 +109,15 @@ export default class NewBusiness extends React.Component {
   renderForm() {
     return (
       <Form onSubmit={ this.handleSubmit }>
+        <div>
+          {
+            Photos.find().fetch().map((photo, i) => {
+              let link = Photos.findOne({ _id: photo._id }).link();
+              
+              return (<img key={ i } src={ link } alt={ photo.name } />);
+            })
+          }
+        </div>
         <FormGroup tag="fieldset">
           <legend className="h5">A Little About You <hr /></legend>
           <InputField
@@ -211,7 +220,6 @@ export default class NewBusiness extends React.Component {
         
         upload.on('uploaded', (err, file) => {
           if (err) throw err;
-          console.log('uploaded ' + file);
         });
         
         upload.start();
