@@ -14,8 +14,8 @@ export default class SubmissionCard extends React.Component {
 
 
   approve() {
-    let id = this.props.id;
-    let business = this.props.business;
+    let id = this.props.submission.id;
+    let business = this.props.submission.business;
 
     Meteor.call('businesses.insert', {
       name: business.name,
@@ -37,7 +37,7 @@ export default class SubmissionCard extends React.Component {
   }
 
   deny() {
-    let id = this.props.id;
+    let id = this.props.submission.id;
 
     Meteor.call('submissions.remove', {
       id: id
@@ -49,12 +49,12 @@ export default class SubmissionCard extends React.Component {
       <div className="col-md-4 d-flex align-items-stretch mb-3">
         <Card className="bg-light shadow">
           <CardBody>
-            <CardTitle>{this.props.name}</CardTitle>
+            <CardTitle>{this.props.submission.name}</CardTitle>
             <hr className="mt-0"/>
-            <CardText className="mb-0">Submitter: {this.props.submitterName}</CardText>
-            <CardText className="mb-0">Email: {this.props.email}</CardText>
-            <CardText className="mb-0">Phone #: {this.props.phoneNumber}</CardText>
-            <CardText className="mb-0">Grad year: {this.props.gradYear}</CardText>
+            <CardText className="mb-0">Submitter: {this.props.submission.submitterName}</CardText>
+            <CardText className="mb-0">Email: {this.props.submission.email}</CardText>
+            <CardText className="mb-0">Phone #: {this.props.submission.phoneNumber}</CardText>
+            <CardText className="mb-0">Grad year: {this.props.submission.gradYear}</CardText>
           </CardBody>
           <CardFooter className="bg-primary text-white">
             <Button color="primary" className="mr-1" onClick = { this.approve.bind(this) } >

@@ -61,16 +61,19 @@ class AdminPage extends React.Component {
 
   renderSubmissions() {
       return this.props.submissions.map((sub, i) => {
+        const submission = {
+          name: sub.business.name,
+          submitterName: sub.gradName,
+          email: sub.gradEmail,
+          phoneNumber: sub.gradPhone,
+          gradYear: sub.gradYear,
+          id: sub._id,
+          business: sub.business,
+        };
         return (
           <SubmissionCard
             key={ i }
-            name={ sub.business.name }
-            submitterName={ sub.gradName }
-            email={ sub.gradEmail }
-            phoneNumber={ sub.gradPhone }
-            gradYear={ sub.gradYear }
-            id = { sub._id }
-            business = { sub.business }
+            submission={ submission }
           />
         );
       });
@@ -78,17 +81,20 @@ class AdminPage extends React.Component {
 
   renderEditRequests() {
     return this.props.editRequests.map((edit, i) => {
+      const edits = {
+        name: edit.business.name,
+        submitterName: edit.gradName,
+        email: edit.gradEmail,
+        phoneNumber: edit.gradPhone,
+        gradYear: edit.gradYear,
+        requestId: edit._id,
+        business: edit.business,
+        businessId: edit.businessId,
+      };
       return (
         <EditRequestCard
           key={ i }
-          name={ edit.business.name }
-          submitterName={ edit.gradName }
-          email={ edit.gradEmail }
-          phoneNumber={ edit.gradPhone }
-          gradYear={ edit.gradYear }
-          requestId = { edit._id }
-          business = { edit.business }
-          businessId = { edit.businessId }
+          edits = { edits }
         />
       );
     });
@@ -96,18 +102,21 @@ class AdminPage extends React.Component {
 
   renderRemovalRequests() {
     return this.props.removalRequests.map((remove, i) => {
+      const removal = {
+        name: remove.business.name,
+        submitterName: remove.gradName,
+        email: remove.gradEmail,
+        phoneNumber: remove.gradPhone,
+        gradYear: remove.gradYear,
+        reason: remove.reason,
+        requestId: remove._id,
+        business: remove.business,
+        businessId: remove.businessId,
+      };
       return (
         <RemovalRequestCard
           key={ i }
-          name={ remove.business.name }
-          submitterName={ remove.gradName }
-          email={ remove.gradEmail }
-          phoneNumber={ remove.gradPhone }
-          gradYear={ remove.gradYear }
-          reason={remove.reason}
-          requestId = { remove._id }
-          business = { remove.business }
-          businessId = { remove.businessId }
+          removal = { removal }
         />
       );
     });

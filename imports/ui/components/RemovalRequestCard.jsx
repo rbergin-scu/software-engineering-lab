@@ -14,8 +14,8 @@ export default class RemovalRequestCard extends React.Component {
 
 
   approve() {
-    let requestId = this.props.requestId;
-    let businessId = this.props.businessId;
+    let requestId = this.props.removal.requestId;
+    let businessId = this.props.removal.businessId;
 
     Meteor.call('businesses.remove', {
       id: businessId,
@@ -27,7 +27,7 @@ export default class RemovalRequestCard extends React.Component {
   }
 
   deny() {
-    let requestId = this.props.requestId;
+    let requestId = this.props.removal.requestId;
 
     Meteor.call('removalRequests.remove', {
       id: requestId,
@@ -39,13 +39,13 @@ export default class RemovalRequestCard extends React.Component {
       <div className="col-md-4 d-flex align-items-stretch mb-3">
         <Card className="bg-light shadow">
           <CardBody>
-            <CardTitle>{this.props.name}</CardTitle>
+            <CardTitle>{this.props.removal.name}</CardTitle>
             <hr className="mt-0"/>
-            <CardText className="mb-0">Submitter: {this.props.submitterName}</CardText>
-            <CardText className="mb-0">Email: {this.props.email}</CardText>
-            <CardText className="mb-0">Phone #: {this.props.phoneNumber}</CardText>
-            <CardText className="mb-0">Grad year: {this.props.gradYear}</CardText>
-            <CardText className="mb-0">Reason for Request: {this.props.reason}</CardText>
+            <CardText className="mb-0">Submitter: {this.props.removal.submitterName}</CardText>
+            <CardText className="mb-0">Email: {this.props.removal.email}</CardText>
+            <CardText className="mb-0">Phone #: {this.props.removal.phoneNumber}</CardText>
+            <CardText className="mb-0">Grad year: {this.props.removal.gradYear}</CardText>
+            <CardText className="mb-0">Reason for Request: {this.props.removal.reason}</CardText>
           </CardBody>
           <CardFooter className="bg-primary text-white">
             <Button color="primary" className="mr-1" onClick = { this.approve.bind(this) } >
