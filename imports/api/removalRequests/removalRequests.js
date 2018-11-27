@@ -38,6 +38,13 @@ const schema = new SimpleSchema({
     min: 1900,
     label: 'Graduation year',
   },
+
+  /* business Id */
+  businessId: {
+    type: String,
+    required: true,
+    label: 'Business Id',
+  },
   
   /* reference to business in table */
   business: {
@@ -48,6 +55,8 @@ const schema = new SimpleSchema({
   reason: {
     type: String,
     required: true,
+    regEx: /(\n|^).*?(?=\n|$)/,
+    max: 140,
     label: 'Reason for requesting removal'
   }
   
@@ -62,7 +71,7 @@ RemovalRequests.schema = schema;
 
 // publish Business data to client
 if (Meteor.isServer) {
-  Meteor.publish('submissions', () => {
+  Meteor.publish('removalRequests', () => {
     return RemovalRequests.find({});
   });
 }

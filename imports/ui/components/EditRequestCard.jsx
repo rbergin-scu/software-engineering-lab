@@ -14,24 +14,25 @@ export default class EditRequestCard extends React.Component {
 
 
   approve() {
-    let id = this.props.id;
+    let requestId = this.props.requestId;
+    let businessId = this.props.businessId;
     let business = this.props.business;
 
     Meteor.call('businesses.update', {
-      id: id,
+      id: businessId,
       business: business,
     });
 
     Meteor.call('editRequests.remove', {
-      id: id
+      id: requestId,
     });
   }
 
   deny() {
-    let id = this.props.id;
+    let requestId = this.props.requestId;
 
     Meteor.call('editRequests.remove', {
-      id: id
+      id: requestId,
     });
   }
 

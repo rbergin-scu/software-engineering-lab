@@ -82,12 +82,13 @@ class AdminPage extends React.Component {
         <EditRequestCard
           key={ i }
           name={ edit.business.name }
-          submitterName={ edit.name }
-          email={ edit.email }
-          phoneNumber={ edit.phoneNumber }
+          submitterName={ edit.gradName }
+          email={ edit.gradEmail }
+          phoneNumber={ edit.gradPhone }
           gradYear={ edit.gradYear }
-          id = { edit._id }
+          requestId = { edit._id }
           business = { edit.business }
+          businessId = { edit.businessId }
         />
       );
     });
@@ -99,12 +100,14 @@ class AdminPage extends React.Component {
         <RemovalRequestCard
           key={ i }
           name={ remove.business.name }
-          submitterName={ remove.name }
-          email={ remove.email }
-          phoneNumber={ remove.phoneNumber }
+          submitterName={ remove.gradName }
+          email={ remove.gradEmail }
+          phoneNumber={ remove.gradPhone }
           gradYear={ remove.gradYear }
-          id = { remove._id }
+          reason={remove.reason}
+          requestId = { remove._id }
           business = { remove.business }
+          businessId = { remove.businessId }
         />
       );
     });

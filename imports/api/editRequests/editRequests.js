@@ -38,6 +38,13 @@ const schema = new SimpleSchema({
     min: 1900,
     label: 'Graduation year',
   },
+
+  /* business Id */
+  businessId: {
+    type: String,
+    required: true,
+    label: 'Business Id',
+  },
   
   /* reference to business in table */
   business: {
@@ -64,7 +71,7 @@ if (Meteor.isServer) {
 Meteor.methods({
   'editRequests.validate'(
     editRequest,
-  ) {
+    ) {
     try {
       EditRequests.schema.validate(editRequest);
       return undefined;
@@ -94,7 +101,7 @@ Meteor.methods({
     }
   },
   
-  'edits.remove'({
+  'editRequests.remove'({
     id,
   }) {
     EditRequests.remove({

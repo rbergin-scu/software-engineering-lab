@@ -59,7 +59,7 @@ class RequestRemoval extends React.Component {
         <FormGroup tag="fieldset">
           <InputField
             handle={ this.handleInput } error={ this.state.errors['reason'] }
-            name="reason" type="text" placeholder={"Why should this business be removed from our directory?"} required />
+            name="reason" type="textarea" placeholder={"Why should this business be removed from our directory?"} required />
         </FormGroup>
       </Form>
     );
@@ -121,6 +121,8 @@ class RequestRemoval extends React.Component {
       gradEmail: this.state.submission.gradEmail,
       gradPhone: this.state.submission.gradPhone,
       gradYear: this.state.submission.gradYear,
+      reason: this.state.submission.reason,
+      businessId: this.props.existing[0]._id,
       business: {
         name: this.state.submission.name,
         description: this.state.submission.description,

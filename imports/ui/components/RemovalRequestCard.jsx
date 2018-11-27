@@ -14,22 +14,23 @@ export default class RemovalRequestCard extends React.Component {
 
 
   approve() {
-    let id = this.props.id;
+    let requestId = this.props.requestId;
+    let businessId = this.props.businessId;
 
     Meteor.call('businesses.remove', {
-      id: id,
+      id: businessId,
     });
 
     Meteor.call('removalRequests.remove', {
-      id: id
+      id: requestId,
     });
   }
 
   deny() {
-    let id = this.props.id;
+    let requestId = this.props.requestId;
 
     Meteor.call('removalRequests.remove', {
-      id: id
+      id: requestId,
     });
   }
 
@@ -44,6 +45,7 @@ export default class RemovalRequestCard extends React.Component {
             <CardText className="mb-0">Email: {this.props.email}</CardText>
             <CardText className="mb-0">Phone #: {this.props.phoneNumber}</CardText>
             <CardText className="mb-0">Grad year: {this.props.gradYear}</CardText>
+            <CardText className="mb-0">Reason for Request: {this.props.reason}</CardText>
           </CardBody>
           <CardFooter className="bg-primary text-white">
             <Button color="primary" className="mr-1" onClick = { this.approve.bind(this) } >

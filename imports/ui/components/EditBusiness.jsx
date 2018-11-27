@@ -261,6 +261,7 @@ class EditBusiness extends React.Component {
       gradEmail: this.state.submission.gradEmail,
       gradPhone: this.state.submission.gradPhone,
       gradYear: this.state.submission.gradYear,
+      businessId: this.props.existing[0]._id,
       business: {
         name: this.state.submission.name,
         description: this.state.submission.description,
@@ -275,6 +276,7 @@ class EditBusiness extends React.Component {
         zip: this.state.submission.zip,
       }
     }
+    console.log(request);
 
     // convert strings to numbers
     request.gradYear = parseInt(request.gradYear);
