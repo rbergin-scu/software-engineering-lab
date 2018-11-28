@@ -232,11 +232,24 @@ Meteor.methods({
    *
    * @param id  Target business ID.
    */
-  'businesses.remove'(id) {
-    if (Businesses.find({ _id: id })) {
-      Businesses.remove({ _id: id }, (err, res) => console.log(`businesses.remove: success => ${res}`));
+  'businesses.remove'({
+    id,
+  }) {
+    if (Businesses.find({ _id: id, })) {
+      Businesses.remove({ _id: id, }), (err, res) => console.log(`businesses.remove: success => ${res}`));
     } else {
       throw new Meteor.Error('businesses.remove', 'Could not remove business with that ID.');
+    }
+  },
+
+
+  'businesses.removeRequest'(
+    id,
+  ) {
+    if (Businesses.find({ _id: id.id, })) {
+      Businesses.remove({ _id: id.id, });
+    } else {
+      throw new Meteor.Error('businesses.remove: error', 'Could not find a business with that ID.');
     }
   },
   
@@ -246,7 +259,7 @@ Meteor.methods({
    * @param id        Target business ID.
    * @param business  The updated contents, which do not need to be exhaustive.
    */
-  'businesses.update'(id, business) {
+  'businesses.update'({id, business}) {
     // create a copy ready for MongoDB, includes references to fields which may not be set by this update (necessary)
     let item = { $set: {
         name: business.name,
@@ -269,7 +282,6 @@ Meteor.methods({
       throw new Meteor.Error('businesses.update', 'Could not find a business to update with that ID.');
     }
   },
-  
 });
 
 export {

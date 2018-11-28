@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 
 import EditBusiness from '/imports/ui/components/EditBusiness';
+import RequestRemoval from '/imports/ui/components/RequestRemoval';
 
 /**
  * A card providing a set of pertinent information about the business in a compact form. Also provides utilities to
@@ -24,15 +25,16 @@ export default class BusinessCard extends React.Component {
       removeConfirmed: false,
     };
     
-    this.handleRemove = this.handleRemove.bind(this);
     this.toggleEditing = this.toggleEditing.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
+    this.toggleRemoval = this.toggleRemoval.bind(this);
   }
   
   render() {
     return (
-      <div className={`col-12 col-md-${this.state.editing ? '12' : '4'} mb-3`}>
+      <div className={`col-12 col-md-${this.state.editing || (this.state.removeRequested && !this.props.admin) ? '12' : '4'} mb-3`}>
         <div className="row">
-          <div className={ `col-12 col-md-${this.state.editing ? '6 px-0' : '12'}` }>
+          <div className={ `col-12 col-md-${this.state.editing || (this.state.removeRequested && !this.props.admin) ? '6 px-0' : '12'}` }>
             <Card className="bg-light h-100">
               <CardImg top width="100%" src={ this.props.business.photo } alt={ this.props.business.name } />
               <CardBody>
@@ -50,32 +52,39 @@ export default class BusinessCard extends React.Component {
                   </CardText>
                 </div>
               </CardBody>
-              { this.props.admin &&
-              <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
-                <div>
-                  <Button color="primary" className="mr-1" onClick={ this.toggleEditing }>
-                    <i className="fas fa-pencil-alt" aria-hidden="true" />
-                  </Button>
-                  <Button color="primary" onClick={ this.handleRemove }>
-                    <i className="fas fa-minus-circle" aria-hidden="true" />
-                  </Button>
-                </div>
-              </CardFooter>
-              }
+                <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
+                  <div>
+                    <Button color="primary" className="mr-1" onClick={ this.toggleEditing }>
+                      <i className="fas fa-pencil-alt" aria-hidden="true" />
+                    </Button>
+                    <Button color="primary" onClick={ this.props.admin ? this.handleRemove : this.toggleRemoval }>
+                      <i className="fas fa-minus-circle" aria-hidden="true" />
+                    </Button>
+                  </div>
+                </CardFooter>
             </Card>
           </div>
-          { this.props.admin && this.state.editing &&
+          { this.state.editing &&
+          <div className="col-12 col-md-6 px-0">
+            <EditBusiness
+              id={ this.props.business._id }
+              done={ this.toggleEditing }
+            />
+          </div>
+          }
+          { this.props.admin ?
+            this.state.removeRequested &&
+            this.renderConfirmModal()
+            :
+            this.state.removeRequested &&
             <div className="col-12 col-md-6 px-0">
-              <EditBusiness
+              <RequestRemoval
                 id={ this.props.business._id }
-                done={ this.toggleEditing }
+                done={ this.toggleRemoval }
               />
             </div>
           }
         </div>
-        { this.props.admin && this.state.removeRequested &&
-          this.renderConfirmModal()
-        }
       </div>
     );
   }
@@ -99,6 +108,14 @@ export default class BusinessCard extends React.Component {
     );
   }
   
+  toggleEditing(e) {
+    this.setState({ editing: !this.state.editing, });
+  }
+
+  toggleRemoval(e) {
+    this.setState({ removeRequested: !this.state.removeRequested, });
+  }
+
   /**
    * Handle a request to remove this business, which invokes a modal to confirm or cancel the removal.
    *
@@ -114,9 +131,4 @@ export default class BusinessCard extends React.Component {
     
     this.setState({ removeRequested: !this.state.removeRequested, });
   }
-  
-  toggleEditing() {
-    this.setState({ editing: !this.state.editing, });
-  }
-  
 }
