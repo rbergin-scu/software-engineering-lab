@@ -32,11 +32,9 @@ class Index extends React.Component {
     return (
       <div className="container my-4">
         { this.renderSearch() }
-        <section className="index-businesses mb-5">
-          <div className="row">
-            { this.renderBusinesses() }
-          </div>
-        </section>
+        <div className="row">
+          { this.renderBusinesses() }
+        </div>
       </div>
     );
   }

@@ -33,7 +33,7 @@ class EditBusiness extends React.Component {
   
   render() {
     return (
-      <div className="business-editing bg-light px-4 py-3 border-top border-right border-bottom shadow">
+      <div className="bg-white px-4 py-3 border-top border-right border-bottom">
         { this.renderForm() }
         <div>
           <Button color="primary" onClick={ this.handleSubmit }>Update Business</Button>
@@ -47,7 +47,7 @@ class EditBusiness extends React.Component {
     return (
       <Form onSubmit={ this.handleSubmit }>
         <FormGroup tag="fieldset">
-          <legend className="h5">{ this.state.submission.name }<hr /></legend>
+          <legend className="h5"><span className="text-primary">Editing </span> { this.state.submission.name }<hr /></legend>
           <InputField
             handle={ this.handleInput } error={ this.state.errors['name'] }
             name="business.name" type="text" value={ this.state.submission.name } required />
