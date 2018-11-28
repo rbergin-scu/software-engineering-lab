@@ -30,14 +30,14 @@ export default class SubmissionCard extends React.Component {
       if (err) throw err;
     });
 
-    Meteor.call('submissions.remove', this.props.submission._id);
+    Meteor.call('submissions.remove', this.props.submission.id);
   }
 
   /**
    * Removes the selected Submissions entry
    */
   deny() {
-    Meteor.call('submissions.remove', this.props.submission._id);
+    Meteor.call('submissions.remove', this.props.submission.id);
   }
 
   showDetails() {

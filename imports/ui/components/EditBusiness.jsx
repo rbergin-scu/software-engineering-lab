@@ -317,15 +317,28 @@ class EditBusiness extends React.Component {
    */
   updateState(name, value) {
     let newState;
-  
-    // slightly modified compared to NewBusiness, because we are altering only Business, not a surrounding Submission
-    name = name.split('.')[1];
-    newState = update(this.state, {
-      submission: {
-        [name]: { $set: value }
-      }
-    });
-    
+
+    // handle fields that are part of an object inside submission (namely, inside Business)
+    if (name.includes('.')) {
+      name = name.split('.');
+
+      newState = update(this.state, {
+        submission: {
+          // e.g. business.description --> submission: { business: { description: (value) } }
+          [name[0]]: {
+            [name[1]]: { $set: value }
+          }
+        }
+      });
+    } else {
+      // otherwise, our job is a little easier
+      newState = update(this.state, {
+        submission: {
+          [name]: { $set: value }
+        }
+      });
+    }
+
     return newState;
   }
   
