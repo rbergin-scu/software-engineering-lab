@@ -24,13 +24,13 @@ class BusinessDetails extends React.Component {
   render() {
     if(this.props.type == "update") {
       return (
-        <div className="business-editing bg-light p-3 px-4 border-top border-right border-bottom shadow">
+        <div className="bg-white px-4 py-3 border-top border-right border-bottom">
           { this.renderUpdateDetails() }
         </div>
       );
     } else {
       return (
-        <div className="business-editing bg-light p-3 px-4 border-top border-right border-bottom shadow">
+        <div className="bg-white px-4 py-3 border-top border-right border-bottom">
           { this.renderBusinessDetails() }
         </div>
       );
