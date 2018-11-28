@@ -72,7 +72,7 @@ export default class BusinessCard extends React.Component {
             />
           </div>
           }
-          { this.props.admin ?
+          { Meteor.user() ?
             this.state.removeRequested &&
             this.renderConfirmModal()
             :
@@ -92,7 +92,7 @@ export default class BusinessCard extends React.Component {
   renderConfirmModal() {
     return (
       <div>
-        { this.props.admin &&
+        { Meteor.user() &&
           <Modal isOpen={ this.state.removeRequested } toggle={ this.handleRemove }>
             <ModalHeader toggle={ this.handleRemove }>Confirm Business Deletion</ModalHeader>
             <ModalBody>
