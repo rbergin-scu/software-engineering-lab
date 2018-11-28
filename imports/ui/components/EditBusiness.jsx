@@ -192,6 +192,9 @@ class EditBusiness extends React.Component {
         [name.substring(name.indexOf('.') + 1)]: {$set: value}
       }
     });
+
+    console.log(`handleInput: { ${name} => ${value} }`);
+    this.setState(newState);
   }
   
   /**
