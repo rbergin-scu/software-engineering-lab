@@ -1,14 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import {
-  Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, Row,
-} from 'reactstrap';
+import React from 'react';
+import { Button, Col, FormGroup, Input, Label, } from 'reactstrap';
+
 import Submissions from '/imports/api/submissions/submissions';
-import Submission from '/imports/ui/components/Submission';
+import SubmissionCard from '/imports/ui/components/SubmissionCard';
 
-import Businesses from '/imports/api/businesses/businesses';
-
+/**
+ * The admin-only interface that provides Alumni Office users the ability to view submissions (and deny/approve them
+ * individually) and reports about the system.
+ */
 class AdminPage extends React.Component {
 
   constructor(props) {
@@ -16,15 +17,61 @@ class AdminPage extends React.Component {
 
     this.state = {
       submission: {
-        password: null
+        password: null,
       },
     };
 
     this.error = this.error.bind(this);
     this.handleInput = this.handleInput.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggle = this.toggle.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
+  }
+  
+  render() {
+    return (
+      <div className="container py-5">
+      { this.props.currentUser ? (
+        <div>
+          <h2>Submissions</h2>
+          <section className="index-submissions mb-5">
+            <div className="row">
+              { this.renderSubmissions() }
+            </div>
+          </section>
+          <form>
+            <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
+          </form>
+        </div>
+      ) : (
+        <div>
+          { this.state.error &&
+            <p>Whoops! { this.state.error }</p>
+          }
+          <form id="login">
+            <FormGroup row>
+              <Label for="password" sm={ 1 }>Password</Label>
+              <Col sm={ 5 }>
+                <Input type="password" name="password" placeholder="******************" onChange={ this.handleInput } />
+              </Col>
+            </FormGroup>
+            <Button color="primary" onClick={ this.handleLogin }>Login</Button>
+          </form>
+        </div>
+      )}
+      </div>
+    );
+  }
+  
+  renderSubmissions() {
+    return this.props.submissions.map((sub, i) => {
+      return (
+        <SubmissionCard
+          key={ i }
+          submission={ sub }
+        />
+      );
+    });
   }
 
   handleInput(e) {
@@ -39,74 +86,26 @@ class AdminPage extends React.Component {
       }
     });
   }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    Meteor.loginWithPassword("admin", this.state.submission.password, function(err) {
-      if(err) {
-        document.getElementById("login").reset();
-        alert(err.message);
-      }
-    });
-  }
-
+  
   handleLogin(e) {
     this.handleInput(e);
     this.handleSubmit(e);
   }
-
-  renderSubmissions() {
-      return this.props.submissions.map((sub, i) => {
-        return (
-          <Submission
-            key={ i }
-            name={ sub.business.name }
-            submitterName={ sub.name }
-            email={ sub.email }
-            phoneNumber={ sub.phoneNumber }
-            gradYear={ sub.gradYear }
-            id = { sub._id }
-            business = { sub.business }
-          />
-        );
-      });
-  }
-
-
-
-  render() {
-    console.log(this.props.currentUser);
-    if(!Meteor.user()) {
-      return (
-        <form className="login" id ="login">
-          <Label for="password">Password</Label>
-          <Input type="password" name="password" placeholder="*****"
-                 onChange={ this.handleInput } />
-          <Button color="primary" onClick={ this.handleLogin.bind(this) }>Login</Button>
-        </form>
-      );
-    }
-    else {
-      return (
-        <div>
-          <h2>Submissions</h2>
-          <div className="container py-5">
-            <section className="index-submissions">
-              <div className="card-deck">
-                { this.renderSubmissions() }
-              </div>
-            </section>
-          </div>
-          <div>
-
-            <form className="logout">
-              <Button color="primary" onClick={ Meteor.logout }>Logout</Button>
-            </form>
-          </div>
-        </div>
-      );
-    }
-
+  
+  /**
+   * Attempt to login with the information provided.
+   *
+   * @param e The login submit button.
+   */
+  handleSubmit(e) {
+    e.preventDefault();
+    
+    Meteor.loginWithPassword('admin', this.state.submission.password, (err, res) => {
+      if (err) {
+        document.getElementById('login').reset();
+        this.error(err);
+      }
+    });
   }
 
   error(e) {
@@ -116,13 +115,14 @@ class AdminPage extends React.Component {
   toggle() {
     this.setState({ modal: !this.state.modal });
   }
+  
 }
+
 export default withTracker(() => {
-  Meteor.subscribe('submissions');
-  Meteor.subscribe('businesses');
+  Meteor.subscribe('submissions.all');
 
   return {
-    submissions: Submissions.find({ }).fetch(),
+    submissions: Submissions.find().fetch(),
     currentUser: Meteor.user(),
   };
 })(AdminPage);

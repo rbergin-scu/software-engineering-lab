@@ -1,37 +1,54 @@
+import update from 'immutability-helper';
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import {
-  Button, Col, Collapse, Form, FormGroup, FormText, Input, Label, Row,
-} from 'reactstrap';
+import { Button, Col, Collapse, Form, FormGroup, FormText, Row, } from 'reactstrap';
 
-import { Businesses, Categories } from '/imports/api/businesses/businesses';
+import { Categories, USStates } from '/imports/api/businesses/businesses';
+import InputField from '/imports/ui/components/InputField';
+import Photos from '/imports/api/photos/photos';
 
+/**
+ * A collapsable component that provides a form for anyone to submit a business they would like to see in the database.
+ */
 export default class NewBusiness extends React.Component {
   
   constructor(props) {
     super(props);
     
     this.state = {
+      /* whether the form is open */
       collapse: false,
-      submission: { },
+      
+      /* latest form validation errors */
+      errors: { },
+      
+      /* latest form input values */
+      submission: {
+        business: {
+          category: Object.keys(Categories)[0],
+        },
+      },
     };
     
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.updateState = this.updateState.bind(this);
     this.toggle = this.toggle.bind(this);
   }
   
   render() {
     return (
-      <div className={this.state.collapse ? 'py-5' : 'py-3'}>
-        <h5 className={`text-link text-white mb-0 ${this.state.collapse ? 'text-underline' : ''}`} onClick={ this.toggle }>
+      <div className={ `py-${this.state.collapse ? '5' : '3'}` }>
+        <h5 className={ `text-link text-white mb-0 ${this.state.collapse ? 'text-underline' : ''}` }
+            onClick={ this.toggle }>
           Santa Clara Alum? Submit your proudly owned business to us.&nbsp;
-          <i className={`fa ${this.state.collapse ? 'fa-caret-down' : 'fa-caret-right' } pl-2`} aria-hidden="true" />
+          <i className={ `fa fa-caret-${this.state.collapse ? 'down' : 'right'} pl-2` }
+             aria-hidden="true" />
         </h5>
         <Collapse isOpen={ this.state.collapse } className="mt-3 p-5 bg-white shadow">
           { this.renderForm() }
           <div>
-           <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Submit for Review</Button>
+           <Button color="primary" onClick={ this.handleSubmit }>Submit for Review</Button>
           </div>
         </Collapse>
       </div>
@@ -43,160 +60,57 @@ export default class NewBusiness extends React.Component {
       <Form onSubmit={ this.handleSubmit }>
         <FormGroup tag="fieldset">
           <legend className="h5">A Little About You <hr /></legend>
-          <FormGroup row>
-            <Label for="yourName" sm={2}>Your Name</Label>
-            <Col sm={10}>
-              <input type="text" className="form-control" name="yourName" placeholder="Your full name"
-                     onChange={ this.handleInput } required />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="yourEmail" sm={2}>Email</Label>
-            <Col sm={10}>
-              <Input type="email" name="yourEmail" placeholder="Your email"
-                     onChange={ this.handleInput } />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="yourPhone" sm={2}>Phone</Label>
-            <Col sm={10}>
-              <Input type="tel" name="yourPhone" placeholder="Your phone #"
-                     onChange={ this.handleInput } />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="gradYear" sm={2}>Graduation Year</Label>
-            <Col sm={10}>
-              <Input type="tel" name="gradYear" placeholder="Your graduation year"
-                     onChange={ this.handleInput } required />
-            </Col>
-          </FormGroup>
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors.gradName }
+            name="gradName" type="text" placeholder="John Doe" required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors.gradEmail }
+            name="gradEmail" type="email" placeholder="john@doe.org" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors.gradPhone }
+            name="gradPhone" type="tel" placeholder="(123) 456-7890" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors.gradYear }
+            name="gradYear" type="text" placeholder="2006" required />
         </FormGroup>
         <FormGroup tag="fieldset">
           <legend className="h5">And Your Business <hr /></legend>
-          <FormGroup row>
-            <Label for="name" sm={2}>Business Name</Label>
-            <Col sm={10}>
-              <Input type="text" name="name" placeholder="The Krusty Krab"
-                     onChange={ this.handleInput } required />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="website" sm={2}>Website</Label>
-            <Col sm={10}>
-              <Input type="text" name="website" placeholder="www.yourwebsite.com"
-                     onChange={ this.handleInput } />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="phone" sm={2}>Phone</Label>
-            <Col sm={10}>
-              <Input type="tel" name="phoneNumber" placeholder="(111) 222-3333"
-                     onChange={ this.handleInput } />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="category" sm={2}>Category</Label>
-            <Col sm={10}>
-              <Input type="select" name="category"
-                     onChange={ this.handleInput } required>
-                <option name="entertainment" value="entertainment">Entertainment</option>
-                <option name="food" value="food">Food</option>
-              </Input>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="desc" sm={2}>Brief Description</Label>
-            <Col sm={10}>
-              <Input type="text" name="desc" placeholder="A fictional fast food restaurant in the American animated TV series SpongeBob SquarePants."
-                     onChange={ this.handleInput } required />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label for="photo" sm={2}>A Nice Photo</Label>
-            <Col sm={10}>
-              <Input type="file" name="photo"
-                     onChange={ this.handleInput } />
-            </Col>
-          </FormGroup>
-          <FormGroup>
-            <Label for="streetAddress">Address</Label>
-            <Input type="text" name="streetAddress" placeholder="111 Conch St"
-                   onChange={ this.handleInput } required />
-          </FormGroup>
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.name'] }
+            name="business.name" type="text" placeholder="The Krusty Krab" required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.description'] }
+            name="business.description" type="textarea" required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.category'] }
+            name="business.category" type="select" options={ Categories } required />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.photo'] }
+            name="business.photo" type="file" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.phoneNumber'] }
+            name="business.phoneNumber" type="tel" placeholder="(123) 456-7890" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.website'] }
+            name="business.website" type="text" placeholder="www.website.com" />
+          <InputField
+            handle={ this.handleInput } error={ this.state.errors['business.streetAddress'] }
+            name="business.streetAddress" type="text" placeholder="123 Conch St" />
           <Row>
-            <Col md={6}>
-              <FormGroup>
-                <Label for="city">City</Label>
-                <Input type="text" name="city" placeholder="Bikini Bottom"
-                       onChange={ this.handleInput } />
-              </FormGroup>
+            <Col md={4} className="px-0">
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['business.city'] }
+                name="business.city" type="text" placeholder="Bikini Bottom" isColumn={ true } />
             </Col>
-            <Col md={3}>
-              <FormGroup>
-                <Label for="state">State</Label>
-                <Input type="select" name="state" value={ this.state.submission.state }
-                       onChange={ this.handleInput }>
-                  <option value="AL">Alabama</option>
-                  <option value="AK">Alaska</option>
-                  <option value="AZ">Arizona</option>
-                  <option value="AR">Arkansas</option>
-                  <option value="CA">California</option>
-                  <option value="CO">Colorado</option>
-                  <option value="CT">Connecticut</option>
-                  <option value="DE">Delaware</option>
-                  <option value="DC">District Of Columbia</option>
-                  <option value="FL">Florida</option>
-                  <option value="GA">Georgia</option>
-                  <option value="HI">Hawaii</option>
-                  <option value="ID">Idaho</option>
-                  <option value="IL">Illinois</option>
-                  <option value="IN">Indiana</option>
-                  <option value="IA">Iowa</option>
-                  <option value="KS">Kansas</option>
-                  <option value="KY">Kentucky</option>
-                  <option value="LA">Louisiana</option>
-                  <option value="ME">Maine</option>
-                  <option value="MD">Maryland</option>
-                  <option value="MA">Massachusetts</option>
-                  <option value="MI">Michigan</option>
-                  <option value="MN">Minnesota</option>
-                  <option value="MS">Mississippi</option>
-                  <option value="MO">Missouri</option>
-                  <option value="MT">Montana</option>
-                  <option value="NE">Nebraska</option>
-                  <option value="NV">Nevada</option>
-                  <option value="NH">New Hampshire</option>
-                  <option value="NJ">New Jersey</option>
-                  <option value="NM">New Mexico</option>
-                  <option value="NY">New York</option>
-                  <option value="NC">North Carolina</option>
-                  <option value="ND">North Dakota</option>
-                  <option value="OH">Ohio</option>
-                  <option value="OK">Oklahoma</option>
-                  <option value="OR">Oregon</option>
-                  <option value="PA">Pennsylvania</option>
-                  <option value="RI">Rhode Island</option>
-                  <option value="SC">South Carolina</option>
-                  <option value="SD">South Dakota</option>
-                  <option value="TN">Tennessee</option>
-                  <option value="TX">Texas</option>
-                  <option value="UT">Utah</option>
-                  <option value="VT">Vermont</option>
-                  <option value="VA">Virginia</option>
-                  <option value="WA">Washington</option>
-                  <option value="WV">West Virginia</option>
-                  <option value="WI">Wisconsin</option>
-                  <option value="WY">Wyoming</option>
-                </Input>
-              </FormGroup>
+            <Col md={4} className="px-0">
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['business.state'] }
+                name="business.state" type="select" options={ USStates } isColumn={ true } />
             </Col>
-            <Col md={3}>
-              <FormGroup>
-                <Label for="zip">ZIP</Label>
-                <Input type="text" name="zip" placeholder="12345"
-                       onChange={ this.handleInput } />
-              </FormGroup>
+            <Col md={4} className="px-0">
+              <InputField
+                handle={ this.handleInput } error={ this.state.errors['business.zip'] }
+                name="business.zip" type="text" placeholder="97068" isColumn={ true } />
             </Col>
           </Row>
           <FormText color="muted">
@@ -207,7 +121,14 @@ export default class NewBusiness extends React.Component {
     );
   }
   
+  /**
+   * Updates this.state to reflect instantaneous changes to input fields. Bound by `onChange={ this.handleInput }`.
+   *
+   * @param e The generic form field to interpret, which can be any standard `<input type="" />`.
+   */
   handleInput(e) {
+    let newState;
+    
     let name = e.target.name;
     let value;
     
@@ -216,63 +137,126 @@ export default class NewBusiness extends React.Component {
         value = e.target.checked;
         break;
       
+      /* standard text inputs */
       case 'email':
       case 'select-one':
       case 'tel':
       case 'text':
+      case 'textarea':
         value = e.target.value;
+        break;
+        
+      case 'file':
+        value = e.target.files[0];
+        
+        let upload = Photos.insert({
+          file: value,
+          streams: 'dynamic',
+          chunkSize: 'dynamic',
+        }, false);
+        
+        let ref = this; /* pointer back to _this_ so we can setState within anonymous function */
+        upload.on('uploaded', (err, file) => {
+          if (err) throw err;
+          
+          // uploads file and returns _result_ with the link
+          Meteor.call('files.photos.find', file._id, (err, result) => {
+            if (err) throw err;
+            
+            ref.setState(ref.updateState(name, result));
+          });
+        });
+        
+        upload.start();
         break;
       
       default:
-        console.log(e.target.type);
+        console.log('handleInput: surprising input type => ' + e.target.type);
         break;
     }
-    
-    console.log(`handleInput: ${name} => ${value}]`);
-    
-    this.setState(prevState => {
-      return {
-        submission : {
-          ...prevState.submission, [name]: value
-        }
-      }
-    });
+  
+    console.log(`handleInput: { ${name} => ${value} }`);
+    this.setState(this.updateState(name, value));
   }
   
+  /**
+   * Attempts to validate the form input fields found in the current state against the Submission schema.
+   * If successful, the Submission will be created. Otherwise, validation errors will be returned.
+   *
+   * @param e The Submit button target.
+   */
   handleSubmit(e) {
     e.preventDefault();
     
-    const business = {
-      name: this.state.submission.name,
-      desc: this.state.submission.desc,
-      photo: this.state.submission.photo,
-      country: this.state.submission.country,
-      streetAddress: this.state.submission.streetAddress,
-      state: this.state.submission.state,
-      city: this.state.submission.city,
-      zip: this.state.submission.zip,
-      phoneNumber: this.state.submission.phoneNumber.replace(/\D/g,''),
-      website: this.state.submission.website,
-      category: this.state.submission.category,
-    };
+    let submission = this.state.submission;
     
-    Meteor.call('submissions.insert', {
-      name: this.state.submission.yourName,
-      email: this.state.submission.yourEmail,
-      phoneNumber: this.state.submission.yourPhone.replace(/\D/g,''),
-      gradYear: parseInt(this.state.submission.gradYear),
-      business: business,
-    }, (err, res) => {
-      if (err) {
-        this.error(err);
+    /* first, sanitize submitted info */
+    // convert strings to numbers
+    if (submission.gradYear) submission.gradYear = parseInt(submission.gradYear);
+  
+    // normalize phone #s
+    if (submission.gradPhone) submission.gradPhone = submission.gradPhone.replace(/\D/g,'');
+    if (submission.business.phoneNumber) submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
+    
+    /* attempt to validate submission */
+    Meteor.call('submissions.validate', submission, (err, result) => {
+      if (err) throw err;
+      
+      // if there were validation errors, update error state to reflect
+      if (result) {
+        const errors = result.reduce((list, e) => {
+          list[e.name] = e.message;
+          return list;
+        }, {});
+        
+        this.setState({ errors: errors });
       } else {
-        this.toggle();
+        // otherwise, submit to collection
+        Meteor.call('submissions.insert', submission, (err) => {
+          if (err) throw err;
+          
+          this.toggle();
+        });
       }
     });
   }
   
+  /**
+   * Update the state of the component without inadvertently altering any of the other fields also in the state.
+   *
+   * @param name  The name of the field to update.
+   * @param value The new value for this field.
+   * @returns {*} The updated copy of this.state, which is satisfactory for this.setState().
+   */
+  updateState(name, value) {
+    let newState;
+    
+    // handle fields that are part of an object inside submission (namely, inside Business)
+    if (name.includes('.')) {
+      name = name.split('.');
+      
+      newState = update(this.state, {
+        submission: {
+          // e.g. business.description --> submission: { business: { description: (value) } }
+          [name[0]]: {
+            [name[1]]: { $set: value }
+          }
+        }
+      });
+    } else {
+      // otherwise, our job is a little easier
+      newState = update(this.state, {
+        submission: {
+          [name]: { $set: value }
+        }
+      });
+    }
+    
+    return newState;
+  }
+  
   toggle() {
-    this.setState({ collapse: !this.state.collapse, });
+    this.setState({ collapse: !this.state.collapse });
   }
   
 }
