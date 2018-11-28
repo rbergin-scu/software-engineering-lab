@@ -60,7 +60,7 @@ class RequestRemoval extends React.Component {
         <FormGroup tag="fieldset">
           <InputField
             handle={ this.handleInput } error={ this.state.errors['reason'] }
-            name="reason" type="textarea" placeholder={"Why should this business be removed from our directory?"} required />
+            name="reason" type="textarea" value="Reason for requesting removal" placeholder={"Why should this business be removed from our directory?"} required />
         </FormGroup>
       </Form>
     );

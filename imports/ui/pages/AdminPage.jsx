@@ -31,6 +31,13 @@ class AdminPage extends React.Component {
     this.handleLogin = this.handleLogin.bind(this);
   }
 
+  /**
+   * Updates this.state to reflect a new change to a form field.
+   *
+   * Just add `onChange={ this.handleInput }` to the input field markup.
+   *
+   * @param e The generic form field to interpret.
+   */
   handleInput(e) {
     let value = e.target.value;
     let name = e.target.name;
@@ -44,6 +51,11 @@ class AdminPage extends React.Component {
     });
   }
 
+  /**
+   * Attempts to login using given password
+   *
+   * @param e The Submit button target.
+   */
   handleSubmit(e) {
     e.preventDefault();
     Meteor.loginWithPassword("admin", this.state.submission.password, function(err) {
@@ -54,6 +66,10 @@ class AdminPage extends React.Component {
     });
   }
 
+  /**
+   * Calls both handleInput and handleSubmit to read a password from a field and use it to attempt to login
+   * @param e The Login button target
+   */
   handleLogin(e) {
     this.handleInput(e);
     this.handleSubmit(e);

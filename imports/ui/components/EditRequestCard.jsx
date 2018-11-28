@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button } from 'reactstrap';
+import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Col, Row, } from 'reactstrap';
 import BusinessDetails from "./BusinessDetails";
 
 export default class EditRequestCard extends React.Component {
@@ -19,6 +19,10 @@ export default class EditRequestCard extends React.Component {
   }
 
 
+  /**
+   * Updates the selected Businesses entry
+   * Removes the corresponding EditRequests entry
+   */
   approve() {
     let requestId = this.props.edits.requestId;
     let businessId = this.props.edits.businessId;
@@ -34,6 +38,9 @@ export default class EditRequestCard extends React.Component {
     });
   }
 
+  /**
+   * Removes the selected EditRequests Entry
+   */
   deny() {
     let requestId = this.props.edits.requestId;
 

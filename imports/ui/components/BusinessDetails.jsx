@@ -5,7 +5,10 @@ import update from 'immutability-helper';
 import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 
-
+/**
+ * A component embedded inline to all Submissions, EditRequests, and RemovalRequests when viewed by administrators.
+ * Allows for the viewing of more detailed information regarding submissions, edit requests, and removal requests
+ */
 class BusinessDetails extends React.Component {
   
   constructor(props) {

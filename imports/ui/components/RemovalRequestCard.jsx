@@ -19,6 +19,10 @@ export default class RemovalRequestCard extends React.Component {
   }
 
 
+  /**
+   * Removes the selected Businesses entry
+   * Removes the corresponding RemovalRequests entry
+   */
   approve() {
     let requestId = this.props.removal.requestId;
     let businessId = this.props.removal.businessId;
@@ -32,6 +36,9 @@ export default class RemovalRequestCard extends React.Component {
     });
   }
 
+  /**
+   * Removes the selected RemovalRequests entry
+   */
   deny() {
     let requestId = this.props.removal.requestId;
 

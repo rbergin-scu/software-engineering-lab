@@ -19,6 +19,10 @@ export default class SubmissionCard extends React.Component {
   }
 
 
+  /**
+   * Inserts a new business into the Businesses collection
+   * Removes the corresponding Submissions entry
+   */
   approve() {
     let id = this.props.submission.id;
     let business = this.props.submission.business;
@@ -42,6 +46,9 @@ export default class SubmissionCard extends React.Component {
     });
   }
 
+  /**
+   * Removes the selected Submissions entry
+   */
   deny() {
     let id = this.props.submission.id;
 
