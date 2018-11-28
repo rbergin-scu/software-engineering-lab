@@ -41,7 +41,7 @@ class BusinessDetails extends React.Component {
     return (
       <div>
         <legend className="h5">{this.props.business.name}<hr /></legend>
-        <p >Description: {this.props.business.description}</p>
+        <p>Description: {this.props.business.description}</p>
         <p>Category: {this.props.business.category}</p>
         <p>Phone Number: {this.props.business.phoneNumber}</p>
         <p>Website: {this.props.business.website}</p>

@@ -25,11 +25,12 @@ class RequestRemoval extends React.Component {
     
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.updateState = this.updateState.bind(this);
   }
   
   render() {
     return (
-      <div className="business-editing bg-light p-3 px-4 border-top border-right border-bottom shadow">
+      <div className="bg-white px-4 py-3 border-top border-right border-bottom">
         { this.renderForm() }
         <div>
           <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Request Removal</Button>
@@ -43,7 +44,7 @@ class RequestRemoval extends React.Component {
     return (
       <Form onSubmit={ this.handleSubmit }>
         <FormGroup tag="fieldset">
-          <legend className="h5">A Little About You <hr /></legend>
+          <legend className="h5"><span className="text-primary">Requesting Removal </span>of { this.state.submission.name }<hr /></legend>
           <InputField
             handle={ this.handleInput } error={ this.state.errors.gradName }
             name="gradName" type="text" placeholder="John Doe" required />
@@ -75,6 +76,8 @@ class RequestRemoval extends React.Component {
    * @param e The generic form field to interpret.
    */
   handleInput(e) {
+    let newState;
+
     let name = e.target.name;
     let value;
     
@@ -82,7 +85,8 @@ class RequestRemoval extends React.Component {
       case 'checkbox':
         value = e.target.checked;
         break;
-      
+
+      /* standard text inputs */
       case 'email':
       case 'select-one':
       case 'tel':
@@ -90,22 +94,38 @@ class RequestRemoval extends React.Component {
       case 'textarea':
         value = e.target.value;
         break;
-      
+
+      case 'file':
+        value = e.target.files[0];
+
+        let upload = Photos.insert({
+          file: value,
+          streams: 'dynamic',
+          chunkSize: 'dynamic',
+        }, false);
+
+        let ref = this; /* pointer back to _this_ so we can setState within anonymous function */
+        upload.on('uploaded', (err, file) => {
+          if (err) throw err;
+
+          // uploads file and returns _result_ with the link
+          Meteor.call('files.photos.find', file._id, (err, result) => {
+            if (err) throw err;
+
+            ref.setState(ref.updateState(name, result));
+          });
+        });
+
+        upload.start();
+        break;
+
       default:
-        console.log(e.target.type);
+        console.log('handleInput: surprising input type => ' + e.target.type);
         break;
     }
 
-
-    let newState = update(this.state, {
-      submission: {
-        [name.substring(name.indexOf('.') + 1)]: { $set: value }
-      }
-    });
-
-    
     console.log(`handleInput: { ${name} => ${value} }`);
-    this.setState(newState);
+    this.setState(this.updateState(name, value));
   }
   
   /**
@@ -153,19 +173,37 @@ class RequestRemoval extends React.Component {
         
         this.setState({ errors: errors });
       } else {
-        // normalize phone #
-        request.business.phoneNumber = request.business.phoneNumber.replace(/\D/g,'');
-        request.gradPhone = request.gradPhone.replace(/\D/g,'');
+        if (request.business.phoneNumber) request.business.phoneNumber = request.business.phoneNumber.replace(/\D/g,'');
+        if (request.gradPhone) request.gradPhone = request.gradPhone.replace(/\D/g,'');
 
         Meteor.call('removalRequests.insert', request, (err, res) => {
-          if(err) {
-            console.log(err);
-          } else {
-            this.props.done();
-          }
+          if (err) throw err;
+
+          this.props.done(); // close editor indicating success
         });
       }
     });
+  }
+
+  /**
+   * Update the state of the component without inadvertently altering any of the other fields also in the state.
+   *
+   * @param name  The name of the field to update.
+   * @param value The new value for this field.
+   * @returns {*} The updated copy of this.state, which is satisfactory for this.setState().
+   */
+  updateState(name, value) {
+    let newState;
+
+    // slightly modified compared to NewBusiness, because we are altering only Business, not a surrounding Submission
+    name = name.split('.')[1];
+    newState = update(this.state, {
+      submission: {
+        [name]: { $set: value }
+      }
+    });
+
+    return newState;
   }
   
 }

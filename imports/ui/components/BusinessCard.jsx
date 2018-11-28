@@ -19,68 +19,66 @@ export default class BusinessCard extends React.Component {
       removeConfirmed: false,
     };
     
-    this.handleEditing = this.handleEditing.bind(this);
+    this.toggleEditing = this.toggleEditing.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
-    this.requestRemoval = this.requestRemoval.bind(this);
+    this.toggleRemoval = this.toggleRemoval.bind(this);
   }
   
   render() {
     return (
-      <div className={`col-md-${this.state.editing || (this.state.removeRequested && !this.props.admin) ? '12' : '4'} d-flex align-items-stretch mb-3`}>
-        <Card className="bg-light shadow">
-          <CardImg top width="100%" src="test.jpg" alt={ this.props.business.name } />
-          <CardBody>
-            <CardTitle className="d-flex align-items-center">
-              <Link to={`/businesses/${this.props.business._id}`}>{ this.props.business.name }</Link>
-              <Badge color="primary" className="ml-2">{ this.props.business.category }</Badge>
-            </CardTitle>
-            <hr />
-            <div className="d-flex flex-column align-items-stretch justify-content-between">
-              <CardText className="mb-4">
-                { this.props.business.description }
-              </CardText>
-              <CardText>
-                <strong>{ this.props.business.city }, { this.props.business.state }, { this.props.business.zip }</strong>
-              </CardText>
-            </div>
-          </CardBody>
-            <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
-              <div>
-                <Button color="primary" className="mr-1" onClick={ this.handleEditing }>
-                  <i className="fas fa-pencil-alt" aria-hidden="true" />
-                </Button>
-                <Button color="primary" onClick={ this.props.admin ? this.handleRemove : this.requestRemoval }>
-                  <i className="fas fa-minus-circle" aria-hidden="true" />
-                </Button>
-              </div>
-              <div>
-                { this.state.editing &&
-                <p className="mb-0 text-white text-sans-bold">Editing..</p>
-                }
-              </div>
-              <div>
-                { this.state.removeRequested &&
-                <p className="mb-0 text-white text-sans-bold">Creating Request...</p>
-                }
-              </div>
-            </CardFooter>
-        </Card>
-        { this.state.editing &&
-          <EditBusiness
-            id={ this.props.business._id }
-            done={ this.handleEditing }
-          />
-        }
-        { this.props.admin ?
-          this.state.removeRequested &&
-          this.renderConfirmModal()
-           :
-          this.state.removeRequested &&
-            <RequestRemoval
+      <div className={`col-12 col-md-${this.state.editing || (this.state.removeRequested && !this.props.admin) ? '12' : '4'} mb-3`}>
+        <div className="row">
+          <div className={ `col-12 col-md-${this.state.editing || (this.state.removeRequested && !this.props.admin) ? '6 px-0' : '12'}` }>
+            <Card className="bg-light h-100">
+              <CardImg top width="100%" src={ this.props.business.photo } alt={ this.props.business.name } />
+              <CardBody>
+                <CardTitle className="d-flex align-items-center">
+                  <Link to={`/businesses/${this.props.business._id}`}>{ this.props.business.name }</Link>
+                  <Badge color="primary" className="ml-2">{ this.props.business.category }</Badge>
+                </CardTitle>
+                <hr />
+                <div className="d-flex flex-column align-items-stretch justify-content-between">
+                  <CardText className="mb-4">
+                    { this.props.business.description }
+                  </CardText>
+                  <CardText>
+                    <strong>{ this.props.business.city }, { this.props.business.state }, { this.props.business.zip }</strong>
+                  </CardText>
+                </div>
+              </CardBody>
+                <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
+                  <div>
+                    <Button color="primary" className="mr-1" onClick={ this.toggleEditing }>
+                      <i className="fas fa-pencil-alt" aria-hidden="true" />
+                    </Button>
+                    <Button color="primary" onClick={ this.props.admin ? this.handleRemove : this.toggleRemoval }>
+                      <i className="fas fa-minus-circle" aria-hidden="true" />
+                    </Button>
+                  </div>
+                </CardFooter>
+            </Card>
+          </div>
+          { this.state.editing &&
+          <div className="col-12 col-md-6 px-0">
+            <EditBusiness
               id={ this.props.business._id }
-              done={ this.requestRemoval }
+              done={ this.toggleEditing }
             />
+          </div>
           }
+          { this.props.admin ?
+            this.state.removeRequested &&
+            this.renderConfirmModal()
+            :
+            this.state.removeRequested &&
+            <div className="col-12 col-md-6 px-0">
+              <RequestRemoval
+                id={ this.props.business._id }
+                done={ this.toggleRemoval }
+              />
+            </div>
+          }
+        </div>
       </div>
     );
   }
@@ -104,19 +102,20 @@ export default class BusinessCard extends React.Component {
     );
   }
   
-  handleEditing(e) {
+  toggleEditing(e) {
     this.setState({ editing: !this.state.editing, });
   }
 
-  requestRemoval(e) {
+  toggleRemoval(e) {
     this.setState({ removeRequested: !this.state.removeRequested, });
   }
 
   
   handleRemove(e) {
+    // the target is coming from the modal (request confirmed)
     if (e.target.id === 'removeConfirmed') {
       Meteor.call('businesses.remove', this.props.business._id, (err, res) => {
-        console.log(err, res);
+        if (err) throw err;
       });
     }
     
