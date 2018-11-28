@@ -120,6 +120,15 @@ Meteor.methods({
   'removalRequests.insert'(
     removalRequest,
   ) {
+
+    let item = { $set: {
+        gradName: removalRequest.gradName,
+        gradEmail: removalRequest.gradEmail,
+        gradPhone: removalRequest.gradPhone,
+        gradYear: removalRequest.gradYear,
+        business: removalRequest.business,
+      }
+    };
     // validate input
     RemovalRequests.simpleSchema().validate(removalRequest);
     
@@ -128,7 +137,7 @@ Meteor.methods({
       throw new Meteor.Error('removalRequests-found', 'You have already submitted that removal request.');
     } else {
       // submit to database
-      const result = RemovalRequests.insert(removalRequest, (err) => {
+      const result = RemovalRequests.insert(item, (err) => {
         if (err) {
           throw new Meteor.Error('removalRequests.insert', err.details);
         }
