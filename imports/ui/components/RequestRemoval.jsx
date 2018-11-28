@@ -158,7 +158,7 @@ class RequestRemoval extends React.Component {
         if (request.gradPhone) request.gradPhone = request.gradPhone.replace(/\D/g,'');
 
         console.log(request);
-        Meteor.call('removalRequests.insert', request, (err, res) => {
+        Meteor.call('removalRequests.insert', request, (err) => {
           if (err) throw err;
 
           this.props.done(); // close editor indicating success
