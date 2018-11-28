@@ -125,7 +125,7 @@ class Index extends React.Component {
    * Whether the current user exists. Since our only user is an admin, this is always an administrator.
    */
   admin() {
-    return this.props.currentUser !== null;
+    return Meteor.user() !== null;
   }
   
 }
