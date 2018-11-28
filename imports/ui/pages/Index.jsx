@@ -17,6 +17,7 @@ class Index extends React.Component {
 
     this.state = {
       categories: {},
+      search: "",
     };
     
     // by default, filter nothing (show all categories)
@@ -26,6 +27,7 @@ class Index extends React.Component {
   
     this.admin = this.admin.bind(this);
     this.handleCategory = this.handleCategory.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
   
   render() {
@@ -41,8 +43,9 @@ class Index extends React.Component {
   
   renderBusinesses() {
     let filters = Object.keys(this.state.categories).filter(c => this.state.categories[c]);
+    let term = this.state.search;
     
-    return this.props.businesses.filter(biz => filters.includes(biz.category)).map((biz, i) => {
+    return this.props.businesses.filter(biz => (filters.includes(biz.category) && (term == "" || term == biz.name || term == biz.category || term == biz.country || term == biz.city || term == biz.state || term == biz.zip))).map((biz, i) => {
       return (
         <BusinessCard
           key={ i }
@@ -75,7 +78,7 @@ class Index extends React.Component {
         <InputGroup className="mb-3">
           <Input type="search" name="searchBusinesses" id="searchBusinesses" />
           <InputGroupAddon addonType="append">
-            <Button type="submit" color="primary">Search</Button>
+            <Button type="submit" color="primary" onClick= {this.handleSearch}>Search</Button>
           </InputGroupAddon>
         </InputGroup>
         { this.renderFilters() }
@@ -103,6 +106,17 @@ class Index extends React.Component {
         categories : {
           ...prevState.categories, [name]: !active
         }
+      }
+    });
+  }
+
+  handleSearch(e) {
+    let searchTerm = document.getElementById("searchBusinesses").value;
+    console.log(searchTerm);
+
+    this.setState(prevState => {
+      return {
+        search : searchTerm
       }
     });
   }
