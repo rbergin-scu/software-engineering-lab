@@ -97,7 +97,7 @@ Meteor.methods({
     try {
       Submissions.simpleSchema().validate(submission);
     } catch (e) {
-      throw new Meteor.Error('submissions.insert', `The provided submission failed to validate. { ${submission} }`);
+      throw new Meteor.Error('submissions.insert', `Failed to validate ${JSON.stringify(submission)} => ${e}`);
     }
     
     // check for duplicate (by submitter's full name and business name)
@@ -123,7 +123,7 @@ Meteor.methods({
     if (Submissions.find({ _id: id })) {
       Submissions.remove({ _id: id }, (err, res) => console.log(`submissions.remove: success => ${res}`));
     } else {
-      throw new Meteor.Error('submissions.remove', `Could not find submission to remove. { id: ${id} }`);
+      throw new Meteor.Error('submissions.remove', 'Could not remove submission with that ID.');
     }
   },
   

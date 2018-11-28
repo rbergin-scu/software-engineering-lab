@@ -17,6 +17,63 @@ const Categories = {
 };
 
 /**
+ * Allowed values for Business.state, which are just states in the U.S.
+ */
+const USStates = {
+  AL: 'Alabama',
+  AK: 'Alaska',
+  AZ: 'Arizona',
+  AR: 'Arkansas',
+  CA: 'California',
+  CO: 'Colorado',
+  CT: 'Connecticut',
+  DE: 'Delaware',
+  DC: 'District Of Columbia',
+  FL: 'Florida',
+  GA: 'Georgia',
+  HI: 'Hawaii',
+  ID: 'Idaho',
+  IL: 'Illinois',
+  IN: 'Indiana',
+  IA: 'Iowa',
+  KS: 'Kansas',
+  KY: 'Kentucky',
+  LA: 'Louisiana',
+  ME: 'Maine',
+  MD: 'Maryland',
+  MA: 'Massachusetts',
+  MI: 'Michigan',
+  MN: 'Minnesota',
+  MS: 'Mississippi',
+  MO: 'Missouri',
+  MT: 'Montana',
+  NE: 'Nebraska',
+  NV: 'Nevada',
+  NH: 'New Hampshire',
+  NJ: 'New Jersey',
+  NM: 'New Mexico',
+  NY: 'New York',
+  NC: 'North Carolina',
+  ND: 'North Dakota',
+  OH: 'Ohio',
+  OK: 'Oklahoma',
+  OR: 'Oregon',
+  PA: 'Pennsylvania',
+  RI: 'Rhode Island',
+  SC: 'South Carolina',
+  SD: 'South Dakota',
+  TN: 'Tennessee',
+  TX: 'Texas',
+  UT: 'Utah',
+  VT: 'Vermont',
+  VA: 'Virginia',
+  WA: 'Washington',
+  WV: 'West Virginia',
+  WI: 'Wisconsin',
+  WY: 'Wyoming',
+};
+
+/**
  * Define the Business table schema, which also talks to React so forms validate automatically.
  * ------------------
  * name           : the title of the business
@@ -100,7 +157,7 @@ const schema = new SimpleSchema({
   /* state (location) */
   state: {
     type: String,
-    regEx: /[A-Z]{2}/,
+    allowedValues: Object.keys(USStates),
   },
   
   /* zip (location) */
@@ -126,8 +183,8 @@ Meteor.methods({
    * within the schema (e.g., no Meteor ._id).
    *
    * @param business  The business object to validate.
-   * @returns {*}     undefined if there were no validation errors, and the error details otherwise.
-   *                  'details' contains objects for each input that failed to validate.
+   * @returns {*}     undefined if there were no errors; an array of all fields which contained errors otherwise,
+   *                  which includes specific references to SimpleSchema expectations.
    */
   'businesses.validate'(business) {
     try {
@@ -148,7 +205,7 @@ Meteor.methods({
     try {
       Businesses.simpleSchema().validate(business);
     } catch (e) {
-      throw new Meteor.Error('businesses.insert', `The provided business failed to validate. { ${e} }`);
+      throw new Meteor.Error('businesses.insert', `Failed to validate ${JSON.stringify(business)} => ${e}`);
     }
     
     // sanity check for duplicate (by name and phone number match)
@@ -175,7 +232,7 @@ Meteor.methods({
     if (Businesses.find({ _id: id })) {
       Businesses.remove({ _id: id }, (err, res) => console.log(`businesses.remove: success => ${res}`));
     } else {
-      throw new Meteor.Error('businesses.remove', `Could not find business to remove. { id: ${id} }`);
+      throw new Meteor.Error('businesses.remove', 'Could not remove business with that ID.');
     }
   },
   
@@ -183,9 +240,10 @@ Meteor.methods({
    * Replaces some field(s) in an existing business.
    *
    * @param id        Target business ID.
-   * @param business  The updated contents, which are assumed to be exhaustive (e.g. all properties are set).
+   * @param business  The updated contents, which do not need to be exhaustive.
    */
   'businesses.update'(id, business) {
+    // create a copy ready for MongoDB, includes references to fields which may not be set by this update (necessary)
     let item = { $set: {
         name: business.name,
         description: business.description,
@@ -204,8 +262,7 @@ Meteor.methods({
     if (Businesses.find({ _id: id })) {
       Businesses.update({ _id: id }, item, (err, res) => console.log(`businesses.update: success => ${res}`));
     } else {
-      throw new
-      Meteor.Error('businesses.update', 'Could not find a business to update with that ID.');
+      throw new Meteor.Error('businesses.update', 'Could not find a business to update with that ID.');
     }
   },
   
@@ -214,4 +271,5 @@ Meteor.methods({
 export {
   Businesses,
   Categories,
+  USStates,
 };

@@ -1,6 +1,5 @@
-import React from 'react';
-
 import { withTracker } from 'meteor/react-meteor-data';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Badge, Button, Card, CardBody, CardFooter, CardImg, CardText, CardTitle, Modal, ModalBody, ModalFooter, ModalHeader
@@ -8,13 +7,19 @@ import {
 
 import EditBusiness from '/imports/ui/components/EditBusiness';
 
+/**
+ * A card providing a set of pertinent information about the business in a compact form. Also provides utilities to
+ * edit and remove the business, both for admins (direct access) and all users (requests for admins to process).
+ */
 export default class BusinessCard extends React.Component {
   
   constructor(props) {
     super(props);
     
     this.state = {
+      /* whether an admin is currently editing this business */
       editing: false,
+      
       removeRequested: false,
       removeConfirmed: false,
     };
@@ -93,14 +98,14 @@ export default class BusinessCard extends React.Component {
     );
   }
   
-  handleEditing(e) {
+  handleEditing() {
     this.setState({ editing: !this.state.editing, });
   }
   
   handleRemove(e) {
     if (e.target.id === 'removeConfirmed') {
-      Meteor.call('businesses.remove', this.props.business._id, (err, res) => {
-        console.log(err, res);
+      Meteor.call('businesses.remove', this.props.business._id, (err) => {
+        if (err) throw err;
       });
     }
     

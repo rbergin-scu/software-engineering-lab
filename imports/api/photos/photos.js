@@ -10,7 +10,7 @@ const Photos = new FilesCollection({
   allowClientCode: false,
   
   onBeforeUpload(file) {
-    if (file.size <= (10 * 1024 * 1024) && /png|jp?eg/i.test(file.extension)) {
+    if (file.size <= (10 * 1024 * 1024) && /png|jpg|jpeg/i.test(file.extension)) {
       return true;
     }
     
@@ -21,10 +21,6 @@ const Photos = new FilesCollection({
 
 if (Meteor.isClient) {
   Meteor.subscribe('files.photos.all');
-}
-
-if (Meteor.isServer) {
-
 }
 
 Meteor.methods({

@@ -1,12 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
-
 import { withTracker } from 'meteor/react-meteor-data';
+import React from 'react';
 import { Badge, Button, Input, InputGroup, InputGroupAddon, } from 'reactstrap';
 
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import BusinessCard from '/imports/ui/components/BusinessCard';
 
+/**
+ * The homepage that greets all users upon viewing the page. Controls the business search function, and
+ * by extension each business presented.
+ */
 class Index extends React.Component {
   
   constructor(props) {
@@ -16,6 +19,7 @@ class Index extends React.Component {
       categories: {},
     };
     
+    // by default, filter nothing (show all categories)
     for (let c of Object.keys(Categories)) {
       this.state.categories[c] = true;
     }
@@ -45,10 +49,26 @@ class Index extends React.Component {
         <BusinessCard
           key={ i }
           business={ biz }
-          admin={ this.admin() }
+          admin={ this.admin }
         />
       );
     });
+  }
+  
+  renderFilters() {
+    return (
+      <p className="badge-group">
+        { Object.entries(Categories).map(([c, name], i) =>
+          <Badge
+            key={ i }
+            id={ c }
+            onClick={ this.handleCategory }
+            color="primary" className="mr-3">
+            { name }
+          </Badge>
+        ) }
+      </p>
+    );
   }
   
   renderSearch() {
@@ -64,22 +84,13 @@ class Index extends React.Component {
       </div>
     )
   }
-
-  renderFilters() {
-    return (
-      <p className="badge-group">
-        { Object.entries(Categories).map(([c, name], i) =>
-          <Badge
-            key={ i }
-            color="primary" className="mr-3"
-            id={ c } onClick={ this.handleCategory }>
-            { name }
-          </Badge>
-        ) }
-      </p>
-    );
-  }
   
+  /**
+   * Toggles the state of an active search filter category, which is indicated visually by altering the
+   * color of the corresponding badge.
+   *
+   * @param e The category to toggle.
+   */
   handleCategory(e) {
     let name = e.target.id;
     let active = e.target.classList.contains('badge-primary');
@@ -98,6 +109,9 @@ class Index extends React.Component {
     });
   }
   
+  /**
+   * Whether the current user exists. Since our only user is an admin, this is always an administrator.
+   */
   admin() {
     return this.props.currentUser !== null;
   }
