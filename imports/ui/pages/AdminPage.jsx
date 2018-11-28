@@ -70,6 +70,7 @@ class AdminPage extends React.Component {
   
   renderSubmissions() {
     return this.props.submissions.map((sub, i) => {
+      console.log(sub);
       return (
         <SubmissionCard
           key={ i }
@@ -265,7 +266,7 @@ class AdminPage extends React.Component {
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('submissions');
+  Meteor.subscribe('submissions.all');
   Meteor.subscribe('businesses.all');
   Meteor.subscribe('editRequests');
   Meteor.subscribe('removalRequests');
