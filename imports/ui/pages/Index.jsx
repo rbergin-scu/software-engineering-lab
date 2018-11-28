@@ -43,8 +43,9 @@ class Index extends React.Component {
   
   renderBusinesses() {
     let filters = Object.keys(this.state.categories).filter(c => this.state.categories[c]);
+    let term = this.state.search;
     
-    return this.props.businesses.filter(biz => filters.includes(biz.category)).map((biz, i) => {
+    return this.props.businesses.filter(biz => (filters.includes(biz.category) && (term == "" || term == biz.name || term == biz.category || term == biz.country || term == biz.city || term == biz.state || term == biz.zip))).map((biz, i) => {
       return (
         <BusinessCard
           key={ i }
