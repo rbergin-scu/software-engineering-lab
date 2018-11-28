@@ -113,6 +113,15 @@ Meteor.methods({
   ) {
     // validate input
     EditRequests.simpleSchema().validate(editRequest);
+
+    let item = { $set: {
+        gradName: editRequest.gradName,
+        gradEmail: editRequest.gradEmail,
+        gradPhone: editRequest.gradPhone,
+        gradYear: editRequest.gradYear,
+        business: editRequest.business,
+      }
+    };
     
     // check for duplicate (by name); Shouldn't come up: any duplicated should be caught be Businesses schema
     if (EditRequests.findOne({ gradName: editRequest.gradName, business: editRequest.business, })) {
