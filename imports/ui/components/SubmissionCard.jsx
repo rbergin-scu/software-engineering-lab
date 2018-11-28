@@ -26,37 +26,18 @@ export default class SubmissionCard extends React.Component {
    * Removes the corresponding Submissions entry
    */
   approve() {
-    let id = this.props.submission.id;
-    let business = this.props.submission.business;
-
-    Meteor.call('businesses.insert', {
-      name: business.name,
-      description: business.description,
-      photo: business.photo,
-      country: business.country,
-      streetAddress: business.streetAddress,
-      state: business.state,
-      city: business.city,
-      zip: business.zip,
-      phoneNumber: business.phoneNumber,
-      website: business.website,
-      category: business.category,
+    Meteor.call('businesses.insert', this.props.submission.business, (err) => {
+      if (err) throw err;
     });
 
-    Meteor.call('submissions.remove', {
-      id: id
-    });
+    Meteor.call('submissions.remove', this.props.submission._id);
   }
 
   /**
    * Removes the selected Submissions entry
    */
   deny() {
-    let id = this.props.submission.id;
-
-    Meteor.call('submissions.remove', {
-      id: id
-    });
+    Meteor.call('submissions.remove', this.props.submission._id);
   }
 
   showDetails() {
