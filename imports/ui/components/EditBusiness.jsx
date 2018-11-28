@@ -172,14 +172,14 @@ class EditBusiness extends React.Component {
         break;
     }
     
-    let newState = update(this.state, {
-      submission: {
-        [name.substring(name.indexOf('.') + 1)]: { $set: value }
+    console.log(`handleInput: { ${name} => ${value} }`);
+    this.setState(prevState => {
+      return {
+        submission: {
+          ...prevState.submission, [name.split('.')[1]]: value
+        }
       }
     });
-    
-    console.log(`handleInput: { ${name} => ${value} }`);
-    this.setState(newState);
   }
   
   /**
@@ -205,14 +205,14 @@ class EditBusiness extends React.Component {
         this.setState({ errors: errors });
       } else {
         // normalize phone #
-        business.phoneNumber = business.phoneNumber.replace(/\D/g,'');
-        
+        if (business.phoneNumber) {
+          business.phoneNumber = business.phoneNumber.replace(/\D/g,'');
+        }
+  
         Meteor.call('businesses.update', this.props.existing[0]._id, business, (err, res) => {
-          if (err) {
-            console.log(err);
-          } else {
-            this.props.done();
-          }
+          if (err) throw err;
+          
+          console.log(res);
         });
       }
     });
@@ -221,7 +221,7 @@ class EditBusiness extends React.Component {
 }
 
 export default withTracker((props) => {
-  Meteor.subscribe('businesses');
+  Meteor.subscribe('businesses.all');
   
   return {
     existing: Businesses.find({ _id: props.id }).fetch(),

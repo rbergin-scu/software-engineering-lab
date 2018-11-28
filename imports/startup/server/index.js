@@ -8,23 +8,10 @@ import Submissions from '/imports/api/submissions/submissions';
 Meteor.startup(() => {
   
   /* publish all businesses (index) */
-  Meteor.publish('businesses', () => {
-    return Businesses.find({ });
-  });
-  
-  /* publish a specific business, by ID */
-  Meteor.publish('businesses.find', (id) => {
-    return Businesses.find({ _id: id, });
-  });
-  
-  Meteor.publish('photos', () => {
-    return Photos.find().cursor;
-  });
+  Meteor.publish('businesses.all', () => Businesses.find());
   
   /* publish all submissions (admin) */
-  Meteor.publish('submissions', () => {
-    return Submissions.find({});
-  });
+  Meteor.publish('submissions.all', () => Submissions.find());
   
   // insert test data if there's nothing
   if (!Businesses.findOne()) {

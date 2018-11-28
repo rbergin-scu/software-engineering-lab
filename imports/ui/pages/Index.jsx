@@ -105,10 +105,10 @@ class Index extends React.Component {
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('businesses');
+  Meteor.subscribe('businesses.all');
   
   return {
-    businesses: Businesses.find({}).fetch(),
+    businesses: Businesses.find().fetch(),
     currentUser: Meteor.user(),
   };
 })(Index);

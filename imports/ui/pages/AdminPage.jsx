@@ -111,7 +111,7 @@ class AdminPage extends React.Component {
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('submissions');
+  Meteor.subscribe('submissions.all');
 
   return {
     submissions: Submissions.find({ }).fetch(),

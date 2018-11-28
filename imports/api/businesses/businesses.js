@@ -156,7 +156,6 @@ Meteor.methods({
       throw new Meteor.Error('businesses.insert',
         `An existing business matches the provided info. { name: ${business.name}, phone: ${business.phoneNumber} }`);
     } else {
-      // TODO prevent this unless user is signed in as admin
       Businesses.insert(business, (err, res) => {
         if (err) {
           throw new Meteor.Error('businesses.insert', err);
@@ -187,11 +186,26 @@ Meteor.methods({
    * @param business  The updated contents, which are assumed to be exhaustive (e.g. all properties are set).
    */
   'businesses.update'(id, business) {
+    let item = { $set: {
+        name: business.name,
+        description: business.description,
+        category: business.category,
+        photo: business.photo,
+        phoneNumber: business.phoneNumber,
+        website: business.website,
+        country: business.country,
+        streetAddress: business.streetAddress,
+        city: business.city,
+        state: business.state,
+        zip: business.zip,
+      }
+    };
+    
     if (Businesses.find({ _id: id })) {
-      Businesses.update({ _id: id }, business, (err, res) => console.log(`businesses.update: success => ${res}`));
+      Businesses.update({ _id: id }, item, (err, res) => console.log(`businesses.update: success => ${res}`));
     } else {
       throw new
-        Meteor.Error('businesses.update', `Could not find business to update. { id: ${id}, business: ${business} }`);
+      Meteor.Error('businesses.update', 'Could not find a business to update with that ID.');
     }
   },
   

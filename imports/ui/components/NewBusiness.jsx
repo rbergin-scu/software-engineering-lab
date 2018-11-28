@@ -209,8 +209,10 @@ export default class NewBusiness extends React.Component {
         
         upload.on('uploaded', (err, file) => {
           if (err) throw err;
+          
           Meteor.call('files.photos.find', file._id, (err, result) => {
             if (err) throw err;
+            
             this.setState({ submission: { business: { photo: result } } });
           });
         });

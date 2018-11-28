@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { FilesCollection } from 'meteor/ostrio:files';
 
 /**
- * A database of Businesses.
+ * A database of Photos, which are attached to Businesses.
  */
 const Photos = new FilesCollection({
   
@@ -14,7 +14,7 @@ const Photos = new FilesCollection({
       return true;
     }
     
-    return 'Please upload a photo no larger than 10 MB.';
+    return 'Please upload a photo (JPEG or PNG) no larger than 10 MB.';
   },
   
 });
@@ -24,8 +24,7 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
-  Meteor.publish('files.photos.all', () => Photos.find().cursor);
-  
+
 }
 
 Meteor.methods({
