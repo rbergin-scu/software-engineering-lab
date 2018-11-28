@@ -271,7 +271,6 @@ class EditBusiness extends React.Component {
 
         if(Meteor.user()) {
           // normalize phone #
-          request.business.phoneNumber = request.business.phoneNumber.replace(/\D/g,'');
           Meteor.call('businesses.update', this.props.existing[0]._id, request.business, (err, res) => {
             if (err) throw err;
 

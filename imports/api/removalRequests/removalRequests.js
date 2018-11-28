@@ -123,7 +123,7 @@ Meteor.methods({
     // validate input
     RemovalRequests.simpleSchema().validate(removalRequest);
     
-    // check for duplicate (by name); Shouldn't come up: any duplicated should be caught be Businesses schema
+    // check for duplicate (by name); Shouldn't come up: any duplicated should be caught by schema
     if (RemovalRequests.findOne({ gradName: removalRequest.gradName, business: removalRequest.business, })) {
       throw new Meteor.Error('removalRequests-found', 'You have already submitted that removal request.');
     } else {
