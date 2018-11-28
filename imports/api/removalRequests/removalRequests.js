@@ -62,7 +62,7 @@ const schema = new SimpleSchema({
   
   /* reference to business in table */
   business: {
-    type: Businesses.schema,
+    type: Businesses.simpleSchema(),
     required: true,
   },
 
@@ -80,8 +80,7 @@ const schema = new SimpleSchema({
   tracker: Tracker,
   
 });
-const schemaContext = schema.newContext();
-RemovalRequests.schema = schema;
+RemovalRequests.attachSchema(schema);
 
 // publish Business data to client
 if (Meteor.isServer) {
@@ -103,7 +102,7 @@ Meteor.methods({
     removalRequest,
   ) {
     try {
-      RemovalRequests.schema.validate(removalRequest);
+      RemovalRequests.simpleSchema().validate(removalRequest);
       return undefined;
     } catch (e) {
       return e.details;
@@ -122,7 +121,7 @@ Meteor.methods({
     removalRequest,
   ) {
     // validate input
-    RemovalRequests.schema.validate(removalRequest);
+    RemovalRequests.simpleSchema().validate(removalRequest);
     
     // check for duplicate (by name); Shouldn't come up: any duplicated should be caught be Businesses schema
     if (RemovalRequests.findOne({ gradName: removalRequest.gradName, business: removalRequest.business, })) {

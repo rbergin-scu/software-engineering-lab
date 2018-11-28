@@ -61,7 +61,7 @@ const schema = new SimpleSchema({
   
   /* reference to business in table */
   business: {
-    type: Businesses.schema,
+    type: Businesses.simpleSchema(),
     required: true,
   },
   
@@ -71,8 +71,7 @@ const schema = new SimpleSchema({
   tracker: Tracker,
   
 });
-const schemaContext = schema.newContext();
-EditRequests.schema = schema;
+EditRequests.attachSchema(schema);
 
 // publish EditRequests data to client
 if (Meteor.isServer) {
@@ -94,7 +93,7 @@ Meteor.methods({
     editRequest,
     ) {
     try {
-      EditRequests.schema.validate(editRequest);
+      EditRequests.simpleSchema().validate(editRequest);
       return undefined;
     } catch (e) {
       return e.details;
@@ -113,7 +112,7 @@ Meteor.methods({
     editRequest,
   ) {
     // validate input
-    EditRequests.schema.validate(editRequest);
+    EditRequests.simpleSchema().validate(editRequest);
     
     // check for duplicate (by name); Shouldn't come up: any duplicated should be caught be Businesses schema
     if (EditRequests.findOne({ gradName: editRequest.gradName, business: editRequest.business, })) {
