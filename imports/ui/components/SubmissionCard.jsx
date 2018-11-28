@@ -3,9 +3,11 @@ import React from 'react';
 import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button } from 'reactstrap';
 import BusinessDetails from "./BusinessDetails";
 
+/**
+ * A card that contains the provided personal info of a submitter and the business they proposed to submit.
+ */
 export default class SubmissionCard extends React.Component {
-
-
+  
   constructor(props) {
     super(props);
 
@@ -97,6 +99,18 @@ export default class SubmissionCard extends React.Component {
         </div>
       </div>
     );
+  }
+  
+  handleApprove() {
+    Meteor.call('businesses.insert', this.props.submission.business, (err) => {
+      if (err) throw err;
+      
+      Meteor.call('submissions.remove', this.props.submission._id);
+    });
+  }
+
+  handleDeny() {
+    Meteor.call('submissions.remove', this.props.submission._id);
   }
 
 }

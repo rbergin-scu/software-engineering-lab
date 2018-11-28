@@ -1,5 +1,7 @@
 $primary: #b30738;
 
+/* Bootstrap overrides */
+
 .badge {
   font-weight: normal;
 }
@@ -28,6 +30,8 @@ $primary: #b30738;
   text-decoration: underline;
 }
 
+/* custom support classes */
+
 .text-link {
   cursor: pointer;
 
@@ -35,6 +39,9 @@ $primary: #b30738;
     text-decoration: underline;
   }
 }
+
+
+/* Business page classes */
 
 .business-page {
   img {
@@ -45,8 +52,4 @@ $primary: #b30738;
   .business-description {
     font-size: 1.5rem;
   }
-}
-
-.business-editing {
-  min-width: 50%;
 }

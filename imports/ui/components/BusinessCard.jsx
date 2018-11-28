@@ -1,20 +1,26 @@
+import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Badge, Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Modal, ModalBody, ModalFooter, ModalHeader
+  Badge, Button, Card, CardBody, CardFooter, CardImg, CardText, CardTitle, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
-import { withTracker } from 'meteor/react-meteor-data';
 
 import EditBusiness from '/imports/ui/components/EditBusiness';
 import RequestRemoval from '/imports/ui/components/RequestRemoval';
 
+/**
+ * A card providing a set of pertinent information about the business in a compact form. Also provides utilities to
+ * edit and remove the business, both for admins (direct access) and all users (requests for admins to process).
+ */
 export default class BusinessCard extends React.Component {
   
   constructor(props) {
     super(props);
     
     this.state = {
+      /* whether an admin is currently editing this business */
       editing: false,
+      
       removeRequested: false,
       removeConfirmed: false,
     };
@@ -110,16 +116,19 @@ export default class BusinessCard extends React.Component {
     this.setState({ removeRequested: !this.state.removeRequested, });
   }
 
-  
+  /**
+   * Handle a request to remove this business, which invokes a modal to confirm or cancel the removal.
+   *
+   * @param e The source of the request, which lets us distinguish request from confirmation.
+   */
   handleRemove(e) {
     // the target is coming from the modal (request confirmed)
     if (e.target.id === 'removeConfirmed') {
-      Meteor.call('businesses.remove', this.props.business._id, (err, res) => {
+      Meteor.call('businesses.remove', this.props.business._id, (err) => {
         if (err) throw err;
       });
     }
     
     this.setState({ removeRequested: !this.state.removeRequested, });
   }
-  
 }

@@ -1,68 +1,20 @@
+import update from 'immutability-helper';
+import _ from 'lodash';
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
 import { Button, Col, Form, FormGroup, Row, } from 'reactstrap';
-import update from 'immutability-helper';
-import { withTracker } from 'meteor/react-meteor-data';
-import _ from 'lodash';
 
-import { Businesses, Categories } from '/imports/api/businesses/businesses';
+
+import { Businesses, Categories, USStates } from '/imports/api/businesses/businesses';
 import EditRequests from '/imports/api/editRequests/editRequests';
 import InputField from '/imports/ui/components/InputField';
+import Photos from '/imports/api/photos/photos';
 
-const USStates = {
-  AL: 'Alabama',
-  AK: 'Alaska',
-  AZ: 'Arizona',
-  AR: 'Arkansas',
-  CA: 'California',
-  CO: 'Colorado',
-  CT: 'Connecticut',
-  DE: 'Delaware',
-  DC: 'District Of Columbia',
-  FL: 'Florida',
-  GA: 'Georgia',
-  HI: 'Hawaii',
-  ID: 'Idaho',
-  IL: 'Illinois',
-  IN: 'Indiana',
-  IA: 'Iowa',
-  KS: 'Kansas',
-  KY: 'Kentucky',
-  LA: 'Louisiana',
-  ME: 'Maine',
-  MD: 'Maryland',
-  MA: 'Massachusetts',
-  MI: 'Michigan',
-  MN: 'Minnesota',
-  MS: 'Mississippi',
-  MO: 'Missouri',
-  MT: 'Montana',
-  NE: 'Nebraska',
-  NV: 'Nevada',
-  NH: 'New Hampshire',
-  NJ: 'New Jersey',
-  NM: 'New Mexico',
-  NY: 'New York',
-  NC: 'North Carolina',
-  ND: 'North Dakota',
-  OH: 'Ohio',
-  OK: 'Oklahoma',
-  OR: 'Oregon',
-  PA: 'Pennsylvania',
-  RI: 'Rhode Island',
-  SC: 'South Carolina',
-  SD: 'South Dakota',
-  TN: 'Tennessee',
-  TX: 'Texas',
-  UT: 'Utah',
-  VT: 'Vermont',
-  VA: 'Virginia',
-  WA: 'Washington',
-  WV: 'West Virginia',
-  WI: 'Wisconsin',
-  WY: 'Wyoming',
-};
-
+/**
+ * A component embedded inline to all Businesses when viewed by administrators. Allows privileged users to directly
+ * edit fields in a Business entry conveniently.
+ */
 class EditBusiness extends React.Component {
   
   constructor(props) {
@@ -73,7 +25,7 @@ class EditBusiness extends React.Component {
       errors: { },
       
       /* latest form fields */
-      submission: _.omit(this.props.existing[0], ['_id']),
+      submission: _.omit(this.props.existing[0], ['_id']), // omit Mongo _id field from submission (confuses validator)
     };
     
     this.handleInput = this.handleInput.bind(this);
@@ -86,7 +38,7 @@ class EditBusiness extends React.Component {
       <div className="bg-white px-4 py-3 border-top border-right border-bottom">
         { Meteor.user() ? this.renderAdminForm() : this.renderForm() }
         <div>
-          <Button color="primary" onClick={ this.handleSubmit.bind(this) }>Update Business</Button>
+          <Button color="primary" onClick={ this.handleSubmit }>Update Business</Button>
           <Button outline color="secondary" onClick={ this.props.done } className="ml-2">Cancel</Button>
         </div>
       </div>
@@ -129,8 +81,8 @@ class EditBusiness extends React.Component {
             <Col md={4} className="px-0">
               <InputField
                 handle={ this.handleInput } error={ this.state.errors['state'] }
-                name="business.state" type="select" value={ this.state.submission.state }
-                options={ USStates } isColumn={ true } />
+                name="business.state" type="select" value={ this.state.submission.state } options={ USStates }
+                isColumn={ true } />
             </Col>
             <Col md={4} className="px-0">
               <InputField
@@ -209,12 +161,9 @@ class EditBusiness extends React.Component {
   }
   
   /**
-   * Updates this.state to reflect a new change to a form field.
-   * Handles checkboxes, all text-based input fields, textareas.
+   * Updates this.state to reflect instantaneous changes to input fields. Bound by `onChange={ this.handleInput }`.
    *
-   * Just add `onChange={ this.handleInput }` to the input field markup.
-   *
-   * @param e The generic form field to interpret.
+   * @param e The generic form field to interpret, which can be any standard `<input type="" />`.
    */
   handleInput(e) {
     let newState;
@@ -227,6 +176,7 @@ class EditBusiness extends React.Component {
         value = e.target.checked;
         break;
       
+      /* standard text inputs */
       case 'email':
       case 'select-one':
       case 'tel':
@@ -237,7 +187,7 @@ class EditBusiness extends React.Component {
 
       case 'file':
         value = e.target.files[0];
-
+        
         let upload = Photos.insert({
           file: value,
           streams: 'dynamic',
@@ -266,12 +216,12 @@ class EditBusiness extends React.Component {
 
     console.log(`handleInput: { ${name} => ${value} }`);
     this.setState(this.updateState(name, value));
-
   }
   
   /**
-   * Attempts to validate the form input fields found in the current state against the Business schema.
-   * If successful, the Business will be updated.
+   * Attempts to validate the form input fields found in the current state against the Business schema. Since this view
+   * is restricted to privileged users, they will be able to directly update the Business, assuming no validation
+   * errors.
    *
    * @param e The Submit button target.
    */
@@ -359,10 +309,31 @@ class EditBusiness extends React.Component {
     return newState;
   }
   
+  /**
+   * Update the state of the component without inadvertently altering any of the other fields also in the state.
+   *
+   * @param name  The name of the field to update.
+   * @param value The new value for this field.
+   * @returns {*} The updated copy of this.state, which is satisfactory for this.setState().
+   */
+  updateState(name, value) {
+    let newState;
+  
+    // slightly modified compared to NewBusiness, because we are altering only Business, not a surrounding Submission
+    name = name.split('.')[1];
+    newState = update(this.state, {
+      submission: {
+        [name]: { $set: value }
+      }
+    });
+    
+    return newState;
+  }
+  
 }
 
 export default withTracker((props) => {
-  Meteor.subscribe('businesses.public');
+  Meteor.subscribe('businesses.all');
   Meteor.subscribe('editRequests');
   
   return {

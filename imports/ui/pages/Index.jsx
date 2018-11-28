@@ -1,14 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-
-import {
-  Badge, Button, Col, Form, FormGroup, FormText, Input, InputGroup, InputGroupAddon, Label, Row,
-} from 'reactstrap';
+import React from 'react';
+import { Badge, Button, Input, InputGroup, InputGroupAddon, } from 'reactstrap';
 
 import { Businesses, Categories } from '/imports/api/businesses/businesses';
 import BusinessCard from '/imports/ui/components/BusinessCard';
 
+/**
+ * The homepage that greets all users upon viewing the page. Controls the business search function, and
+ * by extension each business presented.
+ */
 class Index extends React.Component {
   
   constructor(props) {
@@ -16,41 +17,59 @@ class Index extends React.Component {
 
     this.state = {
       categories: {},
+      search: "",
     };
     
+    // by default, filter nothing (show all categories)
     for (let c of Object.keys(Categories)) {
       this.state.categories[c] = true;
     }
   
     this.admin = this.admin.bind(this);
     this.handleCategory = this.handleCategory.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
   
   render() {
     return (
       <div className="container my-4">
         { this.renderSearch() }
-        <section className="index-businesses mb-5">
-          <div className="row">
-            { this.renderBusinesses() }
-          </div>
-        </section>
+        <div className="row">
+          { this.renderBusinesses() }
+        </div>
       </div>
     );
   }
   
   renderBusinesses() {
     let filters = Object.keys(this.state.categories).filter(c => this.state.categories[c]);
+    let term = this.state.search;
     
-    return this.props.businesses.filter(biz => filters.includes(biz.category)).map((biz, i) => {
+    return this.props.businesses.filter(biz => (filters.includes(biz.category) && (term == "" || term == biz.name || term == biz.category || term == biz.country || term == biz.city || term == biz.state || term == biz.zip))).map((biz, i) => {
       return (
         <BusinessCard
           key={ i }
           business={ biz }
-          admin={ this.admin() }
+          admin={ this.admin }
         />
       );
     });
+  }
+  
+  renderFilters() {
+    return (
+      <p className="badge-group">
+        { Object.entries(Categories).map(([c, name], i) =>
+          <Badge
+            key={ i }
+            id={ c }
+            onClick={ this.handleCategory }
+            color="primary" className="mr-3">
+            { name }
+          </Badge>
+        ) }
+      </p>
+    );
   }
   
   renderSearch() {
@@ -59,29 +78,20 @@ class Index extends React.Component {
         <InputGroup className="mb-3">
           <Input type="search" name="searchBusinesses" id="searchBusinesses" />
           <InputGroupAddon addonType="append">
-            <Button type="submit" color="primary">Search</Button>
+            <Button type="submit" color="primary" onClick= {this.handleSearch}>Search</Button>
           </InputGroupAddon>
         </InputGroup>
         { this.renderFilters() }
       </div>
     )
   }
-
-  renderFilters() {
-    return (
-      <p className="badge-group">
-        { Object.entries(Categories).map(([c, name], i) =>
-          <Badge
-            key={ i }
-            color="primary" className="mr-3"
-            id={ c } onClick={ this.handleCategory }>
-            { name }
-          </Badge>
-        ) }
-      </p>
-    );
-  }
   
+  /**
+   * Toggles the state of an active search filter category, which is indicated visually by altering the
+   * color of the corresponding badge.
+   *
+   * @param e The category to toggle.
+   */
   handleCategory(e) {
     let name = e.target.id;
     let active = e.target.classList.contains('badge-primary');
@@ -99,7 +109,21 @@ class Index extends React.Component {
       }
     });
   }
+
+  handleSearch(e) {
+    let searchTerm = document.getElementById("searchBusinesses").value;
+    console.log(searchTerm);
+
+    this.setState(prevState => {
+      return {
+        search : searchTerm
+      }
+    });
+  }
   
+  /**
+   * Whether the current user exists. Since our only user is an admin, this is always an administrator.
+   */
   admin() {
     return this.props.currentUser !== null;
   }
@@ -107,10 +131,10 @@ class Index extends React.Component {
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('businesses.public');
+  Meteor.subscribe('businesses.all');
   
   return {
-    businesses: Businesses.find({}).fetch(),
+    businesses: Businesses.find().fetch(),
     currentUser: Meteor.user(),
   };
 })(Index);

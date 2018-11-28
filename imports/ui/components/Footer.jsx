@@ -50,36 +50,29 @@ export default class Footer extends React.Component {
             <div className="col-12 col-md-3">
               <ul className="list-unstyled list-spaced">
                 <li>
-                  <h6 className="text-uppercase ">Useful Links</h6>
+                  <h6 className="text-uppercase ">SCU Alumni</h6>
                 </li>
-                <li><a href="#">Link One</a></li>
-                <li><a href="#">Link Two</a></li>
-                <li><a href="#">Link Three</a></li>
-                <li><a href="#">Link Four</a></li>
+                <li><a href="https://www.scu.edu/alumni/">Home</a></li>
+                <li><a href="https://www.scu.edu/alumni/events/">Events</a></li>
               </ul>
             </div>
           </div>
         </div>
         <div className="bg-gradient-primary mt-4 small align-items-center">
-          <div className="container d-flex p-3">
-        <span className="mr-auto text-uppercase wordmark link-home">
-          <a href="/" className="footer-wordmark">Santa Clara University</a>
-        </span>
-            <div className="mr-auto">
-              &copy; 2018 &middot; <a href="/accessibility" className="text-white">Accessibility</a>
+          <div className="container d-flex align-items-center p-3">
+            <span className="mr-auto text-uppercase wordmark link-home">
+              <a href="https://scu.edu" className="footer-wordmark">Santa Clara University</a>
+            </span>
+            <div className="d-flex align-items-center ml-auto">
+              <div>
+                <span className="px-2">&copy; 2018</span>
+              </div>
+              <div>
+                <a href="/admin" className="text-white px-2">Admin</a>
+                <span className="text-white px-2">|</span>
+                <a href="/" className="text-white px-2">Home</a>
+              </div>
             </div>
-            <a href="/admin" className="text-white px-2">Admin</a>
-            <span className="text-white px-2">|</span>
-            <a href="/" className="text-white px-2">Home</a>
-            <span className="text-white px-2">|</span>
-            <a className="facebook text-white px-2" href="http://www.facebook.com">
-              <i className="demo-icon fab fa-facebook"/>
-              <span className="sr-only">SCU on Facebook</span>
-            </a>
-            <a className="twitter text-white pl-2" href="http://www.twitter.com">
-              <i className="demo-icon fab fa-twitter"/>
-              <span className="sr-only">SCU on Twitter</span>
-            </a>
           </div>
         </div>
       </footer>
