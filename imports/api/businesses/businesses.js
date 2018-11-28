@@ -259,7 +259,7 @@ Meteor.methods({
    * @param id        Target business ID.
    * @param business  The updated contents, which do not need to be exhaustive.
    */
-  'businesses.update'({id, business}) {
+  'businesses.update'(id, business) {
     // create a copy ready for MongoDB, includes references to fields which may not be set by this update (necessary)
     let item = { $set: {
         name: business.name,
