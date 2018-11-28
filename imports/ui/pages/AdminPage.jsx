@@ -11,7 +11,7 @@ import EditRequestCard from '/imports/ui/components/EditRequestCard';
 import RemovalRequests from '/imports/api/removalRequests/removalRequests';
 import RemovalRequestCard from '/imports/ui/components/RemovalRequestCard';
 
-import Businesses from '/imports/api/businesses/businesses';
+import {Businesses} from '/imports/api/businesses/businesses';
 
 class AdminPage extends React.Component {
 
@@ -123,7 +123,6 @@ class AdminPage extends React.Component {
   }
 
 
-
   render() {
     console.log(this.props.currentUser);
     if(!Meteor.user()) {
@@ -145,6 +144,17 @@ class AdminPage extends React.Component {
     else {
       return (
         <div className="container py-5">
+          <h2>Report</h2>
+          <div className="container py-5">
+            <section className="report">
+              <div>
+                <p> # of Businesses in the Directory: {Businesses.find({}).count()}</p>
+                <p> # of Submissions in the Directory: {Submissions.find({}).count()}</p>
+                <p> # of Edit Requests in the Directory: {EditRequests.find({}).count()}</p>
+                <p> # of Removal Requests in the Directory: {RemovalRequests.find({}).count()}</p>
+              </div>
+            </section>
+          </div>
           <h2>Submissions</h2>
           <div className="container py-5">
             <section className="index-submissions">
@@ -195,6 +205,7 @@ export default withTracker(() => {
   Meteor.subscribe('removalRequests');
 
   return {
+    businesses: Businesses.find({}).fetch(),
     submissions: Submissions.find({ }).fetch(),
     editRequests: EditRequests.find({}).fetch(),
     removalRequests: RemovalRequests.find({}).fetch(),
