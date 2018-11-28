@@ -116,8 +116,8 @@ class EditBusiness extends React.Component {
         <FormGroup tag="fieldset">
           <legend className="h5"><span className="text-primary">Editing </span>{ this.state.submission.name }<hr /></legend>
           <InputField
-            handle={ this.handleInput } error={ this.state.errors['reason'] }
-            name="name" type="text" value={ this.state.submission.name } required />
+            handle={ this.handleInput } error={ this.state.errors['name'] }
+            name="business.name" type="text" value={ this.state.submission.name } required />
           <InputField
             handle={ this.handleInput } error={ this.state.errors['description'] }
             name="business.description" type="textarea" value={ this.state.submission.description } required />
