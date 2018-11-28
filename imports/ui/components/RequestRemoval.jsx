@@ -76,17 +76,14 @@ class RequestRemoval extends React.Component {
    * @param e The generic form field to interpret.
    */
   handleInput(e) {
-    let newState;
-
     let name = e.target.name;
     let value;
-    
+
     switch (e.target.type) {
       case 'checkbox':
         value = e.target.checked;
         break;
 
-      /* standard text inputs */
       case 'email':
       case 'select-one':
       case 'tel':
@@ -95,37 +92,21 @@ class RequestRemoval extends React.Component {
         value = e.target.value;
         break;
 
-      case 'file':
-        value = e.target.files[0];
-
-        let upload = Photos.insert({
-          file: value,
-          streams: 'dynamic',
-          chunkSize: 'dynamic',
-        }, false);
-
-        let ref = this; /* pointer back to _this_ so we can setState within anonymous function */
-        upload.on('uploaded', (err, file) => {
-          if (err) throw err;
-
-          // uploads file and returns _result_ with the link
-          Meteor.call('files.photos.find', file._id, (err, result) => {
-            if (err) throw err;
-
-            ref.setState(ref.updateState(name, result));
-          });
-        });
-
-        upload.start();
-        break;
-
       default:
-        console.log('handleInput: surprising input type => ' + e.target.type);
+        console.log(e.target.type);
         break;
     }
 
+
+    let newState = update(this.state, {
+      submission: {
+        [name.substring(name.indexOf('.') + 1)]: { $set: value }
+      }
+    });
+
+
     console.log(`handleInput: { ${name} => ${value} }`);
-    this.setState(this.updateState(name, value));
+    this.setState(newState);
   }
   
   /**
