@@ -24,8 +24,8 @@ export default class BusinessCard extends React.Component {
       removeConfirmed: false,
     };
     
-    this.handleEditing = this.handleEditing.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.toggleEditing = this.toggleEditing.bind(this);
   }
   
   render() {
@@ -51,7 +51,7 @@ export default class BusinessCard extends React.Component {
           { this.props.admin &&
             <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
               <div>
-                <Button color="primary" className="mr-1" onClick={ this.handleEditing }>
+                <Button color="primary" className="mr-1" onClick={ this.toggleEditing }>
                   <i className="fas fa-pencil-alt" aria-hidden="true" />
                 </Button>
                 <Button color="primary" onClick={ this.handleRemove }>
@@ -69,7 +69,7 @@ export default class BusinessCard extends React.Component {
         { this.props.admin && this.state.editing &&
           <EditBusiness
             id={ this.props.business._id }
-            done={ this.handleEditing }
+            done={ this.toggleEditing }
           />
         }
         { this.props.admin && this.state.removeRequested &&
@@ -98,11 +98,13 @@ export default class BusinessCard extends React.Component {
     );
   }
   
-  handleEditing() {
-    this.setState({ editing: !this.state.editing, });
-  }
-  
+  /**
+   * Handle a request to remove this business, which invokes a modal to confirm or cancel the removal.
+   *
+   * @param e The source of the request, which lets us distinguish request from confirmation.
+   */
   handleRemove(e) {
+    // the target is coming from the modal (request confirmed)
     if (e.target.id === 'removeConfirmed') {
       Meteor.call('businesses.remove', this.props.business._id, (err) => {
         if (err) throw err;
@@ -110,6 +112,10 @@ export default class BusinessCard extends React.Component {
     }
     
     this.setState({ removeRequested: !this.state.removeRequested, });
+  }
+  
+  toggleEditing() {
+    this.setState({ editing: !this.state.editing, });
   }
   
 }

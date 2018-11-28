@@ -1,7 +1,6 @@
+import update from 'immutability-helper';
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-
-import update from 'immutability-helper';
 import { Button, Col, Collapse, Form, FormGroup, FormText, Row, } from 'reactstrap';
 
 import { Categories, USStates } from '/imports/api/businesses/businesses';

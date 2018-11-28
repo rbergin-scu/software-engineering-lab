@@ -1,9 +1,8 @@
+import update from 'immutability-helper';
+import _ from 'lodash';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
-
-import update from 'immutability-helper';
-import _ from 'lodash';
 import { Button, Col, Form, FormGroup, Row, } from 'reactstrap';
 
 import { Businesses, Categories, USStates } from '/imports/api/businesses/businesses';

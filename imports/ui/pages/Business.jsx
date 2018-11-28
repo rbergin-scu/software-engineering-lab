@@ -35,29 +35,29 @@ class Business extends React.Component {
               </Col>
               <Col md={3} className="py-4 py-md-0">
                 { business.website &&
-                <div>
-                  <h4>Website</h4>
-                  <p><a href={ business.website }>{ business.website }</a></p>
-                </div>
+                  <div>
+                    <h4>Website</h4>
+                    <p><a href={ business.website }>{ business.website }</a></p>
+                  </div>
                 }
   
                 { business.phoneNumber &&
-                <div>
-                  <h4 className="mt-4">Phone Number</h4>
-                  <p>{ this.formatPhoneNumber(business.phoneNumber) }</p>
-                </div>
+                  <div>
+                    <h4 className="mt-4">Phone Number</h4>
+                    <p>{ this.formatPhoneNumber(business.phoneNumber) }</p>
+                  </div>
                 }
                 
                 { (business.streetAddress || (business.city && business.state && business.zip)) &&
-                <h4 className="mt-4">Address</h4>
+                  <h4 className="mt-4">Address</h4>
                 }
                 
                 { business.streetAddress &&
-                <p>{ business.streetAddress }</p>
+                  <p>{ business.streetAddress }</p>
                 }
   
                 { business.city && business.state && business.zip &&
-                <p>{business.city}, {business.state}, {business.zip}</p>
+                  <p>{business.city}, {business.state}, {business.zip}</p>
                 }
               </Col>
             </Row>

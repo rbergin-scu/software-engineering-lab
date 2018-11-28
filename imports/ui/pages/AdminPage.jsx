@@ -1,12 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import React from 'react';
-
 import { withTracker } from 'meteor/react-meteor-data';
+import React from 'react';
 import { Button, Col, FormGroup, Input, Label, } from 'reactstrap';
 
 import Submissions from '/imports/api/submissions/submissions';
 import SubmissionCard from '/imports/ui/components/SubmissionCard';
 
+/**
+ * The admin-only interface that provides Alumni Office users the ability to view submissions (and deny/approve them
+ * individually) and reports about the system.
+ */
 class AdminPage extends React.Component {
 
   constructor(props) {
@@ -14,7 +17,7 @@ class AdminPage extends React.Component {
 
     this.state = {
       submission: {
-        password: null
+        password: null,
       },
     };
 
@@ -88,7 +91,12 @@ class AdminPage extends React.Component {
     this.handleInput(e);
     this.handleSubmit(e);
   }
-
+  
+  /**
+   * Attempt to login with the information provided.
+   *
+   * @param e The login submit button.
+   */
   handleSubmit(e) {
     e.preventDefault();
     
@@ -114,7 +122,7 @@ export default withTracker(() => {
   Meteor.subscribe('submissions.all');
 
   return {
-    submissions: Submissions.find({ }).fetch(),
+    submissions: Submissions.find().fetch(),
     currentUser: Meteor.user(),
   };
 })(AdminPage);

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-
 import { Accounts } from 'meteor/accounts-base';
+
 import { Businesses } from '/imports/api/businesses/businesses';
 import '/imports/api/photos/photos';
 import Submissions from '/imports/api/submissions/submissions';
