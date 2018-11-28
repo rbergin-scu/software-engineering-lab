@@ -30,48 +30,49 @@ export default class BusinessCard extends React.Component {
   
   render() {
     return (
-      <div className={`col-md-${this.state.editing ? '12' : '4'} d-flex align-items-stretch mb-3`}>
-        <Card className="bg-light shadow">
-          <CardImg top width="100%" src={ this.props.business.photo } alt={ this.props.business.name } />
-          <CardBody>
-            <CardTitle className="d-flex align-items-center">
-              <Link to={`/businesses/${this.props.business._id}`}>{ this.props.business.name }</Link>
-              <Badge color="primary" className="ml-2">{ this.props.business.category }</Badge>
-            </CardTitle>
-            <hr />
-            <div className="d-flex flex-column align-items-stretch justify-content-between">
-              <CardText className="mb-4">
-                { this.props.business.description }
-              </CardText>
-              <CardText>
-                <strong>{ this.props.business.city }, { this.props.business.state }, { this.props.business.zip }</strong>
-              </CardText>
+      <div className={`col-12 col-md-${this.state.editing ? '12' : '4'} mb-3`}>
+        <div className="row">
+          <div className={ `col-12 col-md-${this.state.editing ? '6 px-0' : '12'}` }>
+            <Card className="bg-light h-100">
+              <CardImg top width="100%" src={ this.props.business.photo } alt={ this.props.business.name } />
+              <CardBody>
+                <CardTitle className="d-flex align-items-center">
+                  <Link to={`/businesses/${this.props.business._id}`}>{ this.props.business.name }</Link>
+                  <Badge color="primary" className="ml-2">{ this.props.business.category }</Badge>
+                </CardTitle>
+                <hr />
+                <div className="d-flex flex-column align-items-stretch justify-content-between">
+                  <CardText className="mb-4">
+                    { this.props.business.description }
+                  </CardText>
+                  <CardText>
+                    <strong>{ this.props.business.city }, { this.props.business.state }, { this.props.business.zip }</strong>
+                  </CardText>
+                </div>
+              </CardBody>
+              { this.props.admin &&
+              <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
+                <div>
+                  <Button color="primary" className="mr-1" onClick={ this.toggleEditing }>
+                    <i className="fas fa-pencil-alt" aria-hidden="true" />
+                  </Button>
+                  <Button color="primary" onClick={ this.handleRemove }>
+                    <i className="fas fa-minus-circle" aria-hidden="true" />
+                  </Button>
+                </div>
+              </CardFooter>
+              }
+            </Card>
+          </div>
+          { this.props.admin && this.state.editing &&
+            <div className="col-12 col-md-6 px-0">
+              <EditBusiness
+                id={ this.props.business._id }
+                done={ this.toggleEditing }
+              />
             </div>
-          </CardBody>
-          { this.props.admin &&
-            <CardFooter className="d-flex align-items-center justify-content-between bg-primary text-white">
-              <div>
-                <Button color="primary" className="mr-1" onClick={ this.toggleEditing }>
-                  <i className="fas fa-pencil-alt" aria-hidden="true" />
-                </Button>
-                <Button color="primary" onClick={ this.handleRemove }>
-                  <i className="fas fa-minus-circle" aria-hidden="true" />
-                </Button>
-              </div>
-              <div>
-                { this.state.editing &&
-                <p className="mb-0 text-white text-sans-bold">Editing..</p>
-                }
-              </div>
-            </CardFooter>
           }
-        </Card>
-        { this.props.admin && this.state.editing &&
-          <EditBusiness
-            id={ this.props.business._id }
-            done={ this.toggleEditing }
-          />
-        }
+        </div>
         { this.props.admin && this.state.removeRequested &&
           this.renderConfirmModal()
         }
