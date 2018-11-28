@@ -1,10 +1,7 @@
 import React from 'react';
 
 import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button } from 'reactstrap';
-import { Businesses, Categories } from '/imports/api/businesses/businesses';
-import {withTracker} from "meteor/react-meteor-data";
-import {Meteor} from "meteor/meteor";
-import { Mongo } from 'meteor/mongo';
+import BusinessDetails from "./BusinessDetails";
 
 export default class EditRequestCard extends React.Component {
 
@@ -12,8 +9,13 @@ export default class EditRequestCard extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      details: false,
+    };
+
     this.approve = this.approve.bind(this);
     this.deny = this.deny.bind(this);
+    this.showDetails = this.showDetails.bind(this);
   }
 
 
@@ -40,9 +42,13 @@ export default class EditRequestCard extends React.Component {
     });
   }
 
+  showDetails() {
+    this.setState({ details: !this.state.details, });
+  }
+
   render() {
     return (
-      <div className="col-md-4 d-flex align-items-stretch mb-3">
+      <div className={`col-md-${this.state.details ? '12' : '4'} d-flex align-items-stretch mb-3`}>
         <Card className="bg-light shadow">
           <CardBody>
             <CardTitle>{this.props.edits.name}</CardTitle>
@@ -59,8 +65,17 @@ export default class EditRequestCard extends React.Component {
             <Button color="primary" onClick = { this.deny.bind(this) } >
               <i className="fas fa-times-circle" aria-hidden="true"/>
             </Button>
+            <Button color="primary" onClick = { this.showDetails.bind(this) } >
+              <i className="fas fa-question-circle" aria-hidden="true"/>
+            </Button>
           </CardFooter>
         </Card>
+        { this.state.details &&
+        <BusinessDetails
+          business={ this.props.edits.business }
+          type={"update"}
+        />
+        }
       </div>
     );
   }
