@@ -186,23 +186,29 @@ class RequestRemoval extends React.Component {
     });
   }
 
-  /**
-   * Update the state of the component without inadvertently altering any of the other fields also in the state.
-   *
-   * @param name  The name of the field to update.
-   * @param value The new value for this field.
-   * @returns {*} The updated copy of this.state, which is satisfactory for this.setState().
-   */
   updateState(name, value) {
     let newState;
 
-    // slightly modified compared to NewBusiness, because we are altering only Business, not a surrounding Submission
-    name = name.split('.')[1];
-    newState = update(this.state, {
-      submission: {
-        [name]: { $set: value }
-      }
-    });
+    // handle fields that are part of an object inside submission (namely, inside Business)
+    if (name.includes('.')) {
+      name = name.split('.');
+
+      newState = update(this.state, {
+        submission: {
+          // e.g. business.description --> submission: { business: { description: (value) } }
+          [name[0]]: {
+            [name[1]]: { $set: value }
+          }
+        }
+      });
+    } else {
+      // otherwise, our job is a little easier
+      newState = update(this.state, {
+        submission: {
+          [name]: { $set: value }
+        }
+      });
+    }
 
     return newState;
   }
