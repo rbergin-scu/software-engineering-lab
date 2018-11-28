@@ -271,8 +271,8 @@ export default withTracker(() => {
   Meteor.subscribe('removalRequests');
 
   return {
-    businesses: Businesses.find().fetch(),
-    submissions: Submissions.find().fetch(),
+    businesses: Businesses.find({}).fetch(),
+    submissions: Submissions.find({}).fetch(),
     editRequests: EditRequests.find({}).fetch(),
     removalRequests: RemovalRequests.find({}).fetch(),
     currentUser: Meteor.user(),
