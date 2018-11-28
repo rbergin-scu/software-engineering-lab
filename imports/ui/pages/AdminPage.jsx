@@ -265,14 +265,14 @@ class AdminPage extends React.Component {
 }
 
 export default withTracker(() => {
-  Meteor.subscribe('submissions.all');
+  Meteor.subscribe('submissions');
   Meteor.subscribe('businesses.all');
-  Meteor.subscribe('editRequests.all');
-  Meteor.subscribe('removalRequests.all');
+  Meteor.subscribe('editRequests');
+  Meteor.subscribe('removalRequests');
 
   return {
-    businesses: Businesses.find({}).fetch(),
-    submissions: Submissions.find({ }).fetch(),
+    businesses: Businesses.find().fetch(),
+    submissions: Submissions.find().fetch(),
     editRequests: EditRequests.find({}).fetch(),
     removalRequests: RemovalRequests.find({}).fetch(),
     currentUser: Meteor.user(),
