@@ -235,6 +235,7 @@ Meteor.methods({
   'businesses.remove'({
     id,
   }) {
+    console.log(id);
     if (Businesses.find({ _id: id, })) {
       Businesses.remove( id, (err, res) => console.log(`businesses.remove: success => ${res}`));
     } else {
