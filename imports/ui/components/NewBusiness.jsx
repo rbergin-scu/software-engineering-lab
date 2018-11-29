@@ -282,7 +282,6 @@ export default class NewBusiness extends React.Component {
           });
         }
       });
-      this.toggle();
     } else {
       // attempt to validate newest submission
       Meteor.call('submissions.validate', submission, (err, res) => {
