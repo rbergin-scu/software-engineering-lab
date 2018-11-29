@@ -1,27 +1,30 @@
-import cloudinary from 'cloudinary';
 import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
 
-import Businesses from '/imports/api/businesses/businesses';
+import { Businesses } from '/imports/api/businesses/businesses';
+import '/imports/api/photos/photos';
+import Submissions from '/imports/api/submissions/submissions';
 
+/**
+ * Handles everything necessary on startup, as well as ensures the admin account exists.
+ */
 Meteor.startup(() => {
-  // insert test data if there's nothing
-  if (!Businesses.findOne({})) {
-    Businesses.insert({
-      name: 'Krusty Krab',
-      desc: 'Use your imagination, let it go. This is your world. In your world you have total and absolute power. Trees get lonely too, so we\'ll give him a little friend.',
-      photo: 'https://res.cloudinary.com/dir7oszd4/image/upload/v1540095717/sample.jpg',
+  
+  /* publish all businesses (index.jsx) */
+  Meteor.publish('businesses.all', () => Businesses.find());
+  
+  /* publish one business (business.jsx) */
+  Meteor.publish('businesses.one', (id) => Businesses.find({ _id: id }));
+  
+  /* publish all submissions (admin) */
+  Meteor.publish('submissions.all', () => Submissions.find());
+
+  // insert admin account if there is none
+  if (!Meteor.users.findOne({ username: 'admin' })) {
+    Accounts.createUser({
+      username: 'admin',
+      password: '12345'
     });
   }
   
-  // ---- cloudinary config
-  cloudinary.config({
-    cloud_name: 'dir7oszd4',
-    api_key: '882423461476917',
-    api_secret: '8f3qiKdinEUcTTTod_Hj4YDaAxk',
-  });
-  
-  // TODO returns url which can be added to mongodb as link to header image
-  /*cloudinary.v2.uploader.upload('https://res.cloudinary.com/demo/image/upload/v1371281596/sample.jpg', (error, result) => {
-    console.log(result, error);
-  });*/
 });
