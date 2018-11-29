@@ -124,7 +124,6 @@ export default class BusinessCard extends React.Component {
   handleRemove(e) {
     // the target is coming from the modal (request confirmed)
     if (e.target.id === 'removeConfirmed') {
-      console.log(this.props.business._id);
       Meteor.call('businesses.remove', this.props.business._id, (err) => {
         if (err) throw err;
       });

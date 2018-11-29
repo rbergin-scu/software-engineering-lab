@@ -74,6 +74,12 @@ class Business extends React.Component {
     )
   }
   
+
+  /**
+   * formatPhoneNumber formats any phone number to be in the format (123) 456-7890
+   * for consistency
+   * @param phone The phone number to be formatted
+   */
   formatPhoneNumber(phone) {
     if (phone) return phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
     

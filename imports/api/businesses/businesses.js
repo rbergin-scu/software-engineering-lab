@@ -232,12 +232,11 @@ Meteor.methods({
    *
    * @param id  Target business ID.
    */
-  'businesses.remove'(
+  'businesses.remove'({
     id,
-  ) {
-    console.log(id);
+  }) {
     if (Businesses.find({ _id: id, })) {
-      Businesses.remove( id, (err, res) => console.log(`businesses.remove: success => ${res}`));
+      Businesses.remove({ _id: id, }, (err, res) => console.log(`businesses.remove: success => ${res}`));
     } else {
       throw new Meteor.Error('businesses.remove', 'Could not remove business with that ID.');
     }
