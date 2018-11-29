@@ -41,6 +41,10 @@ class Index extends React.Component {
     );
   }
   
+  /**
+   * renderBusinesses shows each business object that fits the category filters.
+   * and search term.
+   */
   renderBusinesses() {
     let filters = Object.keys(this.state.categories).filter(c => this.state.categories[c]);
     let term = this.state.search;
@@ -56,6 +60,9 @@ class Index extends React.Component {
     });
   }
   
+  /**
+   * renderFilters shows the group of category filter buttons below the search bar.
+   */
   renderFilters() {
     return (
       <p className="badge-group">
@@ -72,6 +79,9 @@ class Index extends React.Component {
     );
   }
   
+  /**
+   * renderSearch shows the search bar.
+   */
   renderSearch() {
     return (
       <div className="mb-5">
@@ -110,6 +120,12 @@ class Index extends React.Component {
     });
   }
 
+
+  /**
+   * Looks at the content of the search bar and adds it to the current state.
+   *
+   * @param e The search term.
+   */
   handleSearch(e) {
     let searchTerm = document.getElementById("searchBusinesses").value;
     console.log(searchTerm);
