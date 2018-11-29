@@ -12,8 +12,8 @@ import InputField from '/imports/ui/components/InputField';
 import Photos from '/imports/api/photos/photos';
 
 /**
- * A component embedded inline to all Businesses when viewed by administrators. Allows privileged users to directly
- * edit fields in a Business entry conveniently.
+ * A component embedded inline to all Businesses. Allows users to  request edits to selcted businesses, and
+ * admins to directly edit fields in a Business entry conveniently.
  */
 class EditBusiness extends React.Component {
   
@@ -264,28 +264,6 @@ class EditBusiness extends React.Component {
         }
       }
     });
-  }
-
-
-  /**
-   * Update the state of the component without inadvertently altering any of the other fields also in the state.
-   *
-   * @param name  The name of the field to update.
-   * @param value The new value for this field.
-   * @returns {*} The updated copy of this.state, which is satisfactory for this.setState().
-   */
-  updateState(name, value) {
-    let newState;
-
-    // slightly modified compared to NewBusiness, because we are altering only Business, not a surrounding Submission
-    name = name.split('.')[1];
-    newState = update(this.state, {
-      submission: {
-        [name]: { $set: value }
-      }
-    });
-
-    return newState;
   }
   
   /**

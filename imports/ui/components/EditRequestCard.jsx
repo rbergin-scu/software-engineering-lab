@@ -3,6 +3,10 @@ import React from 'react';
 import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button, Col, Row, } from 'reactstrap';
 import BusinessDetails from "./BusinessDetails";
 
+/**
+ * A card providing a set of pertinent information about a requested edit in a compact form. Also allows admins
+ * approve or deny the requested edit
+ * */
 export default class EditRequestCard extends React.Component {
 
 

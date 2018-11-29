@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * The bottom of all pages containing relevant links
+ */
 export default class Footer extends React.Component {
   
   render() {

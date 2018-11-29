@@ -5,6 +5,7 @@ import BusinessDetails from "./BusinessDetails";
 
 /**
  * A card that contains the provided personal info of a submitter and the business they proposed to submit.
+ * Allows admins to approve submitted businesses and add them to the directory, or dney them.
  */
 export default class SubmissionCard extends React.Component {
   

@@ -5,6 +5,9 @@ import { Businesses } from '/imports/api/businesses/businesses';
 import '/imports/api/photos/photos';
 import Submissions from '/imports/api/submissions/submissions';
 
+/**
+ * Handles everything necessary on startup, as well as ensures the admin account exists.
+ */
 Meteor.startup(() => {
   
   /* publish all businesses (index.jsx) */

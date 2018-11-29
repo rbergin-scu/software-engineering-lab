@@ -3,6 +3,10 @@ import React from 'react';
 import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, Button } from 'reactstrap';
 import BusinessDetails from "./BusinessDetails";
 
+/**
+ * A card providing a set of pertinent information about a requested removal in a compact form. Also allows admins
+ * approve or deny the requested removal
+ * */
 export default class RemovalRequestCard extends React.Component {
 
 

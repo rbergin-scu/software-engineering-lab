@@ -2,6 +2,9 @@ import React from 'react';
 
 import NewBusiness from '/imports/ui/components/NewBusiness';
 
+/**
+ * The Header of all system pages. Contains a link back to the homepage
+ */
 export default class Header extends React.Component {
   
   render() {

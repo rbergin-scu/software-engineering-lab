@@ -9,7 +9,10 @@ import _ from 'lodash';
 import { Businesses } from '/imports/api/businesses/businesses';
 import InputField from '/imports/ui/components/InputField';
 
-
+/**
+* A component embedded inline to all Businesses. Allows users to request the removal of a selected
+ * business.
+*/
 class RequestRemoval extends React.Component {
   
   constructor(props) {
@@ -167,6 +170,13 @@ class RequestRemoval extends React.Component {
     });
   }
 
+  /**
+   * Update the state of the component without inadvertently altering any of the other fields also in the state.
+   *
+   * @param name  The name of the field to update.
+   * @param value The new value for this field.
+   * @returns {*} The updated copy of this.state, which is satisfactory for this.setState().
+   */
   updateState(name, value) {
     let newState;
 
