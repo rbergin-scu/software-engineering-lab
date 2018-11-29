@@ -241,6 +241,20 @@ export default class NewBusiness extends React.Component {
     e.preventDefault();
     
     let submission = this.state.submission;
+
+    const business = {
+      name: submission.business.name,
+      description: submission.business.description,
+      photo: submission.business.photo,
+      country: submission.business.country,
+      streetAddress: submission.business.streetAddress,
+      state: submission.business.state,
+      city: submission.business.city,
+      zip: submission.business.zip,
+      phoneNumber: submission.business.phoneNumber,
+      website: submission.business.website,
+      category: submission.business.category
+    }
     
     /* first, sanitize submitted info */
     // convert strings to numbers
@@ -251,18 +265,22 @@ export default class NewBusiness extends React.Component {
     if (submission.business.phoneNumber) submission.business.phoneNumber = submission.business.phoneNumber.replace(/\D/g,'');
 
     if(Meteor.user()) {
-      Meteor.call('businesses.insert', {
-        name: submission.business.name,
-        description: submission.business.description,
-        photo: submission.business.photo,
-        country: submission.business.country,
-        streetAddress: submission.business.streetAddress,
-        state: submission.business.state,
-        city: submission.business.city,
-        zip: submission.business.zip,
-        phoneNumber: submission.business.phoneNumber,
-        website: submission.business.website,
-        category: submission.business.category,
+      Meteor.call('businesses.validate', submission, (err, res) => {
+        // if there were validation errors, update error state to reflect
+        if (res) {
+          const errors = res.reduce((list, e) => {
+            list[e.name] = e.message;
+            return list;
+          }, {});
+
+          this.setState({ errors: errors });
+        } else {
+          Meteor.call('businesses.insert', business, (err, res) => {
+            if (err) throw err;
+
+            this.toggle();
+          });
+        }
       });
       this.toggle();
     } else {
