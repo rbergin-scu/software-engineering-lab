@@ -37,41 +37,22 @@ export default class NewBusiness extends React.Component {
   }
   
   render() {
-    if(Meteor.user()) {
-      return (
-        <div className={ `py-${this.state.collapse ? '5' : '3'}` }>
-          <h5 className={ `text-link text-white mb-0 ${this.state.collapse ? 'text-underline' : ''}` }
-              onClick={ this.toggle }>
-            Santa Clara Alum? Submit your proudly owned business to us.&nbsp;
-            <i className={ `fa fa-caret-${this.state.collapse ? 'down' : 'right'} pl-2` }
-               aria-hidden="true" />
-          </h5>
-          <Collapse isOpen={ this.state.collapse } className="mt-3 p-5 bg-white shadow">
-            { this.renderForm() }
-            <div>
-              <Button color="primary" onClick={ this.handleSubmit }>Submit</Button>
-            </div>
-          </Collapse>
-        </div>
-      );
-    } else {
-      return (
-        <div className={ `py-${this.state.collapse ? '5' : '3'}` }>
-          <h5 className={ `text-link text-white mb-0 ${this.state.collapse ? 'text-underline' : ''}` }
-              onClick={ this.toggle }>
-            Santa Clara Alum? Submit your proudly owned business to us.&nbsp;
-            <i className={ `fa fa-caret-${this.state.collapse ? 'down' : 'right'} pl-2` }
-               aria-hidden="true" />
-          </h5>
-          <Collapse isOpen={ this.state.collapse } className="mt-3 p-5 bg-white shadow">
-            { this.renderForm() }
-            <div>
-              <Button color="primary" onClick={ this.handleSubmit }>Submit for Review</Button>
-            </div>
-          </Collapse>
-        </div>
-      );
-    }
+    return (
+      <div className={ `py-${this.state.collapse ? '5' : '3'}` }>
+        <h5 className={ `text-link text-white mb-0 ${this.state.collapse ? 'text-underline' : ''}` }
+            onClick={ this.toggle }>
+          Santa Clara Alum? Submit your proudly owned business to us.&nbsp;
+          <i className={ `fa fa-caret-${this.state.collapse ? 'down' : 'right'} pl-2` }
+             aria-hidden="true" />
+        </h5>
+        <Collapse isOpen={ this.state.collapse } className="mt-3 p-5 bg-white shadow">
+          { this.renderForm() }
+          <div>
+           <Button color="primary" onClick={ this.handleSubmit }>Submit for Review</Button>
+          </div>
+        </Collapse>
+      </div>
+    );
   }
   
   renderForm() {
